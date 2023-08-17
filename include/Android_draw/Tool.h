@@ -9,7 +9,7 @@
 #define BIGWHITETOOL_TOOL_H
 
 uint64_t GetClass(uint64_t Address) {
-    uint64_t UobjectClass = BigWhite_GetPtr64((Address + 0x10));
+    uint64_t UobjectClass = XY_GetAddr((Address + 0x10));
     if (UobjectClass != NULL) {
         return UobjectClass;
     }
@@ -18,7 +18,7 @@ uint64_t GetClass(uint64_t Address) {
 
 FName ReadProcessFname(uint64_t address) {
     FName buffer = {0};
-    BigWhite_vm_readv(address, &buffer, sizeof(FName));
+    XY_Read(address, &buffer, sizeof(FName));
     return buffer;
 }
 
@@ -32,13 +32,13 @@ FName GetFName(uint64_t Address) {
 
 std::string GetName_Old(int i) //旧版本算法
 {
-    uintptr_t G_Names = BigWhite_GetPtr64(addr.GNames);
+    uintptr_t G_Names = XY_GetAddr(addr.GNames);
     int Id = (int)(i / (int)0x4000);
     int Idtemp = (int)(i % (int)0x4000);
-    auto NamePtr = BigWhite_GetPtr64((G_Names + Id * 8));
-    auto Name = BigWhite_GetPtr64((NamePtr + 8 * Idtemp));
+    auto NamePtr = XY_GetAddr((G_Names + Id * 8));
+    auto Name = XY_GetAddr((NamePtr + 8 * Idtemp));
     char name[0x100] = { 0 };
-    if (BigWhite_vm_readv((Name + 0xC), name, 0x100)) //0xC需要手动推算，默认是0x10
+    if (XY_Read((Name + 0xC), name, 0x100)) //0xC需要手动推算，默认是0x10
     {
         return name;
     }
@@ -52,17 +52,17 @@ std::string GetName_New(uint32_t index) //新版本算法
 
     uintptr_t FNamePool = addr.GNames;
 
-    uintptr_t NamePoolChunk = BigWhite_GetPtr64(FNamePool+0x40 + (Block * 0x8));
+    uintptr_t NamePoolChunk = XY_GetAddr(FNamePool+0x40 + (Block * 0x8));
 
     uintptr_t FNameEntry = NamePoolChunk + (0x2 * Offset);
 
-    short int FNameEntryHeader = BigWhite_GetDword(FNameEntry);
+    short int FNameEntryHeader = XY_GetDword(FNameEntry);
     uintptr_t StrPtr = FNameEntry + 0x2;
 
     int StrLength = FNameEntryHeader >> 6;
     if (StrLength > 0 && StrLength < 250) {
         string name(StrLength, '\0');
-        BigWhite_vm_readv(StrPtr, name.data(), StrLength * sizeof(char));
+        XY_Read(StrPtr, name.data(), StrLength * sizeof(char));
         name.shrink_to_fit();
         return name;
     } else {
@@ -90,7 +90,7 @@ std::string GetClassName(uint64_t Address) {
 }
 
 uint64_t GetOuter(uint64_t Address) {
-    uint64_t outer = BigWhite_GetPtr64(Address + 0x20);
+    uint64_t outer = XY_GetAddr(Address + 0x20);
     if (outer != NULL)
         return outer;
     return uint64_t();
@@ -159,7 +159,7 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
     for (size_t i = 0; i < 0x200; i+=4) {
-        long int Tmp = BigWhite_GetPtr64(Address + i);
+        long int Tmp = XY_GetAddr(Address + i);
         string KlassName = GetClassName(Tmp);
         string outerName = GetOuterName(Tmp);
 
@@ -170,9 +170,9 @@ static vector<StructureList> foreachAddress(uint64_t Address) {
         data.offset=i;
 
 
-        data.P = BigWhite_GetPtr64(data.address);
-        data.F= BigWhite_GetFloat(data.address);
-        data.D= BigWhite_GetDword(data.address);
+        data.P = XY_GetAddr(data.address);
+        data.F= XY_GetFloat(data.address);
+        data.D= XY_GetDword(data.address);
 //        if (outerName.find("None") && KlassName.find("null") && getPtr64(data.address)==0)
 
         structureList.push_back(data);
@@ -228,9 +228,9 @@ namespace UEinit{
         while (1){
             long int TMP = addr.libbase + (0x8*i) + 0x40;
             if (TMP != NULL){
-                long int TMPGnames = BigWhite_GetPtr64(TMP);
+                long int TMPGnames = XY_GetAddr(TMP);
                 char name[0x100];
-                BigWhite_vm_readv(TMPGnames+0x8, name, 0xc);
+                XY_Read(TMPGnames+0x8, name, 0xc);
                 std::string aa = name;
                 if (aa=="ByteProperty"){
                     addrOffsets.Addr=addr.libbase+(0x8*i);
@@ -251,12 +251,12 @@ namespace UEinit{
         int i=0;
 
         while (1){
-            long int TMPUworld = BigWhite_GetPtr64(addr.libbase + offsets.GNames + (0x8*i));
+            long int TMPUworld = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPUworld != NULL){
                 //printf("%lx",TMPUworld);
                 if (GetClassName(TMPUworld)== "World"){
                     //(GetName(TMPUworld)=="TutorialRange_Main") 这个可以不需要
-                    //if (GetClassName(BigWhite_GetPtr64(TMPUworld+offsets.Ulevel))=="Level"){}
+                    //if (GetClassName(XY_GetAddr(TMPUworld+offsets.Ulevel))=="Level"){}
                         addrOffsets.Addr=TMPUworld;
                         addrOffsets.Offsets=offsets.GNames + (0x8*i);
                         offsets.Uworld=offsets.GNames + (0x8*i);
@@ -274,13 +274,13 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         int i=0;
 
-        cout << GetClassName(BigWhite_GetPtr64(addr.libbase + 0xAC61718)) <<endl;
+        cout << GetClassName(XY_GetAddr(addr.libbase + 0xAC61718)) <<endl;
 /*        while (1){
-            long int TMPEngine = BigWhite_GetPtr64(addr.libbase + offsets.GNames + (0x8*i));
+            long int TMPEngine = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPEngine != NULL){
                 //printf("%lx",TMPUworld);
                 if (GetClassName(TMPEngine)== "GameEngine"){
-//                    if (GetClassName(BigWhite_GetPtr64(TMPUworld+offsets.Ulevel))=="Level"){}
+//                    if (GetClassName(XY_GetAddr(TMPUworld+offsets.Ulevel))=="Level"){}
                     addrOffsets.Addr=TMPEngine;
                     addrOffsets.Offsets=offsets.GNames + (0x8*i);
                     break;
@@ -297,9 +297,9 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         int i=0;
 
-        //cout << GetClassName(BigWhite_GetPtr64(addr.libbase + 0xADD4868)) <<endl;
+        //cout << GetClassName(XY_GetAddr(addr.libbase + 0xADD4868)) <<endl;
         while (1){
-            long int TMPEngine = BigWhite_GetPtr64(addr.libbase + offsets.GNames + (0x8*i));
+            long int TMPEngine = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPEngine != NULL){
                 if (GetClassName(TMPEngine)== "GameEngine"){
                         addrOffsets.Addr=TMPEngine;

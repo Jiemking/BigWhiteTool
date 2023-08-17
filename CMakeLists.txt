@@ -67,6 +67,9 @@ FILE(GLOB_RECURSE FILE_SOURCES # 遍历子目录下所有符合情况的源文�
 link_directories(
         ffmpeg/lib/${ANDROID_ABI}
 )
+add_library(biu STATIC IMPORTED)
+set_target_properties(biu PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/libbiu.a)
+
 
 ##################### 设置三方库文件目录 #####################
 
@@ -83,4 +86,5 @@ add_executable(BigWhiteTool # 生成可执行文件
 # 可以整合第三方库 需要打开注释即可
 target_link_libraries(BigWhiteTool PRIVATE EGL GLESv3 log
         android
+        biu
         )

@@ -47,24 +47,24 @@ typedef char UTF8;
 int BigWhite_pid;
 // syscall内存读写
 #if defined(__arm__)
-int process_vm_readv_syscall = 376;
-int process_vm_writev_syscall = 377;
+int BigWhite_process_vm_readv_syscall = 376;
+int BigWhite_process_vm_writev_syscall = 377;
 #elif defined(__aarch64__)
-int process_vm_readv_syscall = 270;
-int process_vm_writev_syscall = 271;
+int BigWhite_process_vm_readv_syscall = 270;
+int BigWhite_process_vm_writev_syscall = 271;
 #elif defined(__i386__)
-int process_vm_readv_syscall = 347;
-int process_vm_writev_syscall = 348;
+int BigWhite_process_vm_readv_syscall = 347;
+int BigWhite_process_vm_writev_syscall = 348;
 #else
-int process_vm_readv_syscall = 310;
-int process_vm_writev_syscall = 311;
+int BigWhite_process_vm_readv_syscall = 310;
+int BigWhite_process_vm_writev_syscall = 311;
 #endif
 
 ssize_t BigWhite_process_v(pid_t __pid, const struct iovec *__local_iov, unsigned long __local_iov_count,
                   const struct iovec *__remote_iov, unsigned long __remote_iov_count,
                   unsigned long __flags, bool iswrite)
 {
-    return syscall((iswrite ? process_vm_writev_syscall : process_vm_readv_syscall), __pid,
+    return syscall((iswrite ? BigWhite_process_vm_writev_syscall : BigWhite_process_vm_readv_syscall), __pid,
                    __local_iov, __local_iov_count, __remote_iov, __remote_iov_count, __flags);
 }
 int BigWhite_getProcessID(const char *packageName)

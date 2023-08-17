@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
 
         if (cshzt){
             if (ProcessName.find("tencent.uam")){}
-                addr.Uworld = BigWhite_GetPtr64(addr.libbase + offsets.Uworld);
+                addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
 /*                printf("%lx",addr.GNames);
                 cout << "" << endl;*/
 
