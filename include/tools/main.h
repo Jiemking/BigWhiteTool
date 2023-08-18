@@ -17,6 +17,8 @@
 bool ShowDemoWindow = false;
 bool ShowUE4Dumper = false;
 bool ShowFindData = false;
+bool ShowDebugMatrix = false;
+bool ShowDebugDumper = false;
 
 // Func
 #endif //SSAGEPARUDERS_NATIVE_SURFACE_H

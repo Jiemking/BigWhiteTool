@@ -62,18 +62,22 @@ int main(int argc, char *argv[]) {
                 float menuX = (menuBarWidth - menuSize.x) * 0.5f; // 计算居中位置
                 ImGui::SetCursorPosX(menuX);
                 if (ImGui::BeginMenu("进程")) {
+                    if (ImGui::MenuItem("ALL")){
+                        tencent=0;
+                    }
+                    if (ImGui::MenuItem("过滤tencent")){
+                        tencent=1;
+                    }
                     std::vector<ProcessInfo> processes = GetTencentProcesses();
                     for (const ProcessInfo& process : processes) {
                         std::string jc = "PID: " + process.pid + " | Name: " + process.name;
                         if (ImGui::MenuItem(jc.c_str())) {
                             selectedPID = process.pid;
-                            BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值是为了BigWhiteRead里面需要用
+                            BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值 是为了BigWhiteRead里面需要用
                             ProcessName=process.name;//将进程名保存为全局变量
                             ResetOffsets();//重新选择进程时 重置偏移结构体变量
                             GameInit(process.name);//这里是初始化游戏偏移
                             addr.GNames = addr.libbase + offsets.GNames;
-/*                            printf("libbase:%lx  GNames:%lx",addr.libbase,offsets.GNames);
-                            printf("addr.GNames:%lx ",addr.GNames);*/
                             cshzt = true;
                         }
                     }
@@ -85,9 +89,9 @@ int main(int argc, char *argv[]) {
                     ImGui::Separator();
                     ImGui::MenuItem("初始化数据", NULL, &ShowFindData);
                     ImGui::MenuItem("UE4Dumper", NULL, &ShowUE4Dumper);
-                    if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-                    if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-                    if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+                    ImGui::MenuItem("DebugDumper", NULL, &ShowDebugDumper);
+                    ImGui::MenuItem("DeBUGGG", NULL, &ShowDebugMatrix);
+                    if (ImGui::MenuItem("Debug", "CTRL+X")) {}
                     ImGui::EndMenu();
                 }
                 ImGui::EndMainMenuBar();
@@ -98,14 +102,19 @@ int main(int argc, char *argv[]) {
 
         if (cshzt){
             if (ProcessName.find("tencent.uam")){}
-                addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
-/*                printf("%lx",addr.GNames);
+            addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
+            addr.Matrix = XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + 0x0) + 0x9A0;//能用的
+
+//            7975739440
+/*                printf("%lx",addr.libbase + offsets.Matrix);
                 cout << "" << endl;*/
 
         }
-        if (ShowDemoWindow) ImGui::ShowDemoWindow();//ImguiDemo菜单
-        if (ShowUE4Dumper) Menu::ShowUE4DumperWindow();//ImguiDemo菜单
-        if (ShowFindData) Menu::ShowFindDataWindow();//ImguiDemo菜单
+        if (ShowDemoWindow) ImGui::ShowDemoWindow();
+        if (ShowUE4Dumper) Menu::ShowUE4DumperWindow();
+        if (ShowFindData) Menu::ShowFindDataWindow();
+        if (ShowDebugMatrix) Menu::ShowDebugMatrixWindow();
+        if (ShowDebugDumper) Menu::ShowDebugDumperWindow();
 
 
 

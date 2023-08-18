@@ -7,7 +7,7 @@
 #include "BigWhiteRead.h"
 #include "biu.h"
 // 获取指针(64位游戏)
-int readmode = 1;
+int readmode = 0;
 
 unsigned long XY_GetAddr(unsigned long addr){
     if (readmode==0)    return BigWhite_GetPtr64(addr);

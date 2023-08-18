@@ -7,7 +7,7 @@
 
 #ifndef BIGWHITETOOL_TOOL_H
 #define BIGWHITETOOL_TOOL_H
-
+int tencent = 0;//这个全局变量过滤进程使用
 uint64_t GetClass(uint64_t Address) {
     uint64_t UobjectClass = XY_GetAddr((Address + 0x10));
     if (UobjectClass != NULL) {
@@ -116,49 +116,46 @@ std::string GetOuterName(uint64_t Address) {
 std::vector<ProcessInfo> GetTencentProcesses() {
     std::vector<ProcessInfo> processes;
 
-    // Open the /proc directory
-    DIR* procDir = opendir("/proc");
-    if (!procDir) {
-        return processes;
-    }
+    for (const auto& entry : std::filesystem::directory_iterator("/proc")) {
+        if (entry.is_directory()) {
+            std::string pid = entry.path().filename().string();
+            std::string cmdlineFilePath = entry.path() / "cmdline";
 
-    // Read the entries in the /proc directory
-    struct dirent* entry;
-    while ((entry = readdir(procDir)) != NULL) {
-        // Check if the entry is a directory and its name is a number (process ID)
-        if (entry->d_type == DT_DIR && isdigit(entry->d_name[0])) {
-            std::string pid = entry->d_name;
-            std::string statFilePath = "/proc/" + pid + "/status";
+            std::ifstream cmdlineFile(cmdlineFilePath, std::ios::binary);
+            if (cmdlineFile.is_open()) {
+                std::string processName;
+                char ch;
+                while (cmdlineFile.get(ch) && ch != '\0') {
+                    processName += ch;
+                }
 
-            // Read the process name from the status file
-            std::ifstream statFile(statFilePath);
-            if (statFile.is_open()) {
-                std::string line;
-                while (std::getline(statFile, line)) {
-                    if (line.find("Name:") == 0) {
-                        std::string processName = line.substr(6);
-
-                        if (processName.find("tencent") != std::string::npos || processName.find("m.") != std::string::npos|| processName.find("uam") != std::string::npos) {
-                            ProcessInfo processInfo;
-                            processInfo.pid = pid;
-                            processInfo.name = processName;
-                            processInfo.isSelected = false; // Initialize selection state
-                            processes.push_back(processInfo);
-                        }
-                        break;
+                if (!processName.empty()) {
+                    if ((tencent==0 && processName.find("com.") != std::string::npos)) {
+                        ProcessInfo processInfo;
+                        processInfo.pid = pid;
+                        processInfo.name = processName;
+                        processInfo.isSelected = false;
+                        processes.push_back(processInfo);
+                    }
+                    else if ((tencent==1 && processName.find("tencent.") != std::string::npos)) {
+                        ProcessInfo processInfo;
+                        processInfo.pid = pid;
+                        processInfo.name = processName;
+                        processInfo.isSelected = false;
+                        processes.push_back(processInfo);
                     }
                 }
-                statFile.close();
+
+                cmdlineFile.close();
             }
         }
     }
-    closedir(procDir);
 
     return processes;
 }
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
-    for (size_t i = 0; i < 0x200; i+=4) {
+    for (size_t i = 0; i < 0x300; i+=4) {
         long int Tmp = XY_GetAddr(Address + i);
         string KlassName = GetClassName(Tmp);
         string outerName = GetOuterName(Tmp);
