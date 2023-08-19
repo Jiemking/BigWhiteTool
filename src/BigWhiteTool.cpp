@@ -101,29 +101,18 @@ int main(int argc, char *argv[]) {
                 }
                 ImGui::EndMainMenuBar();
             }
-
-
+            if (ShowDemoWindow) ImGui::ShowDemoWindow();
+            if (ShowUE4Dumper) Menu::ShowUE4DumperWindow();
+            if (ShowFindData) Menu::ShowFindDataWindow();
+            if (ShowDebugMatrix) Menu::ShowDebugMatrixWindow();
+            if (ShowDebugDumper) Menu::ShowDebugDumperWindow();
+        }
 
 
         if (cshzt){
-/*            if (ProcessName.find("tencent.uam")){
-                addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
-                addr.Matrix = XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + 0x0) + 0x9A0;//能用的
-            } else{
-
-            }*/
             DrawPlayer(ImGui::GetForegroundDrawList());
-
-
         }
-        if (ShowDemoWindow) ImGui::ShowDemoWindow();
-        if (ShowUE4Dumper) Menu::ShowUE4DumperWindow();
-        if (ShowFindData) Menu::ShowFindDataWindow();
-        if (ShowDebugMatrix) Menu::ShowDebugMatrixWindow();
-        if (ShowDebugDumper) Menu::ShowDebugDumperWindow();
 
-
-        }
 
         drawEnd();
         std::this_thread::sleep_for(1ms);
