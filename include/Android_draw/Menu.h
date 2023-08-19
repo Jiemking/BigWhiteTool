@@ -16,9 +16,9 @@ static void ShowPlaceholderObject(StructureList data, int uid) {
     ImGui::TableSetColumnIndex(0);
     ImGui::AlignTextToFramePadding();
 
-    char formattedData[1000]; // 足够大的缓冲区来存储格式化后的数据
+    char formattedData[1000000]; // 足够大的缓冲区来存储格式化后的数据
 
-    if (data.P<0xffffffffff && data.P>0x7000000000){
+    if (data.P<0xffffffffff && data.P>0x1000000000){
 
         sprintf(formattedData, "(%x)—%lx—P->%lx-Class:%s————————Name:%s",
                 data.offset,  data.address, data.P, data.type.c_str(), data.name.c_str());
@@ -146,7 +146,6 @@ namespace Menu{
             }
             addr.Address = Address;
 
-            cout << ""<<endl;
         }
 
 
@@ -193,6 +192,7 @@ namespace Menu{
         static char GWorldBuffer[0x128];
         static char GEngineBuffer[0x128];
         static char DebugCanvasBuffer[0x128];
+        static char MatrixBuffer[0x128];
 
 
         if (BigWhite_pid>0){
@@ -215,6 +215,9 @@ namespace Menu{
             if (ImGui::Button("获取GEngine",ImVec2(ImGui::GetWindowWidth(),75))){
                 sprintf(GEngineBuffer,"GEngine->%lx  Offset->%lx",UEinit::GetEngine().Addr,UEinit::GetEngine().Offsets);
             }
+            if (ImGui::Button("获取Matrix",ImVec2(ImGui::GetWindowWidth(),75))){
+                sprintf(MatrixBuffer,"GEngine->%lx  Offset->%lx",UEinit::GetMatrix().Addr,UEinit::GetMatrix().Offsets);
+            }
             if (isShow && ImGui::Button("保存",ImVec2(ImGui::GetWindowWidth(),75))){
                 ImGui::Text("保存路径在：内部存储/A_BigWhiteTool");
                 mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
@@ -233,6 +236,7 @@ namespace Menu{
                 ImGui::Text("%s",GnameBuffer,ImVec2(ImGui::GetWindowWidth(),75));
                 ImGui::Text("%s",GWorldBuffer,ImVec2(ImGui::GetWindowWidth(),75));
                 ImGui::Text("%s",GEngineBuffer,ImVec2(ImGui::GetWindowWidth(),75));
+                ImGui::Text("%s",MatrixBuffer,ImVec2(ImGui::GetWindowWidth(),75));
             }
         } else{
             ImGui::Text("请先选择进程！",ImVec2(ImGui::GetWindowWidth(),75));

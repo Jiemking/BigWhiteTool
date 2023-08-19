@@ -101,13 +101,21 @@ int main(int argc, char *argv[]) {
 
 
         if (cshzt){
-            if (ProcessName.find("tencent.uam")){}
+/*            if (ProcessName.find("tencent.uam")){
+                addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
+                addr.Matrix = XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + 0x0) + 0x9A0;//能用的
+            } else{
+
+            }*/
             addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
-            addr.Matrix = XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + 0x0) + 0x9A0;//能用的
+            //addr.Ulevel = XY_GetAddr(addr.Uworld + offsets.Ulevel);
+            //addr.Arrayaddr = getaddr(addr.Ulevel + offsets.Arrayaddr);
+            //addr.oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + 0x524CB0) + 0x0)+0x260);
+            addr.Matrix =  XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);
+
 
 //            7975739440
-/*                printf("%lx",addr.libbase + offsets.Matrix);
-                cout << "" << endl;*/
+
 
         }
         if (ShowDemoWindow) ImGui::ShowDemoWindow();

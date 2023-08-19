@@ -24,12 +24,12 @@ struct ProcessInfo {
 
 struct StructureList
 {
-    long int address;
+    uint64_t address;
     int offset;
     string type;
     string name;
 
-    long int P;
+    uint64_t P;
     float F;
     int D;
 
@@ -43,6 +43,8 @@ public:
     uintptr_t GNames = 0;
     uintptr_t Uworld = 0;
     uintptr_t Matrix = 0;
+    int Matrix1 = 0;
+    int Matrix2 = 0;
     int Ulevel = 0x30;
     int Arrayaddr = 0x98;
     int ArrayaddrCount = 0xA0;
@@ -66,7 +68,6 @@ public:
 
     string packagename = "";
 
-    bool isUE423 = true;//true新版本算法，false旧版本算法
     void SetBoneArray(const int* values, int length) {
         for (int i = 0; i < length; i++) {
             BoneArray[i] = values[i];
@@ -79,11 +80,12 @@ Offsets offsets;
 struct Addr
 {
 public:
-    uintptr_t libbase;
-    long int Address = 0;
-    long int GNames = 0;
-    long int Uworld = 0;
-    long int Matrix = 0;
+    uint64_t libbase;
+    uint64_t Address = 0;
+    uint64_t GNames = 0;
+    uint64_t Uworld = 0;
+    uint64_t Matrix = 0;
+    uint64_t oneself = 0;
     int Ulevel = 0x30;
     int Arrayaddr = 0x98;
     int ArrayaddrCount = 0xA0;

@@ -155,8 +155,8 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 }
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
-    for (size_t i = 0; i < 0x300; i+=4) {
-        long int Tmp = XY_GetAddr(Address + i);
+    for (size_t i = 0; i < 0x100; i+=4) {
+        uint64_t Tmp = XY_GetAddr(Address + i);
         string KlassName = GetClassName(Tmp);
         string outerName = GetOuterName(Tmp);
 
@@ -213,7 +213,7 @@ void ResetOffsets(){
     for (int i = 0; i < 17; i++) {
         offsets.BoneArray[i] = 0;
     }
-    offsets.isUE423 = true;
+    addr.isUE423 = true;
 }
 
 namespace UEinit{
@@ -223,9 +223,9 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         int i=20000000;
         while (1){
-            long int TMP = addr.libbase + (0x8*i) + 0x40;
+            uint64_t TMP = addr.libbase + (0x8*i) + 0x40;
             if (TMP != NULL){
-                long int TMPGnames = XY_GetAddr(TMP);
+                uint64_t TMPGnames = XY_GetAddr(TMP);
                 char name[0x100];
                 XY_Read(TMPGnames+0x8, name, 0xc);
                 std::string aa = name;
@@ -248,7 +248,7 @@ namespace UEinit{
         int i=0;
 
         while (1){
-            long int TMPUworld = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
+            uint64_t TMPUworld = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPUworld != NULL){
                 //printf("%lx",TMPUworld);
                 if (GetClassName(TMPUworld)== "World"){
@@ -296,12 +296,53 @@ namespace UEinit{
 
         //cout << GetClassName(XY_GetAddr(addr.libbase + 0xADD4868)) <<endl;
         while (1){
-            long int TMPEngine = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
+            uint64_t TMPEngine = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPEngine != NULL){
                 if (GetClassName(TMPEngine)== "GameEngine"){
                         addrOffsets.Addr=TMPEngine;
                         addrOffsets.Offsets=offsets.GNames + (0x8*i);
                         break;
+                }
+            }
+            i++;
+        }
+        return addrOffsets;
+    }
+    AddrOffsets GetMatrix(){
+        AddrOffsets addrOffsets;
+        addrOffsets.Addr=0;
+        addrOffsets.Offsets=0;
+        int i=0;
+
+        //cout << GetClassName(XY_GetAddr(XY_GetAddr(addr.libbase + 0xDFA6EF8)+0x20)) <<endl;
+        while (1){
+            uint64_t TMPMatrix = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
+            if (TMPMatrix != NULL){
+                if (GetClassName(XY_GetAddr(TMPMatrix+0x20))== "Canvas"){
+                    addrOffsets.Addr=TMPMatrix;
+                    addrOffsets.Offsets=offsets.GNames + (0x8*i);
+                    offsets.Matrix=offsets.GNames + (0x8*i);
+                    uint64_t Tmp270 =   XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + 0x20) + 0x270);
+                    uint64_t Tmp280 =   XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + 0x20) + 0x280);
+
+                    float matrix270[16];
+                    memset(matrix270, 0, 16);
+                    XY_Read(Tmp270, matrix270, 16 * 4);
+
+                    float matrix280[16];
+                    memset(matrix280, 0, 16);
+                    XY_Read(Tmp280, matrix280, 16 * 4);
+
+                    if (matrix270[14]==3){
+                        cout << "20->270" << endl;
+                        offsets.Matrix1=0x20;
+                        offsets.Matrix2=0x270;
+                    } else if (matrix280[14]==3){
+                        cout << "20->280" << endl;
+                        offsets.Matrix1=0x20;
+                        offsets.Matrix2=0x280;
+                    }
+                    break;
                 }
             }
             i++;

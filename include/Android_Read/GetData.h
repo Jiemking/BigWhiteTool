@@ -10,13 +10,15 @@ string selectedPID,ProcessName;
 #endif //BIGWHITETOOL_GETDATA_H
 
 void GameInit(string name){
-    addr.libbase = BigWhite_GetModuleBase(std::stoi(selectedPID),"libUE4.so");
-    cout << name << endl;
+    addr.libbase = XY_GetModuleBase(std::stoi(selectedPID));
     if (readmode==1){
         bool ret=checkDriver();
         puts(ret?"biu is true":"biu is false");
+        if (!ret){
+            puts("false");
+            return;
+        }
         setpid(std::stoi(selectedPID));
-
     }
     if (name.find("tencent.mf.uam") != std::string::npos){//暗区偏移
         cout << "AQ"<< endl;
@@ -41,7 +43,7 @@ void GameInit(string name){
         cout << "AQGJ"<< endl;
          offsets.GNames=0xdde1980;
          offsets.Uworld=0xDFF05C8;
-         offsets.Matrix=0xada8ea8;
+         offsets.Matrix=0x5BDEF8;
          offsets.Ulevel=0x30;
     }
 }
