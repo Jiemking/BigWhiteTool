@@ -9,6 +9,10 @@
  */
 
 int main(int argc, char *argv[]) {
+
+/*    uint64_t inputValue = std::stoi("6C95B04000", nullptr, 16);
+    uint64_t inputValue = std::stoull("6C95B04000", nullptr, 16);
+    std::cout << "Converted value: " << inputValue << std::endl;*/
     // 初始化imgui
     if (!initDraw(true)) {
         return -1;
@@ -74,6 +78,7 @@ int main(int argc, char *argv[]) {
                         if (ImGui::MenuItem(jc.c_str())) {
                             selectedPID = process.pid;
                             BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值 是为了BigWhiteRead里面需要用
+                            XY_pid = BigWhite_pid;
                             ProcessName=process.name;//将进程名保存为全局变量
                             ResetOffsets();//重新选择进程时 重置偏移结构体变量
                             GameInit(process.name);//这里是初始化游戏偏移
@@ -96,7 +101,7 @@ int main(int argc, char *argv[]) {
                 }
                 ImGui::EndMainMenuBar();
             }
-        }
+
 
 
 
@@ -107,14 +112,7 @@ int main(int argc, char *argv[]) {
             } else{
 
             }*/
-            addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
-            //addr.Ulevel = XY_GetAddr(addr.Uworld + offsets.Ulevel);
-            //addr.Arrayaddr = getaddr(addr.Ulevel + offsets.Arrayaddr);
-            //addr.oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + 0x524CB0) + 0x0)+0x260);
-            addr.Matrix =  XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);
-
-
-//            7975739440
+            DrawPlayer(ImGui::GetForegroundDrawList());
 
 
         }
@@ -125,7 +123,7 @@ int main(int argc, char *argv[]) {
         if (ShowDebugDumper) Menu::ShowDebugDumperWindow();
 
 
-
+        }
 
         drawEnd();
         std::this_thread::sleep_for(1ms);

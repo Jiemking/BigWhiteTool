@@ -34,6 +34,7 @@ struct StructureList
     int D;
 
 };
+
 //游戏偏移结构
 struct Offsets
 {
@@ -76,7 +77,9 @@ public:
 
 };
 Offsets offsets;
-//游戏偏移结构
+
+
+//游戏地址结构
 struct Addr
 {
 public:
@@ -86,9 +89,8 @@ public:
     uint64_t Uworld = 0;
     uint64_t Matrix = 0;
     uint64_t oneself = 0;
-    int Ulevel = 0x30;
-    int Arrayaddr = 0x98;
-    int ArrayaddrCount = 0xA0;
+    uint64_t Ulevel = 0x30;
+    uint64_t Arrayaddr = 0x98;
 
     int RootComponent  = 0x0;
     int XYZ_X = 0x0;
@@ -119,5 +121,29 @@ public:
 };
 Addr addr;
 
+
+
+
+struct Vector3A
+{
+    float X;
+    float Y;
+    float Z;
+
+    Vector3A()
+    {
+        this->X = 0;
+        this->Y = 0;
+        this->Z = 0;
+    }
+
+    Vector3A(float x, float y, float z)
+    {
+        this->X = x;
+        this->Y = y;
+        this->Z = z;
+    }
+
+};
 
 #endif //BIGWHITETOOL_ENUM_H

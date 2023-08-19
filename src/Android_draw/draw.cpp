@@ -120,9 +120,13 @@ bool ImGui_init() {
     ImGui::StyleColorsDark();
     ImGui_ImplAndroid_Init(native_window);
     ImGui_ImplOpenGL3_Init("#version 300 es");
+
     ImFontConfig font_cfg;
-    font_cfg.SizePixels = 22.0f;
-    io.Fonts->AddFontFromMemoryTTF((void *)OPPOSans_H, OPPOSans_H_size, 22.0f, &font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+    font_cfg.SizePixels = 40.0f;
+    io.Fonts->AddFontFromMemoryTTF((void *)OPPOSans_H, OPPOSans_H_size, 50.0f, &font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+
+
+
     ImGui::GetStyle().ScaleAllSizes(3.0f);
     g_Initialized = true;
     return true;

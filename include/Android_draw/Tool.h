@@ -100,14 +100,17 @@ std::string GetOuterName(uint64_t Address) {
     auto klass = GetClass(Address);
     if (klass != NULL) {
         std::string temp;
+        temp = GetName(Address);  //自己的类名
+        return temp;
+    }
+/*这里暂时不需要使用循环找到路径 会导致卡死    if (klass != NULL) {
+        std::string temp;
         for (auto outer = GetOuter(Address); outer != 0; outer = GetOuter(outer)) {
             temp = GetName(outer) + "." + temp;
         }
-
         temp += GetName(Address);  //自己的类名
-
         return temp;
-    }
+    }*/
 
     return std::string("(null)");
 }
@@ -155,10 +158,13 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 }
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
-    for (size_t i = 0; i < 0x100; i+=4) {
+    for (size_t i = 0; i < 0x1000; i+=4) {
+
         uint64_t Tmp = XY_GetAddr(Address + i);
-        string KlassName = GetClassName(Tmp);
+       string KlassName = GetClassName(Tmp);
         string outerName = GetOuterName(Tmp);
+        //string KlassName = "KlassName";
+        //string outerName = "outerName";
 
         StructureList data;
         data.address = (Address + i);

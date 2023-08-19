@@ -7,7 +7,8 @@
 #include "BigWhiteRead.h"
 #include "biu.h"
 // 获取指针(64位游戏)
-int readmode = 1;
+int readmode = 0;
+int XY_pid;
 
 uintptr_t XY_GetModuleBase(int pid){
     if (readmode==0)    return BigWhite_GetModuleBase(pid,"libUE4.so");

@@ -134,7 +134,7 @@ namespace Menu{
                     if (inputText[i].find("BASE")!= std::string::npos){
                         inputValue = addr.libbase;
                     }else {
-                        inputValue = std::stoi(inputText[i], nullptr, 16);// 第三个参数是进制，这里使用十六进制
+                        inputValue = std::stoull(inputText[i], nullptr, 16);// 第三个参数是进制，这里使用十六进制
                     }
                     if (i==0){
                         Address += inputValue;
@@ -200,8 +200,7 @@ namespace Menu{
             if (ImGui::Button("一键获取",ImVec2(ImGui::GetWindowWidth(),75))){
                 sprintf(GnameBuffer,"Gname->%lx   Offset->%lx",UEinit::GetGname().Addr,UEinit::GetGname().Offsets);
                 sprintf(GWorldBuffer,"Uworld->%lx  Offset->%lx",UEinit::GetGworld().Addr,UEinit::GetGworld().Offsets);
-                sprintf(GEngineBuffer,"GEngine->%lx  Offset->%lx",UEinit::GetEngine().Addr,UEinit::GetEngine().Offsets);
-
+                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%lx",UEinit::GetMatrix().Addr,UEinit::GetMatrix().Offsets);
             }
             if (ImGui::Button("获取Gname",ImVec2(ImGui::GetWindowWidth(),75))){
                 sprintf(GnameBuffer,"Gname->%lx   Offset->%lx",UEinit::GetGname().Addr,UEinit::GetGname().Offsets);
@@ -216,7 +215,7 @@ namespace Menu{
                 sprintf(GEngineBuffer,"GEngine->%lx  Offset->%lx",UEinit::GetEngine().Addr,UEinit::GetEngine().Offsets);
             }
             if (ImGui::Button("获取Matrix",ImVec2(ImGui::GetWindowWidth(),75))){
-                sprintf(MatrixBuffer,"GEngine->%lx  Offset->%lx",UEinit::GetMatrix().Addr,UEinit::GetMatrix().Offsets);
+                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%lx",UEinit::GetMatrix().Addr,UEinit::GetMatrix().Offsets);
             }
             if (isShow && ImGui::Button("保存",ImVec2(ImGui::GetWindowWidth(),75))){
                 ImGui::Text("保存路径在：内部存储/A_BigWhiteTool");
@@ -317,17 +316,17 @@ namespace Menu{
         if (ImGui::Button("确定")){
             uint64_t Address = 0;
             for (int i = 0; i < sizeof(inputText) / sizeof(inputText[0]); ++i) {
-                if (inputText[i]!=""){
+                if (inputText[i] != "") {
                     uint64_t inputValue;
-                    if (inputText[i].find("BASE")!= std::string::npos){
+                    if (inputText[i].find("BASE") != std::string::npos) {
                         inputValue = addr.libbase;
-                    }else {
-                        inputValue = std::stoi(inputText[i], nullptr, 16);// 第三个参数是进制，这里使用十六进制
+                    } else {
+                        inputValue = std::stoull(inputText[i], nullptr, 16);
                     }
-                    if (i==0){
+                    if (i == 0) {
                         Address += inputValue;
-                    }else{
-                        Address=XY_GetAddr(Address+inputValue);
+                    } else {
+                        Address = XY_GetAddr(Address + inputValue);
                     }
                 }
             }
