@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     uint64_t inputValue = std::stoull("6C95B04000", nullptr, 16);
     std::cout << "Converted value: " << inputValue << std::endl;*/
     // 初始化imgui
-    if (!initDraw(true)) {
+    if (!initDraw()) {
         return -1;
     }
     Init_touch_config();

@@ -247,30 +247,28 @@ namespace UEinit{
         }
         return addrOffsets;
     }
-    AddrOffsets GetGworld(){
+    AddrOffsets GetUworld(){
         AddrOffsets addrOffsets;
         addrOffsets.Addr=0;
         addrOffsets.Offsets=0;
         int i=0;
-
         while (1){
             uint64_t TMPUworld = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPUworld != NULL){
-                //printf("%lx",TMPUworld);
                 if (GetClassName(TMPUworld)== "World"){
                     //(GetName(TMPUworld)=="TutorialRange_Main") 这个可以不需要
                     //if (GetClassName(XY_GetAddr(TMPUworld+offsets.Ulevel))=="Level"){}
-                        addrOffsets.Addr=TMPUworld;
-                        addrOffsets.Offsets=offsets.GNames + (0x8*i);
-                        offsets.Uworld=offsets.GNames + (0x8*i);
-                        break;
-
+                    addrOffsets.Addr=TMPUworld;
+                    addrOffsets.Offsets=offsets.GNames + (0x8*i);
+                    offsets.Uworld=offsets.GNames + (0x8*i);
+                    break;
                 }
             }
             i++;
         }
         return addrOffsets;
     }
+
     AddrOffsets GetGobject(){
         AddrOffsets addrOffsets;
         addrOffsets.Addr=0;

@@ -180,51 +180,53 @@ namespace Menu{
         ImGui::PopStyleVar();
         ImGui::End();
     }
+
+    /*这里有个获取Uworld就卡死的BUG Uworld也输出了 代码也走到了最后就卡死了 暂时没找到原因*/
     void ShowFindDataWindow(){
         ImGui::Begin("初始化数据");
-        // 设置窗口的目标大小
-        ImVec2 windowSize(500, 700); // 宽度为 400，高度为 300
-        ImGui::SetWindowSize(windowSize);
-
         static bool isShow = false;
-        static char GnameBuffer[0x128];
-        static char GObjectBuffer[0x128];
-        static char GWorldBuffer[0x128];
-        static char GEngineBuffer[0x128];
-        static char DebugCanvasBuffer[0x128];
-        static char MatrixBuffer[0x128];
+        static char GnameBuffer[0x256];
+        static char GObjectBuffer[0x256];
+        static char UWorldBuffer[0x256];
+        static char GEngineBuffer[0x256];
+        static char DebugCanvasBuffer[0x256];
+        static char MatrixBuffer[0x256];
 
 
         if (BigWhite_pid>0){
-            isShow= true;
-            if (ImGui::Button("一键获取",ImVec2(ImGui::GetWindowWidth(),75))){
-                sprintf(GnameBuffer,"Gname->%lx   Offset->%lx",UEinit::GetGname().Addr,UEinit::GetGname().Offsets);
-                sprintf(GWorldBuffer,"Uworld->%lx  Offset->%lx",UEinit::GetGworld().Addr,UEinit::GetGworld().Offsets);
-                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%lx",UEinit::GetMatrix().Addr,UEinit::GetMatrix().Offsets);
+            if (ImGui::Button("一键获取",ImVec2(400,75))){
+                AddrOffsets Gname = UEinit::GetGname();
+                AddrOffsets Matrix = UEinit::GetMatrix();
+                AddrOffsets Uworld = UEinit::GetUworld();
+                sprintf(GnameBuffer,"Gname->%lx   Offset->%lx",Gname.Addr,Gname.Offsets);
+                sprintf(MatrixBuffer,"Uworld->%lx  Offset->%lx",Matrix.Addr,Matrix.Offsets);
+                sprintf(UWorldBuffer,"Matrix->%lx  Offset->%lx",Uworld.Addr,Uworld.Offsets);
+                cout << GnameBuffer<<"\n"<<MatrixBuffer<<"\n"<<UWorldBuffer<< endl;
+                isShow= true;
             }
-            if (ImGui::Button("获取Gname",ImVec2(ImGui::GetWindowWidth(),75))){
-                sprintf(GnameBuffer,"Gname->%lx   Offset->%lx",UEinit::GetGname().Addr,UEinit::GetGname().Offsets);
+            if (ImGui::Button("获取Gname",ImVec2(400,75))){
+                AddrOffsets Gname = UEinit::GetGname();
+                sprintf(GnameBuffer,"Gname->%lx   Offset->%lx",Gname.Addr,Gname.Offsets);
+                isShow= true;
             }
-            if (ImGui::Button("获取GetGobject",ImVec2(ImGui::GetWindowWidth(),75))){
-//                sprintf(GObjectBuffer,"GetGobject->%lx   Offset->%lx",UEinit::GetGobject().Addr,UEinit::GetGobject().Offsets);
+            if (ImGui::Button("获取Matrix",ImVec2(400,75))){
+                AddrOffsets Matrix = UEinit::GetMatrix();
+                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%lx",Matrix.Addr,Matrix.Offsets);
+                isShow= true;
             }
-            if (ImGui::Button("获取Uworld",ImVec2(ImGui::GetWindowWidth(),75))){
-                sprintf(GWorldBuffer,"Uworld->%lx  Offset->%lx",UEinit::GetGworld().Addr,UEinit::GetGworld().Offsets);
+            if (ImGui::Button("获取Uworld",ImVec2(400,75))){
+                AddrOffsets Uworld = UEinit::GetUworld();
+                sprintf(UWorldBuffer,"Uworld->%lx  Offset->%lx",Uworld.Addr,Uworld.Offsets);
+                isShow= true;
             }
-            if (ImGui::Button("获取GEngine",ImVec2(ImGui::GetWindowWidth(),75))){
-                sprintf(GEngineBuffer,"GEngine->%lx  Offset->%lx",UEinit::GetEngine().Addr,UEinit::GetEngine().Offsets);
-            }
-            if (ImGui::Button("获取Matrix",ImVec2(ImGui::GetWindowWidth(),75))){
-                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%lx",UEinit::GetMatrix().Addr,UEinit::GetMatrix().Offsets);
-            }
-            if (isShow && ImGui::Button("保存",ImVec2(ImGui::GetWindowWidth(),75))){
+            if (isShow && ImGui::Button("保存",ImVec2(400,75))){
                 ImGui::Text("保存路径在：内部存储/A_BigWhiteTool");
                 mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
                 FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/Data.txt", "w+");
-
                 if (outFile) {
                     fprintf(outFile, "%s\n", GnameBuffer);
-                    fprintf(outFile, "%s\n", GWorldBuffer);
+                    fprintf(outFile, "%s\n", UWorldBuffer);
+                    fprintf(outFile, "%s\n", MatrixBuffer);
                     fclose(outFile);
                     printf("Output written to output.txt\n");
                 } else {
@@ -232,17 +234,13 @@ namespace Menu{
                 }
             }
             if (isShow){
-                ImGui::Text("%s",GnameBuffer,ImVec2(ImGui::GetWindowWidth(),75));
-                ImGui::Text("%s",GWorldBuffer,ImVec2(ImGui::GetWindowWidth(),75));
-                ImGui::Text("%s",GEngineBuffer,ImVec2(ImGui::GetWindowWidth(),75));
-                ImGui::Text("%s",MatrixBuffer,ImVec2(ImGui::GetWindowWidth(),75));
+                ImGui::Text("%s",GnameBuffer,ImVec2(400,75));
+                ImGui::Text("%s",UWorldBuffer,ImVec2(400,75));
+                ImGui::Text("%s",MatrixBuffer,ImVec2(400,75));
             }
         } else{
-            ImGui::Text("请先选择进程！",ImVec2(ImGui::GetWindowWidth(),75));
+            ImGui::Text("请先选择进程！",ImVec2(400,75));
         }
-
-
-
         ImGui::End();
     }
 
