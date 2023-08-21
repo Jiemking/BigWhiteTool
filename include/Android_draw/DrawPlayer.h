@@ -3,10 +3,12 @@
 //
 
 #ifndef BIGWHITETOOL_DRAWPLAYER_H
-#define BIGWHITETOOL_DRAWPLAYER_H
+
 #include "Android_Read/Android_Read.h"
 #include "Android_Read/GetData.h"
 #include <sstream>
+#define BIGWHITETOOL_DRAWPLAYER_H
+
 #endif //BIGWHITETOOL_DRAWPLAYER_H
 
 void DrawPlayer(ImDrawList *Draw) {
@@ -59,13 +61,17 @@ void DrawPlayer(ImDrawList *Draw) {
         left = (x + w / 2) - w / 2.6f;
         right = x + w / 1.12f;
 
+        //if (Objaddr==0x73879cb800){ continue;}
+
+
         std::string ClassName = GetName(Objaddr);
-        Draw->AddText(NULL, 24, {r_x , r_y}, ImColor(255,255,255,255) , ClassName.c_str());
+        Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());
+        Draw->AddText(NULL, 24, {r_x , r_y}, ImColor(255,255,255,255) , UamoGetString(ClassName).c_str());
 
         std::stringstream Objaddrstr;
         Objaddrstr << std::hex << Objaddr;  // 将长整型以十六进制格式写入 stringstream
         std::string ObjaddString = Objaddrstr.str();  // 获取十六进制字符串
-
+        Draw->AddText(NULL,20 , {r_x , r_y-20}, ImColor(255,255,255,255) , ObjaddString.c_str());
 /*        std::stringstream oneselfstr;
         oneselfstr << std::hex << oneself;  // 将长整型以十六进制格式写入 stringstream
         std::string oneselfString = oneselfstr.str();  // 获取十六进制字符串*/
@@ -73,8 +79,9 @@ void DrawPlayer(ImDrawList *Draw) {
 
 
         //Draw->AddText(NULL,20 , {middle-100, top}, ImColor(255,255,255,255) , hexString.c_str());
-        Draw->AddText(NULL,20 , {(x + w / 2) - w / 2.0f, y + w}, ImColor(255,255,255,255) , ObjaddString.c_str());
+        //Draw->AddText(NULL,20 , {(x + w / 2) - w / 2.0f, y + w}, ImColor(255,255,255,255) , ObjaddString.c_str());
         //Draw->AddText(NULL,40 , {100, 100}, ImColor(255,255,255,255) , oneselfString.c_str());
     }
 
 }
+

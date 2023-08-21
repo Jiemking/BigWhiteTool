@@ -5,6 +5,7 @@
 #include <fstream>
 #include "Android_Read/Android_Read.h"
 
+
 #ifndef BIGWHITETOOL_TOOL_H
 #define BIGWHITETOOL_TOOL_H
 int tencent = 0;//这个全局变量过滤进程使用
@@ -140,7 +141,7 @@ std::vector<ProcessInfo> GetTencentProcesses() {
                         processInfo.isSelected = false;
                         processes.push_back(processInfo);
                     }
-                    else if ((tencent==1 && processName.find("tencent.") != std::string::npos)) {
+                    else if ((tencent==1 && (processName.find("tencent.") != std::string::npos || processName.find("uamo") != std::string::npos))) {
                         ProcessInfo processInfo;
                         processInfo.pid = pid;
                         processInfo.name = processName;
@@ -161,8 +162,9 @@ static vector<StructureList> foreachAddress(uint64_t Address) {
     for (size_t i = 0; i < 0x1000; i+=4) {
 
         uint64_t Tmp = XY_GetAddr(Address + i);
-       string KlassName = GetClassName(Tmp);
+        string KlassName = GetClassName(Tmp);
         string outerName = GetOuterName(Tmp);
+        string trans = UamoGetString(KlassName);
         //string KlassName = "KlassName";
         //string outerName = "outerName";
 
@@ -170,6 +172,7 @@ static vector<StructureList> foreachAddress(uint64_t Address) {
         data.address = (Address + i);
         data.type = KlassName.c_str();
         data.name = outerName.c_str();
+        data.trans = trans.c_str();
         data.offset=i;
 
 

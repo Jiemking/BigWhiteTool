@@ -20,8 +20,8 @@ static void ShowPlaceholderObject(StructureList data, int uid) {
 
     if (data.P<0xffffffffff && data.P>0x1000000000){
 
-        sprintf(formattedData, "(%x)—%lx—P->%lx-Class:%s————————Name:%s",
-                data.offset,  data.address, data.P, data.type.c_str(), data.name.c_str());
+        sprintf(formattedData, "(%x)—%lx—P->%lx-Class:%s———Name:%s %s",
+                data.offset,  data.address, data.P, data.type.c_str(), data.name.c_str(),data.trans.c_str());
 
         bool node_open = ImGui::TreeNode("Tree", "%s",formattedData);
         ImGui::TableSetColumnIndex(0);
@@ -219,8 +219,28 @@ namespace Menu{
                 sprintf(UWorldBuffer,"Uworld->%lx  Offset->%lx",Uworld.Addr,Uworld.Offsets);
                 isShow= true;
             }
+            if (ImGui::Button("DumperString",ImVec2(400,75))){
+                std::string prefix = "BP_";
+                std::string suffix = "_C";
+                mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
+                FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/String.txt", "w+");
+
+                //已翻译
+                for (int i = 0; i < 10000000; ++i) {
+                    string Name = GetName_New(i);
+                    if (Name.find("None") != std::string::npos){
+                        continue;
+                    }
+                    if (Name.length() >= prefix.length() + suffix.length() &&
+                            Name.compare(0, prefix.length(), prefix) == 0 &&
+                            Name.compare(Name.length() - suffix.length(), suffix.length(), suffix) == 0 || true)  {
+                        cout << i << "      " << Name << endl;
+                        fprintf(outFile, "{%d,\"%s\"}\n", i,Name.c_str());
+                    }
+                }
+                fclose(outFile);
+            }
             if (isShow && ImGui::Button("保存",ImVec2(400,75))){
-                ImGui::Text("保存路径在：内部存储/A_BigWhiteTool");
                 mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
                 FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/Data.txt", "w+");
                 if (outFile) {

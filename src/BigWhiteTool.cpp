@@ -65,40 +65,63 @@ int main(int argc, char *argv[]) {
                 float menuBarWidth = ImGui::GetWindowWidth();
                 float menuX = (menuBarWidth - menuSize.x) * 0.5f; // 计算居中位置
                 ImGui::SetCursorPosX(menuX);
-                if (ImGui::BeginMenu("进程")) {
-                    if (ImGui::MenuItem("ALL")){
-                        tencent=0;
-                    }
-                    if (ImGui::MenuItem("过滤tencent")){
-                        tencent=1;
-                    }
-                    std::vector<ProcessInfo> processes = GetTencentProcesses();
-                    for (const ProcessInfo& process : processes) {
-                        std::string jc = "PID: " + process.pid + " | Name: " + process.name;
-                        if (ImGui::MenuItem(jc.c_str())) {
-                            selectedPID = process.pid;
-                            BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值 是为了BigWhiteRead里面需要用
-                            XY_pid = BigWhite_pid;
-                            ProcessName=process.name;//将进程名保存为全局变量
-                            ResetOffsets();//重新选择进程时 重置偏移结构体变量
-                            GameInit(process.name);//这里是初始化游戏偏移
-                            addr.GNames = addr.libbase + offsets.GNames;
-                            cshzt = true;
+
+                if (readmode==0){
+                    if (ImGui::BeginMenu("驱动选择"))
+                    {
+                        if (ImGui::MenuItem("普通模式")) {
+                            readmode = 1;
                         }
+                        if (ImGui::MenuItem("Biu驱动")) {
+                            readmode = 2;
+                        }
+                        if (ImGui::MenuItem("小迷糊驱动")) {
+                            readmode = 3;
+                        }
+                        ImGui::EndMenu();
                     }
-                    ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("窗口"))
-                {
-                    ImGui::MenuItem("ImguiDemo", NULL, &ShowDemoWindow);
-                    ImGui::Separator();
-                    ImGui::MenuItem("初始化数据", NULL, &ShowFindData);
-                    ImGui::MenuItem("UE4Dumper", NULL, &ShowUE4Dumper);
-                    ImGui::MenuItem("DebugDumper", NULL, &ShowDebugDumper);
-                    ImGui::MenuItem("DeBUGGG", NULL, &ShowDebugMatrix);
-                    if (ImGui::MenuItem("Debug", "CTRL+X")) {}
-                    ImGui::EndMenu();
+
+                if (readmode>0){
+                    if (ImGui::BeginMenu("进程")) {
+                        if (ImGui::MenuItem("ALL")){
+                            tencent=0;
+                        }
+                        if (ImGui::MenuItem("过滤tencent")){
+                            tencent=1;
+                        }
+                        std::vector<ProcessInfo> processes = GetTencentProcesses();
+                        for (const ProcessInfo& process : processes) {
+                            std::string jc = "PID: " + process.pid + " | Name: " + process.name;
+                            if (ImGui::MenuItem(jc.c_str())) {
+                                selectedPID = process.pid;
+                                BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值 是为了BigWhiteRead里面需要用
+                                XY_pid = BigWhite_pid;
+                                ProcessName=process.name;//将进程名保存为全局变量
+                                ResetOffsets();//重新选择进程时 重置偏移结构体变量
+                                GameInit(process.name);//这里是初始化游戏偏移
+                                addr.GNames = addr.libbase + offsets.GNames;
+                                cshzt = true;
+                            }
+                        }
+                        ImGui::EndMenu();
+                    }
                 }
+                if (cshzt){
+                    DrawPlayer(ImGui::GetForegroundDrawList());
+                    if (ImGui::BeginMenu("窗口"))
+                    {
+                        ImGui::MenuItem("ImguiDemo", NULL, &ShowDemoWindow);
+                        ImGui::Separator();
+                        ImGui::MenuItem("初始化数据", NULL, &ShowFindData);
+                        ImGui::MenuItem("UE4Dumper", NULL, &ShowUE4Dumper);
+                        ImGui::MenuItem("DebugDumper", NULL, &ShowDebugDumper);
+                        ImGui::MenuItem("DeBUGGG", NULL, &ShowDebugMatrix);
+                        if (ImGui::MenuItem("Debug", "CTRL+X")) {}
+                        ImGui::EndMenu();
+                    }
+                }
+
                 ImGui::EndMainMenuBar();
             }
             if (ShowDemoWindow) ImGui::ShowDemoWindow();
@@ -106,11 +129,6 @@ int main(int argc, char *argv[]) {
             if (ShowFindData) Menu::ShowFindDataWindow();
             if (ShowDebugMatrix) Menu::ShowDebugMatrixWindow();
             if (ShowDebugDumper) Menu::ShowDebugDumperWindow();
-        }
-
-
-        if (cshzt){
-            DrawPlayer(ImGui::GetForegroundDrawList());
         }
 
 

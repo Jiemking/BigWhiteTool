@@ -28,6 +28,7 @@ struct StructureList
     int offset;
     string type;
     string name;
+    string trans;
 
     uint64_t P;
     float F;

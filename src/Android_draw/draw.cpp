@@ -122,8 +122,8 @@ bool ImGui_init() {
     ImGui_ImplOpenGL3_Init("#version 300 es");
 
     ImFontConfig font_cfg;
-    font_cfg.SizePixels = 40.0f;
-    io.Fonts->AddFontFromMemoryTTF((void *)OPPOSans_H, OPPOSans_H_size, 50.0f, &font_cfg, io.Fonts->GetGlyphRangesChineseFull());
+    font_cfg.SizePixels = 20.0f;
+    io.Fonts->AddFontFromMemoryTTF((void *)OPPOSans_H, OPPOSans_H_size, 30.0f, &font_cfg, io.Fonts->GetGlyphRangesChineseFull());
 
 
 
