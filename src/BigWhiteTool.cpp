@@ -2,6 +2,7 @@
 // Created by Ssage on 2022/3/18.
 //
 #include "main.h"
+#include "Login.h"
 
 
 /**
@@ -9,15 +10,35 @@
  */
 
 int main(int argc, char *argv[]) {
+    std::cout << "免责声明：" << std::endl << std::endl;
+    std::cout << "此软件是一款用于逆向分析和测试游戏功能的工具，旨在帮助开发者理解游戏的内部工作原理以及进行相关测试。然而，请注意以下几点：" << std::endl << std::endl;
 
-/*    uint64_t inputValue = std::stoi("6C95B04000", nullptr, 16);
-    uint64_t inputValue = std::stoull("6C95B04000", nullptr, 16);
-    std::cout << "Converted value: " << inputValue << std::endl;*/
-    // 初始化imgui
+    std::cout << "1. 本软件的使用仅限于合法的研究和测试目的。任何将此软件用于非法活动、侵犯版权或其他违法行为的用户将承担相应的法律责任。" << std::endl;
+    std::cout << "2. 本软件可能会影响游戏的正常运行，甚至可能导致游戏崩溃、数据损坏或其他不可预测的问题。使用本软件可能会对游戏的稳定性和功能性产生不利影响。" << std::endl;
+    std::cout << "3. 本软件可能会涉及游戏厂商的知识产权和利益，因此使用本软件可能会引起游戏厂商的不满甚至法律纠纷。" << std::endl;
+    std::cout << "4. 用户对使用本软件所产生的一切后果和风险负全部责任。软件开发者及其关联方不承担任何直接或间接的责任，包括但不限于因软件使用造成的损失、损害、法律纠纷或其他不良后果。" << std::endl;
+    std::cout << "5. 本软件的发布和使用可能受到不同国家和地区的法律法规的限制。用户应当遵守当地的法律法规，确保在合法范围内使用本软件。" << std::endl << std::endl;
+
+    std::cout << "请在使用本软件前详细阅读并理解上述免责声明。一旦您开始使用本软件，即代表您同意遵守上述声明，并愿意承担因此产生的一切风险和责任。" << std::endl;
+    std::cout << "对于任何因使用本软件所引起的问题，我们将不负有任何法律或经济责任。" << std::endl << std::endl;
+
+    std::cout << "（https://t.me/BigWhiteChat）" << std::endl;
+    if (!Login()){
+        cout << "登录失败"<<endl;
+        return 0;
+    }
+    while (true){
+        screen_config();
+        if (displayInfo.orientation==1||displayInfo.orientation==3){
+            break;
+        }
+        cout<<"等待横屏!"<<endl;
+    }
     if (!initDraw()) {
         return -1;
     }
     Init_touch_config();
+
     printf("Pid is %d\n", getpid());
     bool flag = true;
     bool cshzt = false;

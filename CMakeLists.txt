@@ -35,6 +35,7 @@ include_directories( # 设置全局头文件目录 使其他源码文件可在�
         include/Android_shm
         include/native_surface
         include/Android_draw
+        include/request
         include/tools
         ffmpeg/include
         my_android_opencv/include
@@ -77,8 +78,7 @@ set_target_properties(biu PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/
 add_executable(BigWhiteTool # 生成可执行文件
         ${FILE_INCLUDES} # 头文件
         ${FILE_SOURCES} # 源文件
-        src/BigWhiteTool.cpp
-        )
+        src/BigWhiteTool.cpp)
 
 
 
