@@ -159,7 +159,7 @@ int Login()
 
         const char* encryptedData = cJSON_GetObjectItem(cjson, "data")->valuestring;
         char* decryptedData = Decrypt(encryptedData, rc4key); // Implement Decrypt function
-        cout << decryptedData<<endl;
+
 
         cJSON* datajson = cJSON_Parse(decryptedData);
         if (!datajson) {
@@ -173,13 +173,13 @@ int Login()
             const char* vipExpDate = cJSON_GetObjectItem(infoObject, "vipExpDate")->valuestring;
             cout << "到期时间: " << vipExpDate << endl;
 
-            // Convert vipExpDate to a std::tm structure
+
             std::tm tm;
             std::istringstream ss(vipExpDate);
             ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
             std::time_t vipExpTime = std::mktime(&tm);
 
-            // Get current time
+
             auto currentTime = std::chrono::system_clock::now();
             std::time_t currentTimestamp = std::chrono::system_clock::to_time_t(currentTime);
 

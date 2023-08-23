@@ -224,7 +224,6 @@ namespace Menu{
                 std::string suffix = "_C";
                 mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
                 FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/String.txt", "w+");
-
                 //已翻译
                 for (int i = 0; i < 10000000; ++i) {
                     string Name = GetName_New(i);
@@ -233,7 +232,27 @@ namespace Menu{
                     }
                     if (Name.length() >= prefix.length() + suffix.length() &&
                             Name.compare(0, prefix.length(), prefix) == 0 &&
-                            Name.compare(Name.length() - suffix.length(), suffix.length(), suffix) == 0 || true)  {
+                            Name.compare(Name.length() - suffix.length(), suffix.length(), suffix) == 0)  {
+                        cout << i << "      " << Name << endl;
+                        fprintf(outFile, "{%d,\"%s\"}\n", i,Name.c_str());
+                    }
+                }
+                fclose(outFile);
+            }
+            if (ImGui::Button("DumperString2",ImVec2(400,75))){
+                std::string prefix = "Inventory_";
+                std::string suffix = "_C";
+                mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
+                FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/String2.txt", "w+");
+                //已翻译
+                for (int i = 0; i < 10000000; ++i) {
+                    string Name = GetName_New(i);
+                    if (Name.find("None") != std::string::npos){
+                        continue;
+                    }
+                    if (Name.length() >= prefix.length() + suffix.length() &&
+                            Name.compare(0, prefix.length(), prefix) == 0 &&
+                            Name.compare(Name.length() - suffix.length(), suffix.length(), suffix) == 0)  {
                         cout << i << "      " << Name << endl;
                         fprintf(outFile, "{%d,\"%s\"}\n", i,Name.c_str());
                     }

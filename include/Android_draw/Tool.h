@@ -159,7 +159,7 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 }
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
-    for (size_t i = 0; i < 0x1000; i+=4) {
+    for (size_t i = 0; i < 0x300; i+=4) {
 
         uint64_t Tmp = XY_GetAddr(Address + i);
         string KlassName = GetClassName(Tmp);
