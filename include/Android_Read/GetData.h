@@ -9,7 +9,7 @@ string selectedPID,ProcessName;
 #include "Enum.h"
 #endif //BIGWHITETOOL_GETDATA_H
 
-void GameInit(string name){
+void GameInit(){
     addr.libbase = XY_GetModuleBase(std::stoi(selectedPID));
     if (readmode==2){
         bool ret=checkDriver();
@@ -19,7 +19,7 @@ void GameInit(string name){
         }
         setpid(std::stoi(selectedPID));
     }
-    if (name.find("tencent.mf.uam") != std::string::npos){//暗区偏移
+    if (ProcessName=="com.tencent.mf.uam"){//暗区偏移
         cout << "AQ"<< endl;
 /*        Gname->710bcf8640   Offset->b1d5640
         Uworld->685a66f960  Offset->b39e3c0
@@ -35,7 +35,7 @@ void GameInit(string name){
         offsets.RootComponent=0x158;
         offsets.XYZ_X=0x15C;
         offsets.isBot=0x330;
-    } else if (name.find("ShuiSha") != std::string::npos){//枪战特训
+    } else if (ProcessName.find("ShuiSha") != std::string::npos){//枪战特训
         cout << "QZTX"<< endl;
         offsets.GNames=0xac1d440;
         offsets.Uworld=0xadd8850;
@@ -45,7 +45,9 @@ void GameInit(string name){
         offsets.Ulevel=0x30;
         offsets.Arrayaddr=0x98;
         offsets.ArrayaddrCount=0xa0;
-    }else if (name.find(".mf.uamo") != std::string::npos){//暗区国际
+        offsets.RootComponent = 0x130;
+        offsets.XYZ_X=0x1D0;
+    }else if (ProcessName.find(".mf.uamo") != std::string::npos){//暗区国际
         cout << "AQGJ"<< endl;
          offsets.GNames=0xdde1980;
          offsets.Uworld=0xDFF05C8;
@@ -55,11 +57,18 @@ void GameInit(string name){
          offsets.Ulevel=0x30;
          offsets.Arrayaddr=0x98;
          offsets.ArrayaddrCount=0xa0;
-    }else if (name.find(".tmgp.gnyx") != std::string::npos){//暗区国际
+        offsets.RootComponent = 0x148;
+        offsets.XYZ_X=0x120;
+    }else if (ProcessName.find(".tmgp.gnyx") != std::string::npos){//暗区国际
         cout << "GNYX"<< endl;
         offsets.GNames=0xc4f74c0;
         offsets.Uworld=0xc63fea8;
         offsets.Matrix=0xc66f290;
+    }else if (ProcessName=="com.tencent.mf.uamty"){//暗区国际
+        cout << "AQTY"<< endl;
+        offsets.GNames=0xB1D5640;
+        offsets.Matrix=0xB2FF440;
+        offsets.Uworld=0xb3e8a30;
 
     }
 }

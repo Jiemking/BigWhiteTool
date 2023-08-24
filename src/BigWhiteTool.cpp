@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
                                 XY_pid = BigWhite_pid;
                                 ProcessName=process.name;//将进程名保存为全局变量
                                 ResetOffsets();//重新选择进程时 重置偏移结构体变量
-                                GameInit(process.name);//这里是初始化游戏偏移
+                                GameInit();//这里是初始化游戏偏移
                                 addr.GNames = addr.libbase + offsets.GNames;
                                 cshzt = true;
                             }
