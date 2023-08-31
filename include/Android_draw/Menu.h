@@ -8,7 +8,7 @@
 #define BIGWHITETOOL_MENU_H
 
 // 显示节点信息
-static void ShowPlaceholderObject(StructureList data, int uid) {
+static void ShowPlaceholderObject(const StructureList& data, int uid) {
     // 使用对象的地址作为标识符，确保唯一性。
     ImGui::PushID(data.address);
 
@@ -38,11 +38,12 @@ static void ShowPlaceholderObject(StructureList data, int uid) {
             ImGui::TreePop();
         }
 
-    } else if (data.F>0.001f && data.D>0){
+    }/* else if (data.F>0.001f && data.D>0){
         sprintf(formattedData, "(%x)—%lx—Class:%s————————Name:%s————————F->%f D->%d",
                 data.offset,  data.address,data.type.c_str(), data.name.c_str(), data.F, data.D);
         ImGui::Text("      %s", formattedData);
-    } else if (data.F>0.001f){
+    } */
+    else if (data.F>0.001f){
         sprintf(formattedData, "(%x)—%lx—Class:%s————————Name:%s————————F->%f",
                 data.offset,  data.address,data.type.c_str(), data.name.c_str(), data.F);
         ImGui::Text("      %s", formattedData);
@@ -129,7 +130,7 @@ namespace Menu{
         if (ImGui::Button("确定")){
             uint64_t Address = 0;
             for (int i = 0; i < sizeof(inputText) / sizeof(inputText[0]); ++i) {
-                if (inputText[i]!=""){
+                if (!inputText[i].empty()){
                     uint64_t inputValue;
                     if (inputText[i].find("BASE")!= std::string::npos){
                         inputValue = addr.libbase;
@@ -199,25 +200,32 @@ namespace Menu{
                 AddrOffsets Gname = UEinit::GetGname();
                 AddrOffsets Matrix = UEinit::GetMatrix();
                 AddrOffsets Uworld = UEinit::GetUworld();
-                sprintf(GnameBuffer,"Gname->%lx   Offset->%lx",Gname.Addr,Gname.Offsets);
-                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%lx",Matrix.Addr,Matrix.Offsets);
-                sprintf(UWorldBuffer,"Uworld->%lx  Offset->%lx",Uworld.Addr,Uworld.Offsets);
-                cout << GnameBuffer<<"\n"<<MatrixBuffer<<"\n"<<UWorldBuffer<< endl;
+                AddrOffsets Gobject = UEinit::GetGobject();
+                sprintf(GnameBuffer,"Gname->%lx   Offset->%x",Gname.Addr,Gname.Offsets);
+                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%x",Matrix.Addr,Matrix.Offsets);
+                sprintf(UWorldBuffer,"Uworld->%lx  Offset->%x",Uworld.Addr,Uworld.Offsets);
+                sprintf(GObjectBuffer,"Gobject->%lx  Offset->%x",Gobject.Addr,Gobject.Offsets);
+                cout << GnameBuffer<<"\n"<<MatrixBuffer<<"\n"<<UWorldBuffer<<"\n"<<GObjectBuffer<< endl;
                 isShow= true;
             }
             if (ImGui::Button("获取Gname",ImVec2(400,75))){
                 AddrOffsets Gname = UEinit::GetGname();
-                sprintf(GnameBuffer,"Gname->%lx   Offset->%lx",Gname.Addr,Gname.Offsets);
+                sprintf(GnameBuffer,"Gname->%lx   Offset->%x",Gname.Addr,Gname.Offsets);
+                isShow= true;
+            }
+            if (ImGui::Button("获取Gobject",ImVec2(400,75))){
+                AddrOffsets Gobject = UEinit::GetGobject();
+                sprintf(GObjectBuffer,"Gobject->%lx   Offset->%x",Gobject.Addr,Gobject.Offsets);
                 isShow= true;
             }
             if (ImGui::Button("获取Matrix",ImVec2(400,75))){
                 AddrOffsets Matrix = UEinit::GetMatrix();
-                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%lx",Matrix.Addr,Matrix.Offsets);
+                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%x",Matrix.Addr,Matrix.Offsets);
                 isShow= true;
             }
             if (ImGui::Button("获取Uworld",ImVec2(400,75))){
                 AddrOffsets Uworld = UEinit::GetUworld();
-                sprintf(UWorldBuffer,"Uworld->%lx  Offset->%lx",Uworld.Addr,Uworld.Offsets);
+                sprintf(UWorldBuffer,"Uworld->%lx  Offset->%x",Uworld.Addr,Uworld.Offsets);
                 isShow= true;
             }
             if (ImGui::Button("DumperString",ImVec2(400,75))){
@@ -267,6 +275,7 @@ namespace Menu{
                     fprintf(outFile, "%s\n", GnameBuffer);
                     fprintf(outFile, "%s\n", UWorldBuffer);
                     fprintf(outFile, "%s\n", MatrixBuffer);
+                    fprintf(outFile, "%s\n", GObjectBuffer);
                     fclose(outFile);
                     printf("Output written to output.txt\n");
                 } else {
@@ -277,6 +286,7 @@ namespace Menu{
                 ImGui::Text("%s",GnameBuffer,ImVec2(400,75));
                 ImGui::Text("%s",UWorldBuffer,ImVec2(400,75));
                 ImGui::Text("%s",MatrixBuffer,ImVec2(400,75));
+                ImGui::Text("%s",GObjectBuffer,ImVec2(400,75));
             }
         } else{
             ImGui::Text("请先选择进程！",ImVec2(400,75));
@@ -287,7 +297,6 @@ namespace Menu{
     void ShowDebugMatrixWindow(){
         static int corner = 0;
         ImGuiIO& io = ImGui::GetIO();
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
         if (corner != -1)
         {
             const float PAD = 10.0f;
@@ -300,7 +309,6 @@ namespace Menu{
             window_pos_pivot.x = (corner & 1) ? 1.0f : 0.0f;
             window_pos_pivot.y = (corner & 2) ? 1.0f : 0.0f;
             ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-            window_flags |= ImGuiWindowFlags_NoMove;
         }
         ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
         if (ImGui::Begin("矩阵工具"))
@@ -309,9 +317,9 @@ namespace Menu{
             memset(matrix, 0, 16);
             XY_Read(addr.Matrix, matrix, 16 * 4);
             string result;
-            for (int i = 0; i < 16; i++) {
+            for (float i : matrix) {
                 //std::cout << matrix[i] << " ";
-                result += std::to_string(matrix[i]) + " ";
+                result += std::to_string(i) + " ";
             }
             ImGui::Text("%s", result.c_str());
             ImGui::Separator();
@@ -354,7 +362,7 @@ namespace Menu{
         if (ImGui::Button("确定")){
             uint64_t Address = 0;
             for (int i = 0; i < sizeof(inputText) / sizeof(inputText[0]); ++i) {
-                if (inputText[i] != "") {
+                if (!inputText[i].empty()) {
                     uint64_t inputValue;
                     if (inputText[i].find("BASE") != std::string::npos) {
                         inputValue = addr.libbase;
@@ -373,7 +381,7 @@ namespace Menu{
                 long int Tmp = XY_GetAddr(Address + i);
                 string KlassName = GetClassName(Tmp);
                 string outerName = GetOuterName(Tmp);
-                printf("[%x](%lx) %s  %s\n",i,XY_GetAddr((Address + i)),KlassName.c_str(),outerName.c_str());
+                printf("[%lx](%lx) %s  %s\n",i,XY_GetAddr((Address + i)),KlassName.c_str(),outerName.c_str());
             }
         }
         // 渲染虚拟键盘

@@ -11,6 +11,8 @@ string selectedPID,ProcessName;
 
 void GameInit(){
     addr.libbase = XY_GetModuleBase(std::stoi(selectedPID));
+/*    printf("%lx",addr.libbase);
+    cout << "" <<endl;*/
     if (readmode==2){
         bool ret=checkDriver();
         cout << (ret?"biu加载成功":"biu加载失败") << endl;

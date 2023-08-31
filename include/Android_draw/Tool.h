@@ -301,23 +301,30 @@ namespace UEinit{
         AddrOffsets addrOffsets;
         addrOffsets.Addr=0;
         addrOffsets.Offsets=0;
-        int i=0;
-
-        cout << GetClassName(XY_GetAddr(addr.libbase + 0xAC61718)) <<endl;
-/*        while (1){
-            long int TMPEngine = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
-            if (TMPEngine != NULL){
-                //printf("%lx",TMPUworld);
-                if (GetClassName(TMPEngine)== "GameEngine"){
-//                    if (GetClassName(XY_GetAddr(TMPUworld+offsets.Ulevel))=="Level"){}
-                    addrOffsets.Addr=TMPEngine;
+        for (int i = 0;; i++) {
+            uint64_t TMP;
+            TMP = addr.libbase + offsets.GNames + (0x8*i)+0x10;
+            if (TMP < 0x1000000000) continue;
+            uint64_t TMP1 = XY_GetAddr(TMP);
+            if (TMP1 < 0x1000000000) continue;
+            uint64_t TMP2 = XY_GetAddr(TMP1);
+            if (TMP2 < 0x1000000000) continue;
+            uint64_t TMP3 = XY_GetAddr(TMP2);
+            if (TMP3 < 0x1000000000) continue;
+            uint64_t TMP4 = XY_GetAddr(TMP2+0x18);
+            if (TMP4 < 0x1000000000) continue;
+            string TMP3Class = GetClassName(TMP3);
+            string TMP3Outer = GetOuterName(TMP3);
+            string TMP4Class = GetClassName(TMP4);
+            string TMP4Outer = GetOuterName(TMP4);
+            if (TMP3Class.find("Package") != std::string::npos && TMP3Outer.find("UObject") != std::string::npos ){
+                if (TMP4Class.find("Class") != std::string::npos && TMP4Outer.find("Object") != std::string::npos ){
+                    addrOffsets.Addr=TMP-0x10;
                     addrOffsets.Offsets=offsets.GNames + (0x8*i);
                     break;
-
                 }
             }
-            i++;
-        }*/
+        }
         return addrOffsets;
     }
     AddrOffsets GetEngine(){
