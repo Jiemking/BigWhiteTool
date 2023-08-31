@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
                         if (ImGui::MenuItem("Biu驱动")) {
                             readmode = 2;
                         }
-                        if (ImGui::MenuItem("小迷糊驱动")) {
+                        if (ImGui::MenuItem("XXX驱动")) {
                             readmode = 3;
                         }
                         ImGui::EndMenu();
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
                         ImGui::EndMenu();
                     }
                 }
-
+                if (ImGui::BeginMenu("退出"))    exec_native_surface("killall BigWhiteTool");
                 ImGui::EndMainMenuBar();
             }
             if (ShowDemoWindow) ImGui::ShowDemoWindow();

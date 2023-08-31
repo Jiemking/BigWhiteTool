@@ -194,13 +194,14 @@ namespace Menu{
 
 
         if (BigWhite_pid>0){
+            ImGui::Checkbox("是否UE423以上版本（谨慎选择 选择错会导致卡死！卡十几秒左右是正常的！）",&addr.isUE423);
             if (ImGui::Button("一键获取",ImVec2(400,75))){
                 AddrOffsets Gname = UEinit::GetGname();
                 AddrOffsets Matrix = UEinit::GetMatrix();
                 AddrOffsets Uworld = UEinit::GetUworld();
                 sprintf(GnameBuffer,"Gname->%lx   Offset->%lx",Gname.Addr,Gname.Offsets);
-                sprintf(MatrixBuffer,"Uworld->%lx  Offset->%lx",Matrix.Addr,Matrix.Offsets);
-                sprintf(UWorldBuffer,"Matrix->%lx  Offset->%lx",Uworld.Addr,Uworld.Offsets);
+                sprintf(MatrixBuffer,"Matrix->%lx  Offset->%lx",Matrix.Addr,Matrix.Offsets);
+                sprintf(UWorldBuffer,"Uworld->%lx  Offset->%lx",Uworld.Addr,Uworld.Offsets);
                 cout << GnameBuffer<<"\n"<<MatrixBuffer<<"\n"<<UWorldBuffer<< endl;
                 isShow= true;
             }

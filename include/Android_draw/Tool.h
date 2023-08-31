@@ -230,13 +230,38 @@ namespace UEinit{
         AddrOffsets addrOffsets;
         addrOffsets.Addr=0;
         addrOffsets.Offsets=0;
-        int i=20000000;
-        while (1){
-            uint64_t TMP = addr.libbase + (0x8*i) + 0x40;
-            if (TMP != NULL){
-                uint64_t TMPGnames = XY_GetAddr(TMP);
+        for (int i = 20000000;; i++) {
+
+            uint64_t TMP;
+            if (addr.isUE423){
+                TMP = addr.libbase + (0x8*i) + 0x40;
+                if (TMP != NULL){
+                    uint64_t TMPGnames = XY_GetAddr(TMP);
+                    char name[0x100];
+                    XY_Read(TMPGnames+0x8, name, 0xc);
+                    std::string aa = name;
+                    if (aa.find("ByteProperty") != std::string::npos){
+                        addrOffsets.Addr=addr.libbase+(0x8*i);
+                        addrOffsets.Offsets=(0x8*i);
+                        offsets.GNames=(0x8*i);//设置全局Gname偏移
+                        addr.GNames = addr.libbase + offsets.GNames;//设置全局Gname地址
+                        break;
+                    }
+                }
+            } else{
+                TMP = addr.libbase + (0x8*i);
+/*                printf("%lx",(0x8*i));
+                cout << "\n"<<endl;*/
+                if (TMP < 0x1000000000) continue;
+                uint64_t TMP1 = XY_GetAddr(TMP);
+                if (TMP1 < 0x1000000000) continue;
+                uint64_t TMP2 = XY_GetAddr(TMP1);
+                if (TMP2 < 0x1000000000) continue;
+                uint64_t TMP3 = XY_GetAddr(TMP2);
+                if (TMP3 < 0x1000000000) continue;
+                uint64_t TMPGnames = TMP3;
                 char name[0x100];
-                XY_Read(TMPGnames+0x8, name, 0xc);
+                XY_Read(TMPGnames+0x24, name, 0xc);
                 std::string aa = name;
                 if (aa.find("ByteProperty") != std::string::npos){
                     addrOffsets.Addr=addr.libbase+(0x8*i);
@@ -246,8 +271,8 @@ namespace UEinit{
                     break;
                 }
             }
-            i++;
         }
+
         return addrOffsets;
     }
     AddrOffsets GetUworld(){
