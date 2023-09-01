@@ -318,4 +318,14 @@ void BigWhite_GetUTF8(UTF8 * buf, unsigned long namepy)
     }
 }
 
+/*
+
+template<typename T>
+T XY_TRead(void* address) {
+    T data{};
+    BigWhite_pvm(reinterpret_cast<void *>(address), reinterpret_cast<void *>(&data), sizeof(T), false);
+    return data;
+}*/
+
+
 #endif

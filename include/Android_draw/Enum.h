@@ -40,10 +40,9 @@ struct StructureList
 struct Offsets
 {
 public:
-    uintptr_t libbase;
-
     uintptr_t GNames = 0;
     uintptr_t Uworld = 0;
+    uint64_t Gobject = 0;
     uintptr_t Matrix = 0;
     int Matrix1 = 0;
     int Matrix2 = 0;
@@ -88,6 +87,7 @@ public:
     uint64_t Address = 0;
     uint64_t GNames = 0;
     uint64_t Uworld = 0;
+    uint64_t Gobject = 0;
     uint64_t Matrix = 0;
     uint64_t oneself = 0;
     uint64_t Ulevel = 0x30;

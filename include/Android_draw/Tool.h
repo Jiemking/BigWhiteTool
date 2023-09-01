@@ -3,8 +3,9 @@
 //
 #include <Enum.h>
 #include <fstream>
-#include "Android_Read/Android_Read.h"
-
+#include<Android_Read/Android_Read.h>
+#include "../../DumperSDK/dumper.h"
+#include "../../DumperSDK/base.h"
 
 #ifndef BIGWHITETOOL_TOOL_H
 #define BIGWHITETOOL_TOOL_H
@@ -14,7 +15,7 @@ uint64_t GetClass(uint64_t Address) {
     if (UobjectClass != NULL) {
         return UobjectClass;
     }
-    return NULL;
+    return 0;
 }
 
 FName ReadProcessFname(uint64_t address) {
@@ -43,7 +44,7 @@ std::string GetName_Old(int i) //旧版本算法
     {
         return name;
     }
-    return std::string();
+    return {};
 }
 
 std::string GetName_New(uint32_t index) //新版本算法
@@ -104,16 +105,8 @@ std::string GetOuterName(uint64_t Address) {
         temp = GetName(Address);  //自己的类名
         return temp;
     }
-/*这里暂时不需要使用循环找到路径 会导致卡死    if (klass != NULL) {
-        std::string temp;
-        for (auto outer = GetOuter(Address); outer != 0; outer = GetOuter(outer)) {
-            temp = GetName(outer) + "." + temp;
-        }
-        temp += GetName(Address);  //自己的类名
-        return temp;
-    }*/
 
-    return std::string("(null)");
+    return {"(null)"};
 }
 
 
@@ -164,15 +157,15 @@ static vector<StructureList> foreachAddress(uint64_t Address) {
         uint64_t Tmp = XY_GetAddr(Address + i);
         string KlassName = GetClassName(Tmp);
         string outerName = GetOuterName(Tmp);
-        string trans = UamoGetString(KlassName);
+        string trans = ItemData::UamoGetString(KlassName);
         //string KlassName = "KlassName";
         //string outerName = "outerName";
 
         StructureList data;
         data.address = (Address + i);
-        data.type = KlassName.c_str();
-        data.name = outerName.c_str();
-        data.trans = trans.c_str();
+        data.type = KlassName;
+        data.name = outerName;
+        data.trans = trans;
         data.offset=i;
 
 
@@ -188,9 +181,9 @@ static vector<StructureList> foreachAddress(uint64_t Address) {
 }
 int GetEventCount() {
     DIR *dir = opendir("/dev/input/");
-    dirent *ptr = NULL;
+    dirent *ptr = nullptr;
     int count = 0;
-    while ((ptr = readdir(dir)) != NULL) {
+    while ((ptr = readdir(dir)) != nullptr) {
         if (strstr(ptr->d_name, "event"))
             count++;
     }
@@ -198,7 +191,6 @@ int GetEventCount() {
 }
 
 void ResetOffsets(){
-    offsets.libbase = 0;
     offsets.GNames = 0;
     offsets.Uworld = 0;
     offsets.Matrix = 0;
@@ -338,9 +330,9 @@ namespace UEinit{
             uint64_t TMPEngine = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPEngine != NULL){
                 if (GetClassName(TMPEngine)== "GameEngine"){
-                        addrOffsets.Addr=TMPEngine;
-                        addrOffsets.Offsets=offsets.GNames + (0x8*i);
-                        break;
+                    addrOffsets.Addr=TMPEngine;
+                    addrOffsets.Offsets=offsets.GNames + (0x8*i);
+                    break;
                 }
             }
             i++;
@@ -391,4 +383,22 @@ namespace UEinit{
 }
 
 
+namespace DumpSDK{
+    bool DumpUObject(){
+        Dumper& Dump = Dumper::GetInstance();
+        pidA = BigWhite_pid;
+        uint64_t Base = addr.libbase;
+        try
+        {
+            Dump.Init(Base, Base + offsets.GNames, Base + offsets.Gobject + 0x10);
+        }
+        catch (const char* error)
+        {
+            printf("%s\n", error);
+            return -1;
+        }
+        Dump.Dump();
+        return true;
+    }
+}
 #endif //BIGWHITETOOL_TOOL_H

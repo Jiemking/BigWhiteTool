@@ -54,6 +54,7 @@ void GameInit(){
         cout << "AQGJ"<< endl;
          offsets.GNames=0xDDE1980;
          offsets.Uworld=0xDFF05C8;
+         offsets.Gobject=0xde00a20;
          offsets.Matrix=0xDFA6EF8;
          offsets.Matrix1=0x20;
          offsets.Matrix2=0x280;

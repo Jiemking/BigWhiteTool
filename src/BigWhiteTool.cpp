@@ -141,6 +141,13 @@ int main(int argc, char *argv[]) {
                         if (ImGui::MenuItem("Debug", "CTRL+X")) {}
                         ImGui::EndMenu();
                     }
+                    if (ImGui::BeginMenu("DumpSDK"))
+                    {
+                        if (ImGui::MenuItem("DumpObject")) {
+                            DumpSDK::DumpUObject();
+                        }
+                        ImGui::EndMenu();
+                    }
                 }
                 if (ImGui::BeginMenu("退出"))    exec_native_surface("killall BigWhiteTool");
                 ImGui::EndMainMenuBar();
