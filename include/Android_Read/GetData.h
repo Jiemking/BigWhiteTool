@@ -70,9 +70,16 @@ void GameInit(){
         offsets.Matrix=0xc66f290;
     }else if (ProcessName=="com.tencent.mf.uamty"){//暗区体验
         cout << "AQTY"<< endl;
-        offsets.GNames=0xB1D5640;
-        offsets.Matrix=0xB2FF440;
-        offsets.Uworld=0xb3e8a30;
+        offsets.GNames=0xF764D80;
+        offsets.Uworld=0xf98e360;
+        offsets.Matrix=0xf93ef38;
+        offsets.Matrix1=0x20;
+        offsets.Matrix2=0x2a0;
+        offsets.Ulevel=0x30;
+        offsets.Arrayaddr=0x98;
+        offsets.ArrayaddrCount=0xa0;
+        offsets.RootComponent = 0x158;
+        offsets.XYZ_X=0x138;
     }else if (ProcessName=="com.tencent.tmgp.pubgmhd"){//和平
         cout << "HEPING"<< endl;
         addr.isUE423=false;

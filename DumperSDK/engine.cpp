@@ -61,13 +61,13 @@ string UE_UObject::GetFullName()
 
 UE_UObject* UE_UObject::StaticClass()
 {
-	static UE_UObject* cmp = ObjObjects->FindObject("Class  CoreUObject.Object");
+	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/CoreUObject.Object");
 	return cmp;
 }
 
 UE_UObject* UE_AActor::StaticClass()
 {
-	static UE_UObject* cmp = ObjObjects->FindObject("Class  Engine.Actor");
+	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/Engine.Actor");
 	return cmp;
 }
 
@@ -78,13 +78,13 @@ Tarray UE_UEnum::GetNames()
 
 UE_UObject* UE_UEnum::StaticClass()
 {
-	static UE_UObject* cmp = ObjObjects->FindObject("Class  CoreUObject.Enum");
+	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/CoreUObject.Enum");
 	return cmp;
 }
 
 UE_UObject* UE_UClass::StaticClass()
 {
-	static UE_UObject* cmp = ObjObjects->FindObject("Class  CoreUObject.Class");
+	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/CoreUObject.Class");
 	return cmp;
 }
 
@@ -95,13 +95,13 @@ uint64_t UE_UFunction::GetFunc()
 
 UE_UObject* UE_UFunction::StaticClass()
 {
-	static UE_UObject* cmp = ObjObjects->FindObject("Class  CoreUObject.Function");
+	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/CoreUObject.Function");
 	return cmp;
 }
 
 UE_UObject* UE_UScriptStruct::StaticClass()
 {
-	static UE_UObject* cmp = ObjObjects->FindObject("Class  CoreUObject.ScriptStruct");
+	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/CoreUObject.ScriptStruct");
 	return cmp;
 }
 
@@ -251,7 +251,8 @@ string UE_FInterfaceProperty::GetTypeStr()
 
 void UE_UEnum::Generate()
 {
-    static FILE* EnumName = fopen("/storage/emulated/0/A_BigWhiteTool/Enum.cpp", "w+");
+    static FILE* EnumName = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Enum.cpp", "w+");
+    fprintf(EnumName, "Enum dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
 	string Type = "uint8_t";
 	string FullName = "// " + GetFullName() + "\n";
 	string ClassName = "enum class " + GetName() + " : ";
@@ -298,8 +299,8 @@ void UE_UEnum::Generate()
 
 void UE_UClass::Generate()
 {
-    static FILE* UClass = fopen("/storage/emulated/0/A_BigWhiteTool/Class.cpp", "w+");
-
+    static FILE* UClass = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Class.cpp", "w+");
+    fprintf(UClass, "Class dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
 	char buf[64]{ 0 };
 	sprintf(buf, "Class Size::0x%.4X\n", GetPropertiesSize());
 
@@ -414,7 +415,8 @@ void UE_UClass::Generate()
 
 void UE_UFunction::Generate()
 {
-    static FILE* Function = fopen("/storage/emulated/0/A_BigWhiteTool/Function.cpp", "w+");
+    static FILE* Function = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Function.cpp", "w+");
+    fprintf(Function, "Function dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
 	uint64_t Func = GetFunc();
 	if (Func == 0)
 		return;
@@ -450,7 +452,8 @@ void UE_UFunction::Generate()
 
 void UE_UScriptStruct::Generate()
 {
-    static FILE* Struct = fopen("/storage/emulated/0/A_BigWhiteTool/Struct.cpp", "w+");
+    static FILE* Struct = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Struct.cpp", "w+");
+    fprintf(Struct, "Struct dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
 	char buf[64]{ 0 };
 	sprintf(buf, "Struct Size::0x%.4X\n", GetPropertiesSize());
 

@@ -1,13 +1,6 @@
-//
-// Created by Ssage on 2022/3/18.
-//
 #include "main.h"
 #include "Login.h"
 
-
-/**
- * imgui测试
- */
 
 int main(int argc, char *argv[]) {
     std::cout << "免责声明：" << std::endl << std::endl;
@@ -143,7 +136,7 @@ int main(int argc, char *argv[]) {
                     }
                     if (ImGui::BeginMenu("DumpSDK"))
                     {
-                        if (ImGui::MenuItem("DumpObject")) {
+                        if (ImGui::MenuItem("DumpSDK")) {
                             DumpSDK::DumpUObject();
                         }
                         ImGui::EndMenu();

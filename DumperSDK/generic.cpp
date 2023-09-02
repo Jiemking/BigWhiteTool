@@ -40,8 +40,6 @@ string FNamePool::GetName(uint32_t index)
 
 uint32_t TUObjectArray::GetNumChunks()
 {
-    printf("%lx\n",this);
-    cout << " "<<endl;
 	return Read<uint32_t>(this + Offsets.TUObjectArray.NumChunks);
 }
 
@@ -69,7 +67,7 @@ UE_UObject* TUObjectArray::FindObject(string FullName)
 	for (size_t i = 0; i < GetNumElements(); i++)
 	{
 		UE_UObject* Object = GetObjectFormId(i);
-
+/*        cout << Object->GetFullName() << endl;*/
 		if (Object && Object->GetFullName() == FullName)
 			return Object;
 	}

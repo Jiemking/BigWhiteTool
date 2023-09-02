@@ -11,16 +11,20 @@
 
 #endif //BIGWHITETOOL_DRAWPLAYER_H
 
+Vector2A Pelvis;
+
 void DrawPlayer(ImDrawList *Draw) {
     addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
     addr.Ulevel = XY_GetAddr(addr.Uworld + offsets.Ulevel);
     addr.Arrayaddr = XY_GetAddr(addr.Ulevel + offsets.Arrayaddr);
-    addr.Matrix =  XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区还需要跳进去一层
-    uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+320;//暗区国际
+/*    addr.Matrix =  XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区还需要跳进去一层
+    uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+320;//暗区国际*/
 /*    addr.Matrix =  XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//枪战特训
     uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+250;*/
-
-/*    printf("%lx",oneself);
+    addr.Matrix =  XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区体验
+    uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+330;//暗区体验
+    //7c0e74ff38
+/*    printf("矩阵：%lx",addr.libbase + offsets.Matrix);
     cout << "" <<endl;*/
 
     float top, right, left, bottom, x1, top1;
@@ -34,9 +38,9 @@ void DrawPlayer(ImDrawList *Draw) {
 
     //cout <<ArrayaddrCount<<endl;
     for (int i = 0; i < ArrayaddrCount; i++) {
+
         uint64_t Objaddr = XY_GetAddr(addr.Arrayaddr + 8 * i);  // 遍历数量次数
         if (Objaddr == 0x0000000000 || Objaddr == 0 || Objaddr == 0x000 )   continue;
-
         // 自身坐标
         Vector3A Z;
         XY_Read(XY_GetAddr(oneself + offsets.RootComponent) + offsets.XYZ_X, &Z, sizeof(Z)); // 自己坐标
@@ -72,20 +76,30 @@ void DrawPlayer(ImDrawList *Draw) {
         left = (x + w / 2) - w / 2.6f;
         right = x + w / 1.12f;
 
-        //if (Objaddr==0x73879cb800){ continue;}
-        std::string ClassName = GetName(Objaddr);
-        //if (ClassName!="BP_AI_Pawn_A_C") continue; 枪战特训过滤
-        Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());
-        Draw->AddText(NULL, 24, {r_x , r_y}, ImColor(255,255,255,255) , ItemData::UamoGetString(ClassName).c_str());
 
+        std::string ClassName = GetName(Objaddr);//类名
+/*        if (ClassName.find("BP_DeathBox")!= std::string::npos){
+            Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());
+        }*/
+
+        //类名绘制
+        Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());
+        //类名翻译
+        Draw->AddText(NULL, 24, {r_x , r_y}, ImColor(255,255,255,255) , ItemData::UamoGetString(ClassName).c_str());
+        //类名地址
         std::stringstream Objaddrstr;
         Objaddrstr << std::hex << Objaddr;  // 将长整型以十六进制格式写入 stringstream
         std::string ObjaddString = Objaddrstr.str();  // 获取十六进制字符串
         Draw->AddText(NULL,20 , {r_x , r_y-20}, ImColor(255,255,255,255) , ObjaddString.c_str());
+
+        if (XY_GetFloat(Objaddr + 0x42C) !=40.0f)
+        {
+            continue;
+        }
+        Draw->AddRect({(x + w / 2) - w / 2.0f, y-w},{x+w/1.12f, y + w},ImColor(255,0,0,255),{0.0},0,{1});
 /*        std::stringstream oneselfstr;
         oneselfstr << std::hex << oneself;  // 将长整型以十六进制格式写入 stringstream
         std::string oneselfString = oneselfstr.str();  // 获取十六进制字符串*/
-
 
 
         //Draw->AddText(NULL,20 , {middle-100, top}, ImColor(255,255,255,255) , hexString.c_str());

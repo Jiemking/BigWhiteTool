@@ -211,21 +211,25 @@ namespace Menu{
             if (ImGui::Button("获取Gname",ImVec2(400,75))){
                 AddrOffsets Gname = UEinit::GetGname();
                 sprintf(GnameBuffer,"Gname->%lx   Offset->%x",Gname.Addr,Gname.Offsets);
+                cout << GnameBuffer <<"\n" <<endl;
                 isShow= true;
             }
             if (ImGui::Button("获取Gobject",ImVec2(400,75))){
                 AddrOffsets Gobject = UEinit::GetGobject();
                 sprintf(GObjectBuffer,"Gobject->%lx   Offset->%x",Gobject.Addr,Gobject.Offsets);
+                cout << GObjectBuffer <<"\n" <<endl;
                 isShow= true;
             }
             if (ImGui::Button("获取Matrix",ImVec2(400,75))){
                 AddrOffsets Matrix = UEinit::GetMatrix();
                 sprintf(MatrixBuffer,"Matrix->%lx  Offset->%x",Matrix.Addr,Matrix.Offsets);
+                cout << MatrixBuffer <<"\n" <<endl;
                 isShow= true;
             }
             if (ImGui::Button("获取Uworld",ImVec2(400,75))){
                 AddrOffsets Uworld = UEinit::GetUworld();
                 sprintf(UWorldBuffer,"Uworld->%lx  Offset->%x",Uworld.Addr,Uworld.Offsets);
+                cout << UWorldBuffer <<"\n" <<endl;
                 isShow= true;
             }
             if (ImGui::Button("DumperString",ImVec2(400,75))){

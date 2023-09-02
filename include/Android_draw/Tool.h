@@ -152,7 +152,7 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 }
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
-    for (size_t i = 0; i < 0x500; i+=4) {
+    for (size_t i = 0; i < 0xD00; i+=4) {
 
         uint64_t Tmp = XY_GetAddr(Address + i);
         string KlassName = GetClassName(Tmp);
@@ -272,7 +272,7 @@ namespace UEinit{
         addrOffsets.Addr=0;
         addrOffsets.Offsets=0;
         int i=0;
-        while (1){
+        while (true){
             uint64_t TMPUworld = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPUworld != NULL){
                 if (GetClassName(TMPUworld)== "World"){

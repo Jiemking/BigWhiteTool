@@ -23,15 +23,25 @@ void Dumper::Init(uint64_t Base,uint64_t GName, uint64_t GObject)
 		throw "GObject块数为0";
 
 	setlocale(LC_ALL, "");
-    mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
+    mkdir("/storage/emulated/0/A_BigWhiteTool/SDK",2770);
 
-	return;
 }
 
 void Dumper::Dump()
 {
-    FILE* ObjectsName = fopen("/storage/emulated/0/A_BigWhiteTool/Object.cpp", "w+");
-    fprintf(ObjectsName, "Object dump by BigWhite   @t.me/BigWhiteChat\n");
+/*    UE_UObject* Object = ObjObjects->GetObjectFormId(0x135c);
+
+    if (Object){
+        cout << "Object\n" << endl;
+        if (Object->IsA<UE_UEnum>())
+        {
+            cout << "IsA:UE_UEnum\n" << endl;
+            Object->Cast<UE_UEnum*>()->Generate();
+        }
+    }*/
+
+    FILE* ObjectsName = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Object.cpp", "w+");
+    fprintf(ObjectsName, "Object dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
     fprintf(ObjectsName, "Count : %d\n\n", ObjObjects->GetNumElements());
 	for (size_t i = 0; i < ObjObjects->GetNumElements(); i++)
 	{
