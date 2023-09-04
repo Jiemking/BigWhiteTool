@@ -154,7 +154,7 @@ namespace Menu{
             addr.Address= (addr.Uworld);
         }
         if (ImGui::Button("Debug")){
-            addr.Address= (addr.libbase+0x5BDEF8);
+            addr.Address= (addr.AcknowledgedPawn);
         }
 
 

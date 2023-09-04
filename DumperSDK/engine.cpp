@@ -145,7 +145,7 @@ string UE_FField::GetType()
 {
 	uint32_t NameId = Read<uint32_t>(Read<uint32_t*>(this + Offsets.FField.Class));
 	string Name = NamePoolData->GetName(NameId);
-	
+
 	if (Name == "NameProperty")			{ return "FName"; };
 	if (Name == "StrProperty")			{ return "FString"; };
 	if (Name == "TextProperty")			{ return "FText"; }
@@ -172,7 +172,7 @@ string UE_FField::GetType()
 	if (Name == "ClassProperty")		{ return Cast<UE_FClassProperty*>()->GetTypeStr(); };
 	if (Name == "StructProperty")		{ return Cast<UE_FStructProperty*>()->GetTypeStr(); };
 	if (Name == "InterfaceProperty")	{ return Cast<UE_FInterfaceProperty*>()->GetTypeStr(); };
-	if (Name == "ObjectPropertyBase")	{ return Cast<UE_FObjectPropertyBase*>()->GetTypeStr(); };
+	if (Name == "ObjectProperty")	    { return Cast<UE_FObjectPropertyBase*>()->GetTypeStr(); };
 	if (Name == "ArrayProperty")		{ return Cast<UE_FArrayProperty*>()->GetTypeStr(); };
 	if (Name == "WeakObjectProperty")	{ return "TWeakObjectPtr<" + Cast<UE_FStructProperty*>()->GetTypeStr() + ">"; };
 	if (Name == "SoftObjectProperty")	{ return "TSoftObjectPtr<" + Cast<UE_FObjectPropertyBase*>()->GetUEObject()->GetCppName() + ">"; };
@@ -252,8 +252,7 @@ string UE_FInterfaceProperty::GetTypeStr()
 void UE_UEnum::Generate()
 {
     static FILE* EnumName = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Enum.cpp", "w+");
-    fprintf(EnumName, "Enum dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
-	string Type = "uint8_t";
+    string Type = "uint8_t";
 	string FullName = "// " + GetFullName() + "\n";
 	string ClassName = "enum class " + GetName() + " : ";
 
@@ -300,11 +299,11 @@ void UE_UEnum::Generate()
 void UE_UClass::Generate()
 {
     static FILE* UClass = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Class.cpp", "w+");
-    fprintf(UClass, "Class dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
-	char buf[64]{ 0 };
+    char buf[64]{ 0 };
 	sprintf(buf, "Class Size::0x%.4X\n", GetPropertiesSize());
 
 	string FullName = "// " + GetFullName() + "\n";
+
 	string ClassSize = "// ";
 	ClassSize += buf;
 	string ClassName = "class " + GetCppName();
@@ -340,7 +339,6 @@ void UE_UClass::Generate()
 				Name += " ";
 			}
 		}
-
 		int Size = temp->GetSize();
 		int Offset = temp->GetOffset();
 
@@ -369,7 +367,6 @@ void UE_UClass::Generate()
 				sbuf += " ";
 			}
 
-            // ʹ��memset������cbuf����
             memset(cbuf, 0, sizeof(cbuf));
 			sprintf(cbuf, "// 0x%.4X(0x%.4X)\n", Pos,diff);
 			sbuf += cbuf;
@@ -402,22 +399,20 @@ void UE_UClass::Generate()
 			sbuf += " ";
 		}
 
-        // ʹ��memset������cbuf����
+
         memset(cbuf, 0, sizeof(cbuf));
 		sprintf(cbuf, "// 0x%.4X(0x%.4X)\n", Pos, diff);
 		sbuf += cbuf;
 
 		Body += sbuf;
 	}
-
 	fprintf(UClass,"%s",(FullName + ClassSize + ClassName + Body + "};\n\n\n").c_str());
 }
 
 void UE_UFunction::Generate()
 {
     static FILE* Function = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Function.cpp", "w+");
-    fprintf(Function, "Function dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
-	uint64_t Func = GetFunc();
+    uint64_t Func = GetFunc();
 	if (Func == 0)
 		return;
 
@@ -453,8 +448,7 @@ void UE_UFunction::Generate()
 void UE_UScriptStruct::Generate()
 {
     static FILE* Struct = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Struct.cpp", "w+");
-    fprintf(Struct, "Struct dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
-	char buf[64]{ 0 };
+    char buf[64]{ 0 };
 	sprintf(buf, "Struct Size::0x%.4X\n", GetPropertiesSize());
 
 	string FullName = "// " + GetFullName() + "\n";

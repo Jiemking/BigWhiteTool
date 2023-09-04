@@ -56,9 +56,9 @@ public:
     int isBot = 0;
 
     //自身
-    int GameInstance = 0x0;
-    int ULocalPlayer = 0x0;
-    int PlayerController = 0x0;
+    int GameInstance = 0x180;
+    int LocalPlayer = 0x38;
+    int PlayerController = 0x30;
     int AcknowledgedPawn = 0x0;
 
 
@@ -93,16 +93,17 @@ public:
     uint64_t Ulevel = 0x30;
     uint64_t Arrayaddr = 0x98;
 
-    int RootComponent  = 0x0;
+
+    uint64_t RootComponent  = 0x0;
     int XYZ_X = 0x0;
 
     int isBot = 0;
 
     //自身
-    int GameInstance = 0x0;
-    int ULocalPlayer = 0x0;
-    int PlayerController = 0x0;
-    int AcknowledgedPawn = 0x0;
+    uint64_t GameInstance = 0x0;
+    uint64_t LocalPlayer = 0x0;
+    uint64_t PlayerController = 0x0;
+    uint64_t AcknowledgedPawn = 0x0;
 
 
     int Mesh = 0x0;

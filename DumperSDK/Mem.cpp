@@ -2,7 +2,7 @@
 
 
 int pidA=0;
-
+bool DDBUG = false;
 bool pvm(void *address, void *buffer, size_t size, bool iswrite) {
     struct iovec local[1];
     struct iovec remote[1];

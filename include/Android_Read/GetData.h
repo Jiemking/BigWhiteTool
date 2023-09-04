@@ -32,7 +32,7 @@ void GameInit(){
         offsets.Matrix=0xb3e8a30;
         offsets.Uworld=0xb39e3c0;
         offsets.GameInstance=0x38;
-        offsets.ULocalPlayer=0x88;
+        offsets.LocalPlayer=0x88;
         offsets.PlayerController=0x30;
         offsets.AcknowledgedPawn=0x330;
         offsets.RootComponent=0x158;
@@ -65,9 +65,22 @@ void GameInit(){
         offsets.XYZ_X=0x120;
     }else if (ProcessName.find(".tmgp.gnyx") != std::string::npos){//高能英雄
         cout << "GNYX"<< endl;
-        offsets.GNames=0xc4f74c0;
-        offsets.Uworld=0xc63fea8;
-        offsets.Matrix=0xc66f290;
+        offsets.GNames=0xcd23d00;
+        offsets.Uworld=0xCE9C620;
+        offsets.Matrix=0xce6d128;
+        offsets.Matrix1=0x20;
+        offsets.Matrix2=0x270;
+        offsets.Ulevel=0x30;
+        offsets.Arrayaddr=0x98;
+        offsets.ArrayaddrCount=0xa0;
+        offsets.GameInstance=0x3b0;
+        offsets.LocalPlayer=0x38;
+        offsets.PlayerController=0x30;
+        offsets.AcknowledgedPawn=0x2D0;
+        offsets.RootComponent = 0x1a8;
+        offsets.XYZ_X=0x200;
+
+
     }else if (ProcessName=="com.tencent.mf.uamty"){//暗区体验
         cout << "AQTY"<< endl;
         offsets.GNames=0xF764D80;
@@ -78,6 +91,11 @@ void GameInit(){
         offsets.Ulevel=0x30;
         offsets.Arrayaddr=0x98;
         offsets.ArrayaddrCount=0xa0;
+
+        offsets.GameInstance=0x180;
+        offsets.LocalPlayer=0x38;
+        offsets.PlayerController=0x30;
+        offsets.AcknowledgedPawn=0x330;
         offsets.RootComponent = 0x158;
         offsets.XYZ_X=0x138;
     }else if (ProcessName=="com.tencent.tmgp.pubgmhd"){//和平

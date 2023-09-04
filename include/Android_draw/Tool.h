@@ -152,7 +152,7 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 }
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
-    for (size_t i = 0; i < 0xD00; i+=4) {
+    for (size_t i = 0; i < 0xF00; i+=4) {
 
         uint64_t Tmp = XY_GetAddr(Address + i);
         string KlassName = GetClassName(Tmp);
@@ -204,7 +204,7 @@ void ResetOffsets(){
     offsets.isBot = 0;
 
     offsets.GameInstance = 0x0;
-    offsets.ULocalPlayer = 0x0;
+    offsets.LocalPlayer = 0x0;
     offsets.PlayerController = 0x0;
     offsets.AcknowledgedPawn = 0x0;
 
@@ -281,7 +281,8 @@ namespace UEinit{
                     addrOffsets.Addr=TMPUworld;
                     addrOffsets.Offsets=offsets.GNames + (0x8*i);
                     offsets.Uworld=offsets.GNames + (0x8*i);
-                    break;
+                    cout << offsets.Uworld<<endl;
+
                 }
             }
             i++;

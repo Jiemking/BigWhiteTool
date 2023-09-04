@@ -25,7 +25,7 @@ typedef uintptr_t kaddr;
 
 extern int pidA;/*
 uint64_t AddrGNames,AddrGObject;*/
-
+extern bool DDBUG;
 bool pvm(void *address, void *buffer, size_t size, bool iswrite);
 
 bool vm_readv(void *address, void *buffer, size_t size);

@@ -41,9 +41,7 @@ void Dumper::Dump()
     }*/
 
     FILE* ObjectsName = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Object.cpp", "w+");
-    fprintf(ObjectsName, "Object dump by BigWhite   @t.me/BigWhiteChat\n\n\n\n");
-    fprintf(ObjectsName, "Count : %d\n\n", ObjObjects->GetNumElements());
-	for (size_t i = 0; i < ObjObjects->GetNumElements(); i++)
+    for (size_t i = 0; i < ObjObjects->GetNumElements(); i++)
 	{
 		UE_UObject* Object = ObjObjects->GetObjectFormId(i);
 

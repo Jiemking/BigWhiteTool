@@ -11,7 +11,7 @@
 
 #endif //BIGWHITETOOL_DRAWPLAYER_H
 
-Vector2A Pelvis;
+
 
 void DrawPlayer(ImDrawList *Draw) {
     addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
@@ -21,8 +21,11 @@ void DrawPlayer(ImDrawList *Draw) {
     uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+320;//暗区国际*/
 /*    addr.Matrix =  XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//枪战特训
     uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+250;*/
-    addr.Matrix =  XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区体验
-    uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+330;//暗区体验
+/*    addr.Matrix =  XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区体验
+    uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+330;//暗区体验  */
+    addr.Matrix =  XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
+    addr.AcknowledgedPawn = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn;//暗区体验
+
     //7c0e74ff38
 /*    printf("矩阵：%lx",addr.libbase + offsets.Matrix);
     cout << "" <<endl;*/
@@ -43,9 +46,9 @@ void DrawPlayer(ImDrawList *Draw) {
         if (Objaddr == 0x0000000000 || Objaddr == 0 || Objaddr == 0x000 )   continue;
         // 自身坐标
         Vector3A Z;
-        XY_Read(XY_GetAddr(oneself + offsets.RootComponent) + offsets.XYZ_X, &Z, sizeof(Z)); // 自己坐标
+        XY_Read(XY_GetAddr(addr.AcknowledgedPawn + offsets.RootComponent) + offsets.XYZ_X, &Z, sizeof(Z)); // 自己坐标
 
-        //cout << Z.X<<Z.Y<<Z.Z<<endl;
+
         // 敌人和物资坐标
         Vector3A D;
         XY_Read(XY_GetAddr(Objaddr + offsets.RootComponent) + offsets.XYZ_X, &D, sizeof(D)); // 对象坐标
@@ -82,21 +85,21 @@ void DrawPlayer(ImDrawList *Draw) {
             Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());
         }*/
 
-        //类名绘制
-        Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());
+       //类名绘制
+        Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());/*
         //类名翻译
         Draw->AddText(NULL, 24, {r_x , r_y}, ImColor(255,255,255,255) , ItemData::UamoGetString(ClassName).c_str());
         //类名地址
         std::stringstream Objaddrstr;
         Objaddrstr << std::hex << Objaddr;  // 将长整型以十六进制格式写入 stringstream
         std::string ObjaddString = Objaddrstr.str();  // 获取十六进制字符串
-        Draw->AddText(NULL,20 , {r_x , r_y-20}, ImColor(255,255,255,255) , ObjaddString.c_str());
+        Draw->AddText(NULL,20 , {r_x , r_y-20}, ImColor(255,255,255,255) , ObjaddString.c_str());*/
 
-        if (XY_GetFloat(Objaddr + 0x42C) !=40.0f)
+/*        if (XY_GetFloat(Objaddr + 0x42C) !=40.0f)
         {
             continue;
-        }
-        Draw->AddRect({(x + w / 2) - w / 2.0f, y-w},{x+w/1.12f, y + w},ImColor(255,0,0,255),{0.0},0,{1});
+        }*/
+        //Draw->AddRect({(x + w / 2) - w / 2.0f, y-w},{x+w/1.12f, y + w},ImColor(255,0,0,255),{0.0},0,{1});
 /*        std::stringstream oneselfstr;
         oneselfstr << std::hex << oneself;  // 将长整型以十六进制格式写入 stringstream
         std::string oneselfString = oneselfstr.str();  // 获取十六进制字符串*/

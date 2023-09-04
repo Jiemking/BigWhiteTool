@@ -16,10 +16,10 @@ int main(int argc, char *argv[]) {
     std::cout << "对于任何因使用本软件所引起的问题，我们将不负有任何法律或经济责任。" << std::endl << std::endl;
 
     std::cout << "（https://t.me/BigWhiteChat）" << std::endl;
-    if (!Login()){
+/*    if (!Login()){
         cout << "登录失败"<<endl;
         return 0;
-    }
+    }*/
     while (true){
         screen_config();
         if (displayInfo.orientation==1||displayInfo.orientation==3){
