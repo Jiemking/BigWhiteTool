@@ -61,6 +61,12 @@ void GameInit(){
          offsets.Ulevel=0x30;
          offsets.Arrayaddr=0x98;
          offsets.ArrayaddrCount=0xa0;
+
+        offsets.GameInstance=0x180;
+        offsets.LocalPlayer=0x38;
+        offsets.PlayerController=0x30;
+        offsets.AcknowledgedPawn=0x320;
+
         offsets.RootComponent = 0x148;
         offsets.XYZ_X=0x120;
     }else if (ProcessName.find(".tmgp.gnyx") != std::string::npos){//高能英雄
