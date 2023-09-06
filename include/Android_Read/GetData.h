@@ -41,6 +41,7 @@ void GameInit(){
     } else if (ProcessName.find("ShuiSha") != std::string::npos){//枪战特训
         cout << "QZTX"<< endl;
         offsets.GNames=0xac1d440;
+        offsets.Gobject=0xac61718;
         offsets.Uworld=0xadd8850;
         offsets.Matrix=0xada8ea8;
         offsets.Matrix1=0x20;
@@ -71,9 +72,9 @@ void GameInit(){
         offsets.XYZ_X=0x120;
     }else if (ProcessName.find(".tmgp.gnyx") != std::string::npos){//高能英雄
         cout << "GNYX"<< endl;
-        offsets.GNames=0xcd23d00;
-        offsets.Uworld=0xCE9C620;
-        offsets.Matrix=0xce6d128;
+        offsets.GNames=0xcd29fc0;
+        offsets.Uworld=0xCEA28E0;
+        offsets.Matrix=0xce733e8;
         offsets.Matrix1=0x20;
         offsets.Matrix2=0x270;
         offsets.Ulevel=0x30;
@@ -89,9 +90,9 @@ void GameInit(){
 
     }else if (ProcessName=="com.tencent.mf.uamty"){//暗区体验
         cout << "AQTY"<< endl;
-        offsets.GNames=0xF764D80;
-        offsets.Uworld=0xf98e360;
-        offsets.Matrix=0xf93ef38;
+        offsets.GNames=0xee03740;
+        offsets.Uworld=0xF01E7C0;
+        offsets.Matrix=0xefd4718;
         offsets.Matrix1=0x20;
         offsets.Matrix2=0x2a0;
         offsets.Ulevel=0x30;
