@@ -11,8 +11,6 @@ string selectedPID,ProcessName;
 
 void GameInit(){
     addr.libbase = XY_GetModuleBase(std::stoi(selectedPID));
-/*    printf("%lx",addr.libbase);
-    cout << "" <<endl;*/
     if (readmode==2){
         bool ret=checkDriver();
         cout << (ret?"biu加载成功":"biu加载失败") << endl;
@@ -21,7 +19,6 @@ void GameInit(){
         }
         setpid(std::stoi(selectedPID));
     }else if (readmode==3){
-
         cout << "这个驱动不好调用没写" << endl;
         exec_native_surface("killall BigWhiteTool");
     }
@@ -29,8 +26,8 @@ void GameInit(){
         cout << "AQ"<< endl;
         offsets.GNames=0xB1D5640;
         offsets.Ulevel=0x30;
-        offsets.Matrix=0xb3e8a30;
-        offsets.Uworld=0xb39e3c0;
+        offsets.Matrix=0xb39e3c0;
+        offsets.Uworld=0xb3e8a30;
         offsets.GameInstance=0x38;
         offsets.LocalPlayer=0x88;
         offsets.PlayerController=0x30;
@@ -49,6 +46,11 @@ void GameInit(){
         offsets.Ulevel=0x30;
         offsets.Arrayaddr=0x98;
         offsets.ArrayaddrCount=0xa0;
+        offsets.GameInstance=0x180;
+        offsets.LocalPlayer=0x38;
+        offsets.PlayerController=0x30;
+        offsets.AcknowledgedPawn=0x250;
+
         offsets.RootComponent = 0x130;
         offsets.XYZ_X=0x1D0;
     }else if (ProcessName.find(".mf.uamo") != std::string::npos){//暗区国际
@@ -72,9 +74,9 @@ void GameInit(){
         offsets.XYZ_X=0x120;
     }else if (ProcessName.find(".tmgp.gnyx") != std::string::npos){//高能英雄
         cout << "GNYX"<< endl;
-        offsets.GNames=0xcd29fc0;
-        offsets.Uworld=0xCEA28E0;
-        offsets.Matrix=0xce733e8;
+        offsets.GNames=0xad495c0;
+        offsets.Uworld=0xaec7a18;
+        offsets.Matrix=0xae97d88;
         offsets.Matrix1=0x20;
         offsets.Matrix2=0x270;
         offsets.Ulevel=0x30;
@@ -86,8 +88,6 @@ void GameInit(){
         offsets.AcknowledgedPawn=0x2D0;
         offsets.RootComponent = 0x1a8;
         offsets.XYZ_X=0x200;
-
-
     }else if (ProcessName=="com.tencent.mf.uamty"){//暗区体验
         cout << "AQTY"<< endl;
         offsets.GNames=0xee03740;

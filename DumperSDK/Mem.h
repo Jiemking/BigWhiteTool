@@ -1,8 +1,9 @@
+
 #ifndef MEMORY_H
 #define MEMORY_H
 
+// 包含头文件
 #include <dirent.h>
-
 #include <cstdio>
 #include <cstdlib>
 #include <cstddef>
@@ -23,18 +24,17 @@ using namespace std;
 
 typedef uintptr_t kaddr;
 
-extern int pidA;/*
-uint64_t AddrGNames,AddrGObject;*/
-extern bool DDBUG;
+// 全局变量
+extern int debug;
+extern int pidA;
+
+// 函数原型
 bool pvm(void *address, void *buffer, size_t size, bool iswrite);
-
 bool vm_readv(void *address, void *buffer, size_t size);
-
-
 pid_t find_pid(const char *process_name);
-
 kaddr get_module_base(const char *module_name);
 
+// 模板函数用于读取内存
 template<typename T>
 T Read(void* address) {
     T data{};
@@ -42,6 +42,7 @@ T Read(void* address) {
     return data;
 }
 
+// 模板函数用于读取内存（重载）
 template<typename T>
 T Read(kaddr address) {
     T data{};

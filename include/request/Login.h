@@ -187,6 +187,7 @@ int Login()
                 std::cout << "会员已到期" << std::endl;
                 return false; // Return false to indicate expired membership
             } else {
+                showmenu=0x1000;
                 std::cout << "登录成功" << std::endl;
                 return true;
             }

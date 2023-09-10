@@ -57,7 +57,6 @@ void DrawPlayer(ImDrawList *Draw) {
 /*        BigWhite_WriteFloat(XY_GetAddr(Objaddr + offsets.RootComponent) + offsets.XYZ_X,Z.X);
         BigWhite_WriteFloat(XY_GetAddr(Objaddr + offsets.RootComponent) + offsets.XYZ_X+0x4,Z.Y);
         BigWhite_WriteFloat(XY_GetAddr(Objaddr + offsets.RootComponent) + offsets.XYZ_X+0x8,Z.Z+3000.0f);*/
-//        暗区国际基本上都是138 148 158
         if (D.X == 0 || D.Y == 0 || D.Z == 0)   continue;
 
         float camera,r_x,r_y,r_w;

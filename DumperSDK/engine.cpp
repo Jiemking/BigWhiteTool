@@ -517,7 +517,7 @@ void UE_UScriptStruct::Generate()
 				sbuf += " ";
 			}
 
-            // ʹ��memset������cbuf����
+
             memset(cbuf, 0, sizeof(cbuf));
 			sprintf(cbuf, "// 0x%.4X(0x%.4X)\n", Pos, diff);
 			sbuf += cbuf;
@@ -551,7 +551,6 @@ void UE_UScriptStruct::Generate()
 			sbuf += " ";
 		}
 
-        // ʹ��memset������cbuf����
         memset(cbuf, 0, sizeof(cbuf));
 		sprintf(cbuf, "// 0x%.4X(0x%.4X)\n", Pos, diff);
 		sbuf += cbuf;

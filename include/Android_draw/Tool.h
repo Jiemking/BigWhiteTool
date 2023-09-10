@@ -6,6 +6,7 @@
 #include<Android_Read/Android_Read.h>
 #include "../../DumperSDK/dumper.h"
 #include "../../DumperSDK/base.h"
+#include "../../DumperSDK/engine.h"
 
 #ifndef BIGWHITETOOL_TOOL_H
 #define BIGWHITETOOL_TOOL_H
@@ -73,16 +74,14 @@ std::string GetName_New(uint32_t index) //新版本算法
 }
 
 std::string GetName(uint64_t Address) {
-    int FnameComparisonIndex = GetFName(Address).ComparisonIndex; //这里获取的是基类的Gname编号
+    int FnameComparisonIndex = XY_GetDword(Address + Offsets.UObject.Name);
     std::string GetName;
     if (addr.isUE423){
         GetName = GetName_New(FnameComparisonIndex); //新算法获取Name
     }else{
         GetName = GetName_Old(FnameComparisonIndex); //旧版本算法获取Name
     }
-
     return GetName;
-
 }
 
 std::string GetClassName(uint64_t Address) {
@@ -152,7 +151,7 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 }
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
-    for (size_t i = 0; i < 0xF00; i+=4) {
+    for (size_t i = 0; i < 0x500; i+=4) {
 
         uint64_t Tmp = XY_GetAddr(Address + i);
         string KlassName = GetClassName(Tmp);
@@ -271,21 +270,40 @@ namespace UEinit{
         AddrOffsets addrOffsets;
         addrOffsets.Addr=0;
         addrOffsets.Offsets=0;
-        int i=0;
-        while (true){
-            uint64_t TMPUworld = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
-            if (TMPUworld != NULL){
-                if (GetClassName(TMPUworld)== "World"){
-                    //(GetName(TMPUworld)=="TutorialRange_Main") 这个可以不需要
-                    //if (GetClassName(XY_GetAddr(TMPUworld+offsets.Ulevel))=="Level"){}
-                    addrOffsets.Addr=TMPUworld;
-                    addrOffsets.Offsets=offsets.GNames + (0x8*i);
-                    offsets.Uworld=offsets.GNames + (0x8*i);
-                    cout << offsets.Uworld<<endl;
-
-                }
+        for (int i = 0;; i++) {
+            uint64_t TMP;
+            TMP = addr.libbase + offsets.GNames + (0x8*i);
+            if (TMP < 0x1000000000) continue;
+            uint64_t TMP1 = XY_GetAddr(TMP);
+            if (TMP1 < 0x1000000000) continue;
+            string TMP1Class = GetClassName(TMP1);
+            if (TMP1Class=="World"){
+                addrOffsets.Addr=TMP;
+                addrOffsets.Offsets=offsets.GNames + (0x8*i);
+                offsets.Uworld=offsets.GNames + (0x8*i);
+                break;
             }
-            i++;
+        }
+        return addrOffsets;
+    }
+
+    AddrOffsets GetGWorld(){
+        AddrOffsets addrOffsets;
+        addrOffsets.Addr=0;
+        addrOffsets.Offsets=0;
+        for (int i = 0;; i++) {
+            uint64_t TMP;
+            TMP = addr.libbase + offsets.GNames + (0x8*i);
+            if (TMP < 0x1000000000) continue;
+            uint64_t TMP1 = XY_GetAddr(TMP);
+            if (TMP1 < 0x1000000000) continue;
+            string TMP1Class = GetClassName(TMP1);
+            if (TMP1Class=="World"){
+                addrOffsets.Addr=TMP;
+                addrOffsets.Offsets=offsets.GNames + (0x8*i);
+                offsets.Uworld=offsets.GNames + (0x8*i);
+                break;
+            }
         }
         return addrOffsets;
     }

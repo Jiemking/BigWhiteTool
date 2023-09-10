@@ -40,38 +40,38 @@ string FNamePool::GetName(uint32_t index)
 
 uint32_t TUObjectArray::GetNumChunks()
 {
-	return Read<uint32_t>(this + Offsets.TUObjectArray.NumChunks);
+    return Read<uint32_t>(this + Offsets.TUObjectArray.NumChunks);
 }
 
 uint32_t TUObjectArray::GetNumElements()
 {
-	return Read<uint32_t>(this + Offsets.TUObjectArray.NumElements);
+    return Read<uint32_t>(this + Offsets.TUObjectArray.NumElements);
 }
 
 UE_UObject* TUObjectArray::GetObjectFormId(size_t Id)
 {
-	size_t i = 0;
-	for (; Id > 65536; i++)
-	{
-		Id -= 65536;
-	}
+    size_t i = 0;
+    for (; Id > 65536; i++)
+    {
+        Id -= 65536;
+    }
 
-	uint8_t* Chunks = Read<uint8_t*>(this) + i * 8;
-	uint8_t* Item = Read<uint8_t*>(Chunks) + Offsets.FUObjectItem.Size * Id;
+    uint8_t* Chunks = Read<uint8_t*>(this) + i * 8;
+    uint8_t* Item = Read<uint8_t*>(Chunks) + Offsets.FUObjectItem.Size * Id;
 
-	return Read<UE_UObject*>(Item + Offsets.FUObjectItem.Object);
+    return Read<UE_UObject*>(Item + Offsets.FUObjectItem.Object);
 }
 
 UE_UObject* TUObjectArray::FindObject(string FullName)
 {
-	for (size_t i = 0; i < GetNumElements(); i++)
-	{
-		UE_UObject* Object = GetObjectFormId(i);
+    for (size_t i = 0; i < GetNumElements(); i++)
+    {
+        UE_UObject* Object = GetObjectFormId(i);
 /*        cout << Object->GetFullName() << endl;*/
-		if (Object && Object->GetFullName() == FullName)
-			return Object;
-	}
+        if (Object && Object->GetFullName() == FullName)
+            return Object;
+    }
 
-	return NULL;
+    return NULL;
 }
 

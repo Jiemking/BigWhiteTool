@@ -1,9 +1,12 @@
 #include "Mem.h"
 
-
+// 全局变量，用于存储进程ID
 int pidA=0;
 bool DDBUG = false;
+
+// 函数用于执行虚拟内存操作
 bool pvm(void *address, void *buffer, size_t size, bool iswrite) {
+    // 本地和远程的iovec结构体
     struct iovec local[1];
     struct iovec remote[1];
 
@@ -12,10 +15,12 @@ bool pvm(void *address, void *buffer, size_t size, bool iswrite) {
     remote[0].iov_base = address;
     remote[0].iov_len = size;
 
+    // 检查进程ID是否有效
     if (pidA < 0) {
         return false;
     }
 
+    // 根据架构定义系统调用号
 #if defined(__arm__)
     int process_vm_readv_syscall = 376;
     int process_vm_writev_syscall = 377;
@@ -30,17 +35,19 @@ bool pvm(void *address, void *buffer, size_t size, bool iswrite) {
     int process_vm_writev_syscall = 311;
 #endif
 
+    // 执行系统调用
     ssize_t bytes = syscall((iswrite ? process_vm_writev_syscall : process_vm_readv_syscall),
                             pidA, local, 1, remote, 1, 0);
-    //printf("process_vm_readv reads %zd bytes from PID: %d\n", bytes, pidA);
     return bytes == size;
 }
 
+
+// 函数用于读取虚拟内存
 bool vm_readv(void *address, void *buffer, size_t size) {
     return pvm(address, buffer, size, false);
 }
 
-
+// 函数用于通过名称查找进程ID
 pid_t find_pid(const char *process_name) {
     int id;
     pid_t pid = -1;
@@ -80,6 +87,8 @@ pid_t find_pid(const char *process_name) {
     return pid;
 }
 
+
+// 函数用于获取模块的基地址
 kaddr get_module_base(const char *module_name) {
     FILE *fp;
     kaddr addr = 0;

@@ -4,42 +4,54 @@
 #include "base.h"
 #include "engine.h"
 
-
-
+// FNameEntryHeader 结构定义
 struct FNameEntryHeader
 {
 public:
-	uint16_t bIsWide : 1;
-	static constexpr uint32_t ProbeHashBits = 5;
-	uint16_t LowercaseProbeHash : ProbeHashBits;
-	uint16_t Len : 10;
+    // 宽字符标志
+    uint16_t bIsWide : 1;
+    // 哈希位数
+    static constexpr uint32_t ProbeHashBits = 5;
+    // 小写哈希
+    uint16_t LowercaseProbeHash : ProbeHashBits;
+    // 长度
+    uint16_t Len : 10;
 };
 
-
+// FNameEntry 结构定义
 struct FNameEntry
 {
 public:
-	FNameEntryHeader Header;
+    // 头部信息
+    FNameEntryHeader Header;
 };
 
-class FNamePool 
+// FNamePool 类定义
+class FNamePool
 {
 public:
-	string GetName(uint32_t NameId);
+    // 获取名字的函数
+    string GetName(uint32_t NameId);
 };
 
-class TUObjectArray 
+// TUObjectArray 类定义
+class TUObjectArray
 {
 public:
-	uint32_t GetNumChunks();
-	
-	uint32_t GetNumElements();
+    // 获取块数量的函数
+    uint32_t GetNumChunks();
 
-	UE_UObject* GetObjectFormId(size_t Id);
+    // 获取元素数量的函数
+    uint32_t GetNumElements();
 
-	UE_UObject* FindObject(string FullName);
+    // 根据ID获取对象的函数
+    UE_UObject* GetObjectFormId(size_t Id);
+
+    // 根据全名查找对象的函数
+    UE_UObject* FindObject(string FullName);
 };
 
+// 全局变量声明
 extern uint64_t GameBase;
 extern uint64_t AddrGNames;
 extern uint64_t AddrGObject;

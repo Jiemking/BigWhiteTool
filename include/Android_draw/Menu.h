@@ -143,7 +143,7 @@ namespace Menu{
                         Address=XY_GetAddr(Address+inputValue);
                     }
                 }
-                cout << i << endl;
+                //cout << i << endl;
             }
             addr.Address = Address;
 
@@ -153,9 +153,15 @@ namespace Menu{
         if (ImGui::Button("Uworld")){
             addr.Address= (addr.Uworld);
         }
-        if (ImGui::Button("Debug")){
+        ImGui::SameLine();
+        if (ImGui::Button("玩家控制器")){
+            addr.Address= (addr.PlayerController);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("自身")){
             addr.Address= (addr.AcknowledgedPawn);
         }
+
 
 
 
@@ -227,7 +233,7 @@ namespace Menu{
                 isShow= true;
             }
             if (ImGui::Button("获取Uworld",ImVec2(400,75))){
-                AddrOffsets Uworld = UEinit::GetUworld();
+                AddrOffsets Uworld = UEinit::GetGWorld();
                 sprintf(UWorldBuffer,"Uworld->%lx  Offset->%x",Uworld.Addr,Uworld.Offsets);
                 cout << UWorldBuffer <<"\n" <<endl;
                 isShow= true;
@@ -246,7 +252,7 @@ namespace Menu{
                     if (Name.length() >= prefix.length() + suffix.length() &&
                             Name.compare(0, prefix.length(), prefix) == 0 &&
                             Name.compare(Name.length() - suffix.length(), suffix.length(), suffix) == 0)  {
-                        cout << i << "      " << Name << endl;
+                        //cout << i << "      " << Name << endl;
                         fprintf(outFile, "{%d,\"%s\"}\n", i,Name.c_str());
                     }
                 }
@@ -266,7 +272,7 @@ namespace Menu{
                     if (Name.length() >= prefix.length() + suffix.length() &&
                             Name.compare(0, prefix.length(), prefix) == 0 &&
                             Name.compare(Name.length() - suffix.length(), suffix.length(), suffix) == 0)  {
-                        cout << i << "      " << Name << endl;
+                        //cout << i << "      " << Name << endl;
                         fprintf(outFile, "{%d,\"%s\"}\n", i,Name.c_str());
                     }
                 }

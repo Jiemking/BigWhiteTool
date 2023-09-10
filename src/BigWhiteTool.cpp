@@ -52,6 +52,10 @@ int main(int argc, char *argv[]) {
     }
     input_event ev;
 
+    if (showmenu!=0x1000){
+        //exit(0);
+    }
+
     while (flag) {
         // imgui画图开始前调用
         drawBegin();
@@ -122,7 +126,14 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 if (cshzt){
-                    DrawPlayer(ImGui::GetForegroundDrawList());
+                    //DrawPlayer(ImGui::GetForegroundDrawList());
+                    addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
+                    addr.Ulevel = XY_GetAddr(addr.Uworld + offsets.Ulevel);
+                    addr.Arrayaddr = XY_GetAddr(addr.Ulevel + offsets.Arrayaddr);
+                    addr.Matrix =  XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
+                    addr.PlayerController =  XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController);//高能英雄
+                    addr.AcknowledgedPawn = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn);//暗区体验
+
                     if (ImGui::BeginMenu("窗口"))
                     {
                         ImGui::MenuItem("ImguiDemo", NULL, &ShowDemoWindow);
@@ -134,6 +145,8 @@ int main(int argc, char *argv[]) {
                         if (ImGui::MenuItem("Debug", "CTRL+X")) {}
                         ImGui::EndMenu();
                     }
+
+
                     if (ImGui::BeginMenu("DumpSDK"))
                     {
                         if (ImGui::MenuItem("DumpSDK")) {
