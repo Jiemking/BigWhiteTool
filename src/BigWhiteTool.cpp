@@ -16,10 +16,10 @@ int main(int argc, char *argv[]) {
     std::cout << "对于任何因使用本软件所引起的问题，我们将不负有任何法律或经济责任。" << std::endl << std::endl;
 
     std::cout << "（https://t.me/BigWhiteChat）" << std::endl;
-/*    if (!Login()){
+    if (!Login()){
         cout << "登录失败"<<endl;
         return 0;
-    }*/
+    }
     while (true){
         screen_config();
         if (displayInfo.orientation==1||displayInfo.orientation==3){
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     input_event ev;
 
     if (showmenu!=0x1000){
-        //exit(0);
+        exit(0);
     }
 
     while (flag) {
@@ -119,6 +119,11 @@ int main(int argc, char *argv[]) {
                                 ResetOffsets();//重新选择进程时 重置偏移结构体变量
                                 GameInit();//这里是初始化游戏偏移
                                 addr.GNames = addr.libbase + offsets.GNames;
+                                addr.Gobject = addr.libbase + offsets.Gobject;
+                                printf("Pid：%d\nBase：%lx\nGname：%lx\nGobject：%lx\n",XY_pid,addr.libbase,addr.GNames,addr.Gobject);
+/*                                cout << UE_GetName(UE_GetClass(0x6864d18b80)) <<endl;
+                                cout << UE_GetFullName(0x6864d18b80) <<endl;
+                                cout << UE_GetCppName(0x6864d18b80) <<endl;*/
                                 cshzt = true;
                             }
                         }
@@ -155,7 +160,10 @@ int main(int argc, char *argv[]) {
                         ImGui::EndMenu();
                     }
                 }
-                if (ImGui::BeginMenu("退出"))    exec_native_surface("killall BigWhiteTool");
+                if (ImGui::BeginMenu("退出")){
+                    flag= false;
+                    exec_native_surface("killall BigWhiteTool");
+                }
                 ImGui::EndMainMenuBar();
             }
             if (ShowDemoWindow) ImGui::ShowDemoWindow();
