@@ -389,8 +389,8 @@ namespace Menu{
 
             for (size_t i = 0; i < 0x300; i+=4) {
                 long int Tmp = XY_GetAddr(Address + i);
-                string KlassName = GetClassName(Tmp);
-                string outerName = GetOuterName(Tmp);
+                string KlassName = UE_GetName(UE_GetClass(Tmp));
+                string outerName = UE_GetName(UE_GetOuter(Tmp));
                 printf("[%lx](%lx) %s  %s\n",i,XY_GetAddr((Address + i)),KlassName.c_str(),outerName.c_str());
             }
         }

@@ -31,8 +31,6 @@ extern int pidA;
 // 函数原型
 bool pvm(void *address, void *buffer, size_t size, bool iswrite);
 bool vm_readv(void *address, void *buffer, size_t size);
-pid_t find_pid(const char *process_name);
-kaddr get_module_base(const char *module_name);
 
 // 模板函数用于读取内存
 template<typename T>

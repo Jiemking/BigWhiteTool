@@ -59,7 +59,7 @@ int BigWhite_process_vm_writev_syscall = 348;
 int BigWhite_process_vm_readv_syscall = 310;
 int BigWhite_process_vm_writev_syscall = 311;
 #endif
-
+typedef uintptr_t kaddr;
 ssize_t BigWhite_process_v(pid_t __pid, const struct iovec *__local_iov, unsigned long __local_iov_count,
                   const struct iovec *__remote_iov, unsigned long __remote_iov_count,
                   unsigned long __flags, bool iswrite)
@@ -327,5 +327,12 @@ T XY_TRead(void* address) {
     return data;
 }
 
+// 模板函数用于读取内存（重载）
+template<typename T>
+T XY_TRead(kaddr address) {
+    T data{};
+    BigWhite_pvm(reinterpret_cast<void *>(address), reinterpret_cast<void *>(&data), sizeof(T), false);
+    return data;
+}
 
 #endif

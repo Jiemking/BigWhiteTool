@@ -4,23 +4,23 @@
 #include "file.h"
 
 
-
+// 获取类对象
 UE_UClass* UE_UObject::GetClass()
 {
 	return Read<UE_UClass*>(this + Offsets.UObject.Class);
 }
-
+// 获取外部对象
 UE_UObject* UE_UObject::GetOuter()
 {
 	return Read<UE_UClass*>(this + Offsets.UObject.Outer);
 }
-
+// 获取对象名称
 string UE_UObject::GetName()
 {
 	uint32_t NameId = Read<uint32_t>(this + Offsets.UObject.Name);
 	return NamePoolData->GetName(NameId);
 }
-
+// 获取C++名称
 string UE_UObject::GetCppName()
 {
 	string Name = GetName();
@@ -43,7 +43,7 @@ string UE_UObject::GetCppName()
 
 	return "F" + Name;
 }
-
+// 获取完整名称
 string UE_UObject::GetFullName()
 {
 	string temp = GetName();
@@ -58,7 +58,7 @@ string UE_UObject::GetFullName()
 
 	return GetClass()->GetName() + "  " + temp;
 }
-
+// 获取静态类对象
 UE_UObject* UE_UObject::StaticClass()
 {
 	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/CoreUObject.Object");
@@ -70,7 +70,7 @@ UE_UObject* UE_AActor::StaticClass()
 	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/Engine.Actor");
 	return cmp;
 }
-
+// 获取枚举名称
 Tarray UE_UEnum::GetNames()
 {
 	return Read<Tarray>(this + Offsets.UEnum.Names);
@@ -87,7 +87,7 @@ UE_UObject* UE_UClass::StaticClass()
 	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/CoreUObject.Class");
 	return cmp;
 }
-
+// 获取函数
 uint64_t UE_UFunction::GetFunc()
 {
 	return Read<uint64_t>(this + Offsets.UFunction.Func);
@@ -104,43 +104,43 @@ UE_UObject* UE_UScriptStruct::StaticClass()
 	static UE_UObject* cmp = ObjObjects->FindObject("Class  /Script/CoreUObject.ScriptStruct");
 	return cmp;
 }
-
+// 获取结构大小
 int UE_UStruct::GetSize()
 {
 	return Read<int>(this + Offsets.UStruct.PropertiesSize);
 }
-
+// 获取父结构
 UE_UStruct* UE_UStruct::GetSuper()
 {
 	return Read<UE_UStruct*>(this + Offsets.UStruct.SuperStruct);
 }
-
+// 获取子属性
 UE_FField* UE_UStruct::GetChildProperties()
 {
 	return Read<UE_FField*>(this + Offsets.UStruct.ChildProperties);
 }
-
+// 获取属性大小
 uint32_t UE_UStruct::GetPropertiesSize()
 {
 	return Read<uint32_t>(this + Offsets.UStruct.PropertiesSize);
 }
-
+// 获取字段大小
 int UE_FField::GetSize()
 {
 	return Read<int>(this + Offsets.FProperty.ElementSize);
 }
-
+// 获取字段偏移量
 int UE_FField::GetOffset()
 {
 	return Read<int>(this + Offsets.FProperty.Offset);
 }
-
+// 获取字段名称
 string UE_FField::GetName()
 {
 	uint32_t NameId = Read<uint32_t>(this + Offsets.FField.Name);
 	return NamePoolData->GetName(NameId);
 }
-
+// 获取字段类型
 string UE_FField::GetType()
 {
 	uint32_t NameId = Read<uint32_t>(Read<uint32_t*>(this + Offsets.FField.Class));
@@ -179,17 +179,17 @@ string UE_FField::GetType()
 
 	return GetUEObject()->GetCppName() + "*";
 }
-
+// 获取下一个字段
 UE_FField* UE_FField::GetNext()
 {
 	return Read<UE_FField*>(this + Offsets.FField.Next);
 }
-
+// 获取UE对象
 UE_UObject* UE_FField::GetUEObject()
 {
 	return Read<UE_UObject*>(this + Offsets.FProperty.Size);
 }
-
+// 获取Map类型字符串
 string UE_FMapProperty::GetTypeStr()
 {
 	UE_FField* KeyProp = Read<UE_FField*>(this + Offsets.FProperty.Size);
@@ -197,19 +197,19 @@ string UE_FMapProperty::GetTypeStr()
 
 	return "TMap<" + KeyProp->GetType() + "," + ValueProp->GetType() + ">";
 }
-
+// 获取结构类型字符串
 string UE_FStructProperty::GetTypeStr()
 {
 	return GetUEObject()->GetCppName();
 }
-
+// 获取字节类型字符串
 string UE_FByteProperty::GetTypeStr()
 {
 	UE_UObject* obj = GetUEObject();
 	if (obj) return "enum class " + obj->GetName();
 	return "char";
 }
-
+// 获取布尔类型字符串
 string UE_FBoolProperty::GetTypeStr()
 {
 	if (Read<uint8_t>(this + Offsets.FProperty.Size + 3) == 0xFF)
@@ -217,38 +217,38 @@ string UE_FBoolProperty::GetTypeStr()
 
 	return "char";
 }
-
+// 获取对象基础类型字符串
 string UE_FObjectPropertyBase::GetTypeStr()
 {
 	return GetUEObject()->GetCppName() + "*";
 }
-
+// 获取类属性类型字符串
 string UE_FClassProperty::GetTypeStr()
 {
 	UE_UObject* obj = Read<UE_UObject*>(this + Offsets.FProperty.Size + 8);
 	return obj->GetCppName() + "*";
 }
-
+// 获取集合类型字符串
 string UE_FSetProperty::GetTypeStr()
 {
 	return "TSet<" + GetUEObject()->Cast<UE_FField*>()->GetType() + ">";
 }
-
+// 获取数组类型字符串
 string UE_FArrayProperty::GetTypeStr()
 {
 	return "TArray<" + GetUEObject()->Cast<UE_FField*>()->GetType() + ">";
 }
-
+// 获取枚举属性类型字符串
 string UE_FEnumProperty::GetTypeStr()
 {
 	return "enum class " + Read<UE_UObject*>(this + Offsets.FProperty.Size + 8)->GetName();
 }
-
+// 获取接口属性类型字符串
 string UE_FInterfaceProperty::GetTypeStr()
 {
 	return "TScriptInterface<I" + GetUEObject()->GetName() + ">";
 }
-
+// 生成枚举类型的C++代码并写入文件
 void UE_UEnum::Generate()
 {
     static FILE* EnumName = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Enum.cpp", "w+");
@@ -295,7 +295,7 @@ void UE_UEnum::Generate()
 
     fprintf(EnumName,"%s",(FullName + ClassName + Type + "\n{\n" + Body + "\n};\n\n\n").c_str());
 }
-
+// 生成类的C++代码并写入文件
 void UE_UClass::Generate()
 {
     static FILE* UClass = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Class.cpp", "w+");
@@ -408,7 +408,7 @@ void UE_UClass::Generate()
 	}
 	fprintf(UClass,"%s",(FullName + ClassSize + ClassName + Body + "};\n\n\n").c_str());
 }
-
+// 生成函数的C++代码并写入文件
 void UE_UFunction::Generate()
 {
     static FILE* Function = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Function.cpp", "w+");
@@ -444,7 +444,7 @@ void UE_UFunction::Generate()
 	}
     fprintf(Function,"%s",(FullName + Offset + Ret + FuncName + "(" + Body + ");\n\n\n").c_str());
 }
-
+// 生成结构体的C++代码并写入文件
 void UE_UScriptStruct::Generate()
 {
     static FILE* Struct = fopen("/storage/emulated/0/A_BigWhiteTool/SDK/Struct.cpp", "w+");
@@ -516,7 +516,6 @@ void UE_UScriptStruct::Generate()
 			{
 				sbuf += " ";
 			}
-
 
             memset(cbuf, 0, sizeof(cbuf));
 			sprintf(cbuf, "// 0x%.4X(0x%.4X)\n", Pos, diff);
