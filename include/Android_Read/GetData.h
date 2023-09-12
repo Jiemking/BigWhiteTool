@@ -10,18 +10,7 @@ string selectedPID,ProcessName;
 #endif //BIGWHITETOOL_GETDATA_H
 
 void GameInit(){
-    addr.libbase = XY_GetModuleBase(std::stoi(selectedPID));
-    if (readmode==2){
-        bool ret=checkDriver();
-        cout << (ret?"biu加载成功":"biu加载失败") << endl;
-        if (!ret){
-            exec_native_surface("killall BigWhiteTool");
-        }
-        setpid(std::stoi(selectedPID));
-    }else if (readmode==3){
-        cout << "这个驱动不好调用没写" << endl;
-        exec_native_surface("killall BigWhiteTool");
-    }
+    addr.libbase = BigWhite_GetModuleBase(std::stoi(selectedPID),"libUE4.so");
     if (ProcessName=="com.tencent.mf.uam"){//暗区
         cout << "AQ"<< endl;
         offsets.GNames=0xB1D5640;

@@ -1,228 +1,42 @@
 //
 // Created by Administrator on 2023-08-16.
 //
+#ifndef BIGWHITETOOL_TOOL_H
+#define BIGWHITETOOL_TOOL_H
 #include <Enum.h>
 #include <fstream>
 #include<Android_Read/Android_Read.h>
-#include "../../DumperSDK/dumper.h"
-#include "../../DumperSDK/base.h"
-#include "../../DumperSDK/engine.h"
-
-#ifndef BIGWHITETOOL_TOOL_H
-#define BIGWHITETOOL_TOOL_H
+#include "Android_draw/ItemData.h"
+#include "engine.h"
+#include "generic.h"
 int tencent = 0;//这个全局变量过滤进程使用
 
 std::string GetName_Old(int i) //旧版本算法
 {
-    uintptr_t G_Names = XY_GetAddr(addr.GNames);
+    uintptr_t G_Names = BigWhite_GetPtr64(addr.GNames);
     int Id = (int)(i / (int)0x4000);
     int Idtemp = (int)(i % (int)0x4000);
-    auto NamePtr = XY_GetAddr((G_Names + Id * 8));
-    auto Name = XY_GetAddr((NamePtr + 8 * Idtemp));
+    auto NamePtr = BigWhite_GetPtr64((G_Names + Id * 8));
+    auto Name = BigWhite_GetPtr64((NamePtr + 8 * Idtemp));
     char name[0x100] = { 0 };
-    if (XY_Read((Name + 0xC), name, 0x100)) //0xC需要手动推算，默认是0x10
+    if (BigWhite_vm_readv((Name + 0xC), name, 0x100)) //0xC需要手动推算，默认是0x10
     {
         return name;
     }
     return {};
 }
 
-std::string GetName_New(uint32_t index) //新版本算法
-{
-    unsigned int Block = index >> 16;
-    unsigned short int Offset = index & 65535;
-
-    uintptr_t FNamePool = addr.GNames;
-
-    uintptr_t NamePoolChunk = XY_GetAddr(FNamePool+0x40 + (Block * 0x8));
-
-    uintptr_t FNameEntry = NamePoolChunk + (0x2 * Offset);
-
-    short int FNameEntryHeader = XY_GetDword(FNameEntry);
-    uintptr_t StrPtr = FNameEntry + 0x2;
-
-    int StrLength = FNameEntryHeader >> 6;
-    if (StrLength > 0 && StrLength < 250) {
-        string name(StrLength, '\0');
-        XY_Read(StrPtr, name.data(), StrLength * sizeof(char));
-        name.shrink_to_fit();
-        return name;
-    } else {
-        return "None";
-    }
-}
 
 std::string GetName(uint64_t Address) {
-    int FnameComparisonIndex = XY_GetDword(Address + Offsets.UObject.Name);
+    int FnameComparisonIndex = BigWhite_GetDword(Address + Offsets.UObject.Name);
     std::string GetName;
     if (addr.isUE423){
-        GetName = GetName_New(FnameComparisonIndex); //新算法获取Name
+        GetName = NamePoolData->GetName(FnameComparisonIndex); //新算法获取Name
     }else{
         GetName = GetName_Old(FnameComparisonIndex); //旧版本算法获取Name
     }
     return GetName;
 }
-
-
-uint32_t UE_GetNumChunks()
-{
-    return XY_TRead<uint32_t>(addr.libbase + offsets.Gobject + 0x10 + Offsets.TUObjectArray.NumChunks);
-}
-
-uint32_t UE_GetNumElements()
-{
-    return XY_TRead<uint32_t>(addr.libbase + offsets.Gobject + 0x10 + Offsets.TUObjectArray.NumElements);
-}
-
-uint64_t UE_GetObjectFormId(size_t Id)
-{
-    size_t i = 0;
-    for (; Id > 65536; i++)
-    {
-        Id -= 65536;
-    }
-
-    uint8_t* Chunks = XY_TRead<uint8_t*>(addr.libbase + offsets.Gobject + 0x10) + i * 8;
-    uint8_t* Item = XY_TRead<uint8_t*>(Chunks) + Offsets.FUObjectItem.Size * Id;
-
-    return XY_TRead<uint64_t>(Item + Offsets.FUObjectItem.Object);
-}
-
-
-// 获取对象名称
-string UE_GetName(uint64_t Address)
-{
-    int NameId = XY_TRead<int>(Address + Offsets.UObject.Name);
-    return GetName_New(NameId);
-}
-// 获取类对象
-uint64_t UE_GetClass(uint64_t Address)
-{
-    return XY_TRead<uint64_t>(Address + Offsets.UObject.Class);
-}
-// 获取类对象名称
-string UE_GetClassName(uint64_t Address)
-{
-    return UE_GetName(XY_TRead<uint64_t>(Address + Offsets.UObject.Class));
-}
-
-// 获取外部对象
-uint64_t UE_GetOuter(uint64_t Address)
-{
-    return XY_TRead<uint64_t>(Address + Offsets.UObject.Outer);
-}
-// 获取外部对象名称
-string UE_GetOuterName(uint64_t Address)
-{
-    return UE_GetName(XY_TRead<uint64_t>(Address + Offsets.UObject.Outer));
-}
-
-
-// 获取父结构
-uint64_t UE_GetSuper(uint64_t Address)
-{
-    return XY_TRead<uint64_t>(Address + Offsets.UStruct.SuperStruct);
-}
-
-// 获取完整名称
-string UE_GetFullName(uint64_t Address)
-{
-    string temp = UE_GetName(Address);
-
-    if (temp.empty() || temp == "None")
-        return {};
-
-    for (auto Outer = UE_GetOuter(Address); Outer; Outer = UE_GetOuter(Outer))
-    {
-        temp = UE_GetName(Outer) + '.' + temp;
-    }
-
-    return UE_GetClassName(Address) + "  " + temp;
-}
-
-uint64_t UE_FindObject(string FullName)
-{
-    for (size_t i = 0; i < UE_GetNumElements(); i++)
-    {
-        uint64_t Object = UE_GetObjectFormId(i);
-        if (Object && UE_GetFullName(Object) == FullName)
-            return Object;
-    }
-    return 0;
-}
-uint64_t UE_UFunction_StaticClass()
-{
-    static uint64_t cmp = UE_FindObject("Class  /Script/CoreUObject.Function");
-    return cmp;
-}
-
-uint64_t UE_UScriptStruct_StaticClass()
-{
-    static uint64_t cmp = UE_FindObject("Class  /Script/CoreUObject.ScriptStruct");
-    return cmp;
-}
-
-
-// 获取静态类对象
-uint64_t UE_UObject_StaticClass()
-{
-    static uint64_t cmp = UE_FindObject("Class  /Script/CoreUObject.Object");
-    return cmp;
-}
-
-uint64_t UE_AActor_StaticClass()
-{
-    static uint64_t cmp = UE_FindObject("Class  /Script/Engine.Actor");
-    return cmp;
-}
-// 获取枚举名称
-Tarray UE_UEnum_GetNames(uint64_t Address)
-{
-    return XY_TRead<Tarray>(Address + Offsets.UEnum.Names);
-}
-
-uint64_t UE_UEnum_StaticClass()
-{
-    static uint64_t cmp = UE_FindObject("Class  /Script/CoreUObject.Enum");
-    return cmp;
-}
-
-uint64_t UE_UClass_StaticClass()
-{
-    static uint64_t cmp = UE_FindObject("Class  /Script/CoreUObject.Class");
-    return cmp;
-}
-// 获取函数
-uint64_t UE_UFunction_GetFunc(uint64_t Address)
-{
-    return XY_TRead<uint64_t>(Address + Offsets.UFunction.Func);
-}
-
-
-// 获取C++名称
-string UE_GetCppName(uint64_t Address)
-{
-    string Name = UE_GetName(Address);
-
-    if (Name == "" || Name == "None")
-        return string();
-
-    for (uint64_t c = UE_GetClass(Address); c; c = UE_GetSuper(c))
-    {
-        if (c > addr.libbase)
-            break;
-
-        if (c == UE_AActor_StaticClass())
-            return "A" + Name;
-
-        if (c == UE_UObject_StaticClass())
-            return "U" + Name;
-
-    }
-
-    return "F" + Name;
-}
-
 
 
 std::vector<ProcessInfo> GetTencentProcesses() {
@@ -268,9 +82,9 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
     for (size_t i = 0; i < 0x500; i+=4) {
-        uint64_t Tmp = XY_GetAddr(Address + i);
-        string KlassName = UE_GetClassName(Tmp);
-        string outerName = UE_GetName(Tmp);
+        UE_UObject* Tmp = XY_TRead<UE_UObject*>(Address + i);
+        string KlassName = Tmp->GetClass()->GetName();
+        string outerName = Tmp->GetName();
         string trans = ItemData::UamoGetString(KlassName);
 
         StructureList data;
@@ -280,9 +94,9 @@ static vector<StructureList> foreachAddress(uint64_t Address) {
         data.trans = trans;
         data.offset=i;
 
-        data.P = XY_GetAddr(data.address);
-        data.F= XY_GetFloat(data.address);
-        data.D= XY_GetDword(data.address);
+        data.P = BigWhite_GetPtr64(data.address);
+        data.F= BigWhite_GetFloat(data.address);
+        data.D= BigWhite_GetDword(data.address);
 //        if (outerName.find("None") && KlassName.find("null") && getPtr64(data.address)==0)
 
         structureList.push_back(data);
@@ -338,9 +152,9 @@ namespace UEinit{
             if (addr.isUE423){
                 TMP = addr.libbase + (0x8*i) + 0x40;
                 if (TMP != 0){
-                    uint64_t TMPGnames = XY_GetAddr(TMP);
+                    uint64_t TMPGnames = BigWhite_GetPtr64(TMP);
                     char name[0x100];
-                    XY_Read(TMPGnames+0x8, name, 0xc);
+                    BigWhite_vm_readv(TMPGnames+0x8, name, 0xc);
                     std::string aa = name;
                     if (aa.find("ByteProperty") != std::string::npos){
                         addrOffsets.Addr=addr.libbase+(0x8*i);
@@ -355,15 +169,15 @@ namespace UEinit{
 /*                printf("%lx",(0x8*i));
                 cout << "\n"<<endl;*/
                 if (TMP < 0x1000000000) continue;
-                uint64_t TMP1 = XY_GetAddr(TMP);
+                uint64_t TMP1 = BigWhite_GetPtr64(TMP);
                 if (TMP1 < 0x1000000000) continue;
-                uint64_t TMP2 = XY_GetAddr(TMP1);
+                uint64_t TMP2 = BigWhite_GetPtr64(TMP1);
                 if (TMP2 < 0x1000000000) continue;
-                uint64_t TMP3 = XY_GetAddr(TMP2);
+                uint64_t TMP3 = BigWhite_GetPtr64(TMP2);
                 if (TMP3 < 0x1000000000) continue;
                 uint64_t TMPGnames = TMP3;
                 char name[0x100];
-                XY_Read(TMPGnames+0x24, name, 0xc);
+                BigWhite_vm_readv(TMPGnames+0x24, name, 0xc);
                 std::string aa = name;
                 if (aa.find("ByteProperty") != std::string::npos){
                     addrOffsets.Addr=addr.libbase+(0x8*i);
@@ -385,9 +199,8 @@ namespace UEinit{
             uint64_t TMP;
             TMP = addr.libbase + offsets.GNames + (0x8*i);
             if (TMP < 0x1000000000) continue;
-            uint64_t TMP1 = XY_GetAddr(TMP);
-            if (TMP1 < 0x1000000000) continue;
-            string TMP1Class = UE_GetClassName(TMP1);
+            UE_UObject* TMP1 = XY_TRead<UE_UObject*>(TMP);
+            string TMP1Class = TMP1->GetClass()->GetName();
             if (TMP1Class=="World"){
                 addrOffsets.Addr=TMP;
                 addrOffsets.Offsets=offsets.GNames + (0x8*i);
@@ -406,9 +219,8 @@ namespace UEinit{
             uint64_t TMP;
             TMP = addr.libbase + offsets.GNames + (0x8*i);
             if (TMP < 0x1000000000) continue;
-            uint64_t TMP1 = XY_GetAddr(TMP);
-            if (TMP1 < 0x1000000000) continue;
-            string TMP1Class = UE_GetClassName(TMP1);
+            UE_UObject* TMP1 = XY_TRead<UE_UObject*>(TMP);
+            string TMP1Class = TMP1->GetClass()->GetName();
 
             if (TMP1Class=="World"){
                 addrOffsets.Addr=TMP;
@@ -428,18 +240,16 @@ namespace UEinit{
             uint64_t TMP;
             TMP = addr.libbase + offsets.GNames + (0x8*i) +0x10;
             if (TMP < 0x1000000000) continue;
-            uint64_t TMP1 = XY_GetAddr(TMP);
+            uint64_t TMP1 = BigWhite_GetPtr64(TMP);
             if (TMP1 < 0x1000000000) continue;
-            uint64_t TMP2 = XY_GetAddr(TMP1);
+            uint64_t TMP2 = BigWhite_GetPtr64(TMP1);
             if (TMP2 < 0x1000000000) continue;
-            uint64_t TMP3 = XY_GetAddr(TMP2);
-            if (TMP3 < 0x1000000000) continue;
-            uint64_t TMP4 = XY_GetAddr(TMP2+0x18);
-            if (TMP4 < 0x1000000000) continue;
-            string TMP3Class = UE_GetClassName(TMP3);
-            string TMP3Outer = UE_GetName(TMP3);
-            string TMP4Class = UE_GetClassName(TMP4);
-            string TMP4Outer = UE_GetName(TMP4);
+            UE_UObject* TMP3 = XY_TRead<UE_UObject*>(TMP2);
+            UE_UObject* TMP4 = XY_TRead<UE_UObject*>(TMP2+0x18);
+            string TMP3Class = TMP3->GetClass()->GetName();
+            string TMP3Outer = TMP3->GetName();
+            string TMP4Class = TMP4->GetClass()->GetName();
+            string TMP4Outer = TMP3->GetName();
             if (TMP3Class.find("Package") != std::string::npos && TMP3Outer.find("/Script/CoreUObject") != std::string::npos ){
                 if (TMP4Class.find("Class") != std::string::npos && TMP4Outer.find("Object") != std::string::npos ){
                     addrOffsets.Addr=TMP-0x10;
@@ -456,10 +266,10 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         int i=0;
         while (1){
-            uint64_t TMPEngine = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
+            UE_UObject* TMPEngine = XY_TRead<UE_UObject*>(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPEngine != 0){
-                if (UE_GetClassName(TMPEngine)== "GameEngine"){
-                    addrOffsets.Addr=TMPEngine;
+                if (TMPEngine->GetClass()->GetName()== "GameEngine"){
+                    addrOffsets.Addr= reinterpret_cast<uint64_t>(TMPEngine);
                     addrOffsets.Offsets=offsets.GNames + (0x8*i);
                     break;
                 }
@@ -475,35 +285,15 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         int i=0;
 
-        //cout << GetClassName(XY_GetAddr(XY_GetAddr(addr.libbase + 0xDFA6EF8)+0x20)) <<endl;
-        while (1){
-            uint64_t TMPMatrix = XY_GetAddr(addr.libbase + offsets.GNames + (0x8*i));
+        //cout << GetClassName(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + 0xDFA6EF8)+0x20)) <<endl;
+        while (true){
+            uint64_t TMPMatrix = BigWhite_GetPtr64(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPMatrix != 0){
-
-                if (UE_GetClassName(XY_GetAddr(TMPMatrix+0x20))== "Canvas"){
+                UE_UObject* Tmp = XY_TRead<UE_UObject*>((TMPMatrix+0x20));
+                if (Tmp->GetClass()->GetName()== "Canvas"){
                     addrOffsets.Addr=TMPMatrix;
                     addrOffsets.Offsets=offsets.GNames + (0x8*i);
                     offsets.Matrix=offsets.GNames + (0x8*i);
-                    uint64_t Tmp270 =   XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + 0x20) + 0x270);
-                    uint64_t Tmp280 =   XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + 0x20) + 0x280);
-
-                    float matrix270[16];
-                    memset(matrix270, 0, 16);
-                    XY_Read(Tmp270, matrix270, 16 * 4);
-
-                    float matrix280[16];
-                    memset(matrix280, 0, 16);
-                    XY_Read(Tmp280, matrix280, 16 * 4);
-
-                    if (matrix270[14]==3){
-                        cout << "20->270" << endl;
-                        offsets.Matrix1=0x20;
-                        offsets.Matrix2=0x270;
-                    } else if (matrix280[14]==3){
-                        cout << "20->280" << endl;
-                        offsets.Matrix1=0x20;
-                        offsets.Matrix2=0x280;
-                    }
                     break;
                 }
             }
@@ -516,19 +306,6 @@ namespace UEinit{
 
 namespace DumpSDK{
     bool DumpUObject(){
-        Dumper& Dump = Dumper::GetInstance();
-        pidA = BigWhite_pid;
-        uint64_t Base = addr.libbase;
-        try
-        {
-            Dump.Init(Base, Base + offsets.GNames, Base + offsets.Gobject + 0x10);
-        }
-        catch (const char* error)
-        {
-            printf("%s\n", error);
-            return -1;
-        }
-        Dump.Dump();
         return true;
     }
 }

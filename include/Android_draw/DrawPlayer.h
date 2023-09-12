@@ -14,17 +14,17 @@
 
 
 void DrawPlayer(ImDrawList *Draw) {
-    addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
-    addr.Ulevel = XY_GetAddr(addr.Uworld + offsets.Ulevel);
-    addr.Arrayaddr = XY_GetAddr(addr.Ulevel + offsets.Arrayaddr);
-/*    addr.Matrix =  XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区还需要跳进去一层
-    uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+320;//暗区国际*/
-/*    addr.Matrix =  XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//枪战特训
-    uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+250;*/
-/*    addr.Matrix =  XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区体验
-    uint64_t oneself = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + 0x180)+0x38))+0x30)+330;//暗区体验  */
-    addr.Matrix =  XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
-    addr.AcknowledgedPawn = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn;//暗区体验
+    addr.Uworld = BigWhite_GetPtr64(addr.libbase + offsets.Uworld);
+    addr.Ulevel = BigWhite_GetPtr64(addr.Uworld + offsets.Ulevel);
+    addr.Arrayaddr = BigWhite_GetPtr64(addr.Ulevel + offsets.Arrayaddr);
+/*    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区还需要跳进去一层
+    uint64_t oneself = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + 0x180)+0x38))+0x30)+320;//暗区国际*/
+/*    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//枪战特训
+    uint64_t oneself = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + 0x180)+0x38))+0x30)+250;*/
+/*    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区体验
+    uint64_t oneself = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + 0x180)+0x38))+0x30)+330;//暗区体验  */
+    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
+    addr.AcknowledgedPawn = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn;//暗区体验
 
     //7c0e74ff38
 /*    printf("矩阵：%lx",addr.libbase + offsets.Matrix);
@@ -34,29 +34,29 @@ void DrawPlayer(ImDrawList *Draw) {
     int py = displayInfo.height / 2;
     int px = displayInfo.width / 2;
 
-    int ArrayaddrCount = XY_GetDword( addr.Ulevel+ offsets.ArrayaddrCount);//数量
+    int ArrayaddrCount = BigWhite_GetDword( addr.Ulevel+ offsets.ArrayaddrCount);//数量
     float matrix[16];
     memset(matrix, 0, 16);
-    XY_Read(addr.Matrix, matrix, 16 * 4);
+    BigWhite_vm_readv(addr.Matrix, matrix, 16 * 4);
 
     //cout <<ArrayaddrCount<<endl;
     for (int i = 0; i < ArrayaddrCount; i++) {
 
-        uint64_t Objaddr = XY_GetAddr(addr.Arrayaddr + 8 * i);  // 遍历数量次数
+        uint64_t Objaddr = BigWhite_GetPtr64(addr.Arrayaddr + 8 * i);  // 遍历数量次数
         if (Objaddr == 0x0000000000 || Objaddr == 0 || Objaddr == 0x000 )   continue;
         // 自身坐标
         Vector3A Z;
-        XY_Read(XY_GetAddr(addr.AcknowledgedPawn + offsets.RootComponent) + offsets.XYZ_X, &Z, sizeof(Z)); // 自己坐标
+        BigWhite_vm_readv(BigWhite_GetPtr64(addr.AcknowledgedPawn + offsets.RootComponent) + offsets.XYZ_X, &Z, sizeof(Z)); // 自己坐标
 
 
         // 敌人和物资坐标
         Vector3A D;
-        XY_Read(XY_GetAddr(Objaddr + offsets.RootComponent) + offsets.XYZ_X, &D, sizeof(D)); // 对象坐标
+        BigWhite_vm_readv(BigWhite_GetPtr64(Objaddr + offsets.RootComponent) + offsets.XYZ_X, &D, sizeof(D)); // 对象坐标
 
         //吸人
-/*        BigWhite_WriteFloat(XY_GetAddr(Objaddr + offsets.RootComponent) + offsets.XYZ_X,Z.X);
-        BigWhite_WriteFloat(XY_GetAddr(Objaddr + offsets.RootComponent) + offsets.XYZ_X+0x4,Z.Y);
-        BigWhite_WriteFloat(XY_GetAddr(Objaddr + offsets.RootComponent) + offsets.XYZ_X+0x8,Z.Z+3000.0f);*/
+/*        BigWhite_WriteFloat(BigWhite_GetPtr64(Objaddr + offsets.RootComponent) + offsets.XYZ_X,Z.X);
+        BigWhite_WriteFloat(BigWhite_GetPtr64(Objaddr + offsets.RootComponent) + offsets.XYZ_X+0x4,Z.Y);
+        BigWhite_WriteFloat(BigWhite_GetPtr64(Objaddr + offsets.RootComponent) + offsets.XYZ_X+0x8,Z.Z+3000.0f);*/
         if (D.X == 0 || D.Y == 0 || D.Z == 0)   continue;
 
         float camera,r_x,r_y,r_w;

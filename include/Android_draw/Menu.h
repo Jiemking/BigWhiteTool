@@ -1,8 +1,9 @@
 //
 // Created by Administrator on 2023-08-16.
 //
-#include <Enum.h>
+
 #include <Tool.h>
+
 
 #ifndef BIGWHITETOOL_MENU_H
 #define BIGWHITETOOL_MENU_H
@@ -140,7 +141,7 @@ namespace Menu{
                     if (i==0){
                         Address += inputValue;
                     }else{
-                        Address=XY_GetAddr(Address+inputValue);
+                        Address=BigWhite_GetPtr64(Address+inputValue);
                     }
                 }
                 //cout << i << endl;
@@ -160,6 +161,10 @@ namespace Menu{
         ImGui::SameLine();
         if (ImGui::Button("自身")){
             addr.Address= (addr.AcknowledgedPawn);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("矩阵")){
+            addr.Address= BigWhite_GetPtr64(addr.libbase+offsets.Matrix);
         }
 
 
@@ -245,7 +250,7 @@ namespace Menu{
                 FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/String.txt", "w+");
                 //已翻译
                 for (int i = 0; i < 10000000; ++i) {
-                    string Name = GetName_New(i);
+                    string Name = NamePoolData->GetName(i);
                     if (Name.find("None") != std::string::npos){
                         continue;
                     }
@@ -265,7 +270,7 @@ namespace Menu{
                 FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/String2.txt", "w+");
                 //已翻译
                 for (int i = 0; i < 10000000; ++i) {
-                    string Name = GetName_New(i);
+                    string Name = NamePoolData->GetName(i);
                     if (Name.find("None") != std::string::npos){
                         continue;
                     }
@@ -325,7 +330,7 @@ namespace Menu{
         {
             float matrix[16];
             memset(matrix, 0, 16);
-            XY_Read(addr.Matrix, matrix, 16 * 4);
+            BigWhite_vm_readv(addr.Matrix, matrix, 16 * 4);
             string result;
             for (float i : matrix) {
                 //std::cout << matrix[i] << " ";
@@ -382,16 +387,16 @@ namespace Menu{
                     if (i == 0) {
                         Address += inputValue;
                     } else {
-                        Address = XY_GetAddr(Address + inputValue);
+                        Address = BigWhite_GetPtr64(Address + inputValue);
                     }
                 }
             }
 
             for (size_t i = 0; i < 0x300; i+=4) {
-                long int Tmp = XY_GetAddr(Address + i);
-                string KlassName = UE_GetName(UE_GetClass(Tmp));
-                string outerName = UE_GetName(UE_GetOuter(Tmp));
-                printf("[%lx](%lx) %s  %s\n",i,XY_GetAddr((Address + i)),KlassName.c_str(),outerName.c_str());
+                UE_UObject* Tmp = XY_TRead<UE_UObject*>(Address + i);
+                string KlassName = Tmp->GetClass()->GetName();
+                string outerName = Tmp->GetName();
+                printf("[%lx](%lx) %s  %s\n",i,BigWhite_GetPtr64((Address + i)),KlassName.c_str(),outerName.c_str());
             }
         }
         // 渲染虚拟键盘

@@ -35,9 +35,9 @@ include_directories( # 设置全局头文件目录 使其他源码文件可在�
         include/Android_shm
         include/native_surface
         include/Android_draw
+        include/Android_dump
         include/request
         include/tools
-        #        include/Android_dump
         ffmpeg/include
         my_android_opencv/include
         my_android_opencv/modules/highgui/include
@@ -74,7 +74,7 @@ set_target_properties(biu PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/
 
 
 ##################### 设置三方库文件目录 #####################
-add_subdirectory(DumperSDK)
+#add_subdirectory(DumperSDK)
 
 ##################### 添加产物 #####################
 add_executable(BigWhiteTool # 生成可执行文件
@@ -89,5 +89,5 @@ add_executable(BigWhiteTool # 生成可执行文件
 target_link_libraries(BigWhiteTool PRIVATE EGL GLESv3 log
         android
         biu
-        UE5Dumper
+#        UE5Dumper
         )

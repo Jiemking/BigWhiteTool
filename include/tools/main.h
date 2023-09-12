@@ -7,7 +7,7 @@
 #include <draw.h>
 #include <touch.h>
 #include <Menu.h>
-#include <Enum.h>
+
 #include <Tool.h>
 #include <DrawPlayer.h>
 

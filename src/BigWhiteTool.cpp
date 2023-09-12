@@ -2,6 +2,7 @@
 #include "Login.h"
 
 
+
 int main(int argc, char *argv[]) {
     std::cout << "免责声明：" << std::endl << std::endl;
     std::cout << "此软件是一款用于逆向分析和测试游戏功能的工具，旨在帮助开发者理解游戏的内部工作原理以及进行相关测试。然而，请注意以下几点：" << std::endl << std::endl;
@@ -84,23 +85,6 @@ int main(int argc, char *argv[]) {
                 float menuX = (menuBarWidth - menuSize.x) * 0.5f; // 计算居中位置
                 ImGui::SetCursorPosX(menuX);
 
-                if (readmode==0){
-                    if (ImGui::BeginMenu("驱动选择"))
-                    {
-                        if (ImGui::MenuItem("普通模式")) {
-                            readmode = 1;
-                        }
-                        if (ImGui::MenuItem("Biu驱动")) {
-                            readmode = 2;
-                        }
-                        if (ImGui::MenuItem("XXX驱动")) {
-                            readmode = 3;
-                        }
-                        ImGui::EndMenu();
-                    }
-                }
-
-                if (readmode>0){
                     if (ImGui::BeginMenu("进程")) {
                         if (ImGui::MenuItem("ALL")){
                             tencent=0;
@@ -114,30 +98,29 @@ int main(int argc, char *argv[]) {
                             if (ImGui::MenuItem(jc.c_str())) {
                                 selectedPID = process.pid;
                                 BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值 是为了BigWhiteRead里面需要用
-                                XY_pid = BigWhite_pid;
                                 ProcessName=process.name;//将进程名保存为全局变量
                                 ResetOffsets();//重新选择进程时 重置偏移结构体变量
                                 GameInit();//这里是初始化游戏偏移
                                 addr.GNames = addr.libbase + offsets.GNames;
+                                AddrGNames=addr.GNames;
                                 addr.Gobject = addr.libbase + offsets.Gobject;
-                                printf("Pid：%d\nBase：%lx\nGname：%lx\nGobject：%lx\n",XY_pid,addr.libbase,addr.GNames,addr.Gobject);
-/*                                cout << UE_GetName(UE_GetClass(0x6864d18b80)) <<endl;
-                                cout << UE_GetFullName(0x6864d18b80) <<endl;
-                                cout << UE_GetCppName(0x6864d18b80) <<endl;*/
+                                printf("Pid：%d\nBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.libbase,addr.GNames,addr.Gobject);
+                                cout << "初始化成功！"<<endl;
+
                                 cshzt = true;
                             }
                         }
                         ImGui::EndMenu();
                     }
-                }
+
                 if (cshzt){
                     //DrawPlayer(ImGui::GetForegroundDrawList());
-                    addr.Uworld = XY_GetAddr(addr.libbase + offsets.Uworld);
-                    addr.Ulevel = XY_GetAddr(addr.Uworld + offsets.Ulevel);
-                    addr.Arrayaddr = XY_GetAddr(addr.Ulevel + offsets.Arrayaddr);
-                    addr.Matrix =  XY_GetAddr(XY_GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
-                    addr.PlayerController =  XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController);//高能英雄
-                    addr.AcknowledgedPawn = XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(XY_GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn);//暗区体验
+                    addr.Uworld = BigWhite_GetPtr64(addr.libbase + offsets.Uworld);
+                    addr.Ulevel = BigWhite_GetPtr64(addr.Uworld + offsets.Ulevel);
+                    addr.Arrayaddr = BigWhite_GetPtr64(addr.Ulevel + offsets.Arrayaddr);
+                    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
+                    addr.PlayerController =  BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController);//高能英雄
+                    addr.AcknowledgedPawn = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn);//暗区体验
 
                     if (ImGui::BeginMenu("窗口"))
                     {
