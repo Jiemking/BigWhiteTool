@@ -1,7 +1,7 @@
 #include "engine.h"
 #include "Android_Read/Android_Read.h"
 #include "generic.h"
-#include "file.h"
+
 
 
 // 获取类对象
@@ -146,36 +146,36 @@ string UE_FField::GetType()
 	uint32_t NameId = XY_TRead<uint32_t>(XY_TRead<uint32_t*>(this + Offsets.FField.Class));
 	string Name = NamePoolData->GetName(NameId);
 
-	if (Name == "NameProperty")			{ return "FName"; };
-	if (Name == "StrProperty")			{ return "FString"; };
+	if (Name == "NameProperty")			{ return "FName"; }
+	if (Name == "StrProperty")			{ return "FString"; }
 	if (Name == "TextProperty")			{ return "FText"; }
-	if (Name == "Int8Property")			{ return "int8_t"; };
-	if (Name == "FloatProperty")		{ return "float"; };
-	if (Name == "DoubleProperty")		{ return "double"; };
-	if (Name == "Int16Property")		{ return "int16_t"; };
-	if (Name == "IntProperty")			{ return "int32_t";};
-	if (Name == "Int64Property")		{ return "int64_t"; };
-	if (Name == "UInt16Property")		{ return "uint16_t"; };
-	if (Name == "UInt32Property")		{ return "uint32_t"; };
-	if (Name == "UInt64Property")		{ return "uint64_t"; };
-	if (Name == "DelegateProperty")		{ return "FDelegate"; };
-	if (Name == "SoftClassProperty")	{ return "TSoftClassPtr<UObject>"; };
-	if (Name == "MulticastDelegateProperty")		{ return "FMulticastDelegate"; };
-	if (Name == "MulticastSparseDelegateProperty")	{ return "FMulticastSparseDelegate"; };
-	if (Name == "MulticastInlineDelegateProperty")	{ return "FMulticastInlineDelegate"; };
+	if (Name == "Int8Property")			{ return "int8_t"; }
+	if (Name == "FloatProperty")		{ return "float"; }
+	if (Name == "DoubleProperty")		{ return "double"; }
+	if (Name == "Int16Property")		{ return "int16_t"; }
+	if (Name == "IntProperty")			{ return "int32_t";}
+	if (Name == "Int64Property")		{ return "int64_t"; }
+	if (Name == "UInt16Property")		{ return "uint16_t"; }
+	if (Name == "UInt32Property")		{ return "uint32_t"; }
+	if (Name == "UInt64Property")		{ return "uint64_t"; }
+	if (Name == "DelegateProperty")		{ return "FDelegate"; }
+	if (Name == "SoftClassProperty")	{ return "TSoftClassPtr<UObject>"; }
+	if (Name == "MulticastDelegateProperty")		{ return "FMulticastDelegate"; }
+	if (Name == "MulticastSparseDelegateProperty")	{ return "FMulticastSparseDelegate"; }
+	if (Name == "MulticastInlineDelegateProperty")	{ return "FMulticastInlineDelegate"; }
 
-	if (Name == "MapProperty")			{ return Cast<UE_FMapProperty*>()->GetTypeStr(); };
-	if (Name == "SetProperty")			{ return Cast<UE_FSetProperty*>()->GetTypeStr(); };
+	if (Name == "MapProperty")			{ return Cast<UE_FMapProperty*>()->GetTypeStr(); }
+	if (Name == "SetProperty")			{ return Cast<UE_FSetProperty*>()->GetTypeStr(); }
 	if (Name == "EnumProperty")			{ return Cast<UE_FEnumProperty*>()->GetTypeStr(); }
-	if (Name == "BoolProperty")			{ return Cast<UE_FBoolProperty*>()->GetTypeStr(); };
-	if (Name == "ByteProperty")			{ return Cast<UE_FByteProperty*>()->GetTypeStr(); };
-	if (Name == "ClassProperty")		{ return Cast<UE_FClassProperty*>()->GetTypeStr(); };
-	if (Name == "StructProperty")		{ return Cast<UE_FStructProperty*>()->GetTypeStr(); };
-	if (Name == "InterfaceProperty")	{ return Cast<UE_FInterfaceProperty*>()->GetTypeStr(); };
-	if (Name == "ObjectProperty")	    { return Cast<UE_FObjectPropertyBase*>()->GetTypeStr(); };
-	if (Name == "ArrayProperty")		{ return Cast<UE_FArrayProperty*>()->GetTypeStr(); };
-	if (Name == "WeakObjectProperty")	{ return "TWeakObjectPtr<" + Cast<UE_FStructProperty*>()->GetTypeStr() + ">"; };
-	if (Name == "SoftObjectProperty")	{ return "TSoftObjectPtr<" + Cast<UE_FObjectPropertyBase*>()->GetUEObject()->GetCppName() + ">"; };
+	if (Name == "BoolProperty")			{ return Cast<UE_FBoolProperty*>()->GetTypeStr(); }
+	if (Name == "ByteProperty")			{ return Cast<UE_FByteProperty*>()->GetTypeStr(); }
+	if (Name == "ClassProperty")		{ return Cast<UE_FClassProperty*>()->GetTypeStr(); }
+	if (Name == "StructProperty")		{ return Cast<UE_FStructProperty*>()->GetTypeStr(); }
+	if (Name == "InterfaceProperty")	{ return Cast<UE_FInterfaceProperty*>()->GetTypeStr(); }
+	if (Name == "ObjectProperty")	    { return Cast<UE_FObjectPropertyBase*>()->GetTypeStr(); }
+	if (Name == "ArrayProperty")		{ return Cast<UE_FArrayProperty*>()->GetTypeStr(); }
+	if (Name == "WeakObjectProperty")	{ return "TWeakObjectPtr<" + Cast<UE_FStructProperty*>()->GetTypeStr() + ">"; }
+	if (Name == "SoftObjectProperty")	{ return "TSoftObjectPtr<" + Cast<UE_FObjectPropertyBase*>()->GetUEObject()->GetCppName() + ">"; }
 
 	return GetUEObject()->GetCppName() + "*";
 }
@@ -275,7 +275,7 @@ void UE_UEnum::Generate()
 		if (Name.size() < 50)
 		{
 			size_t size = 50 - Name.size();
-			for (size_t i = 0; i < size; i++)
+			for (size_t j = 0; j < size; j++)
 			{
 				Name += " ";
 			}
@@ -342,9 +342,9 @@ void UE_UClass::Generate()
 		int Size = temp->GetSize();
 		int Offset = temp->GetOffset();
 
-		char buf[128]{ 0 };
-		sprintf(buf, "// 0x%.4X(0x%.4X)\n", Offset, Size);
-		Name += buf;
+		char dest[128]{0 };
+		sprintf(dest, "// 0x%.4X(0x%.4X)\n", Offset, Size);
+		Name += dest;
 
 		if (Pos < Offset)
 		{
@@ -357,9 +357,9 @@ void UE_UClass::Generate()
 				sbuf += " ";
 			}
 			
-			char cbuf[128]{ 0 };
-			sprintf(cbuf,"pa_%.4X[0x%.4X]", Pos,diff);
-			sbuf += cbuf;
+			char dst[128]{0 };
+			sprintf(dst, "pa_%.4X[0x%.4X]", Pos, diff);
+			sbuf += dst;
 
 			size = 112 - sbuf.size();
 			for (size_t i = 0; i < size; i++)
@@ -367,9 +367,9 @@ void UE_UClass::Generate()
 				sbuf += " ";
 			}
 
-            memset(cbuf, 0, sizeof(cbuf));
-			sprintf(cbuf, "// 0x%.4X(0x%.4X)\n", Pos,diff);
-			sbuf += cbuf;
+            memset(dst, 0, sizeof(dst));
+			sprintf(dst, "// 0x%.4X(0x%.4X)\n", Pos, diff);
+			sbuf += dst;
 
 			Body += sbuf;
 		}
@@ -492,9 +492,9 @@ void UE_UScriptStruct::Generate()
 		int Size = temp->GetSize();
 		int Offset = temp->GetOffset();
 
-		char buf[128]{0};
-		sprintf(buf,"// 0x%.4X(0x%.4X)\n", temp->GetOffset(),temp->GetSize());
-		Name += buf;
+		char dest[128]{0};
+		sprintf(dest, "// 0x%.4X(0x%.4X)\n", temp->GetOffset(), temp->GetSize());
+		Name += dest;
 
 		if (Pos < Offset)
 		{
@@ -507,9 +507,9 @@ void UE_UScriptStruct::Generate()
 				sbuf += " ";
 			}
 
-			char cbuf[128]{ 0 };
-			sprintf(cbuf, "pa_%.4X[0x%.4X]", Pos, diff);
-			sbuf += cbuf;
+			char dst[128]{0 };
+			sprintf(dst, "pa_%.4X[0x%.4X]", Pos, diff);
+			sbuf += dst;
 
 			size = 112 - sbuf.size();
 			for (size_t i = 0; i < size; i++)
@@ -517,9 +517,9 @@ void UE_UScriptStruct::Generate()
 				sbuf += " ";
 			}
 
-            memset(cbuf, 0, sizeof(cbuf));
-			sprintf(cbuf, "// 0x%.4X(0x%.4X)\n", Pos, diff);
-			sbuf += cbuf;
+            memset(dst, 0, sizeof(dst));
+			sprintf(dst, "// 0x%.4X(0x%.4X)\n", Pos, diff);
+			sbuf += dst;
 
 			Body += sbuf;
 		}

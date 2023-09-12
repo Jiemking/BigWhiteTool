@@ -116,20 +116,18 @@ bool ImGui_init() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
-    io.IniFilename = NULL;
+    io.IniFilename = "";
     ImGui::StyleColorsDark();
     ImGui_ImplAndroid_Init(native_window);
     ImGui_ImplOpenGL3_Init("#version 300 es");
 
     ImFontConfig font_cfg;
-    font_cfg.SizePixels = 20.0f;
+    font_cfg.SizePixels = 30.0f;
     io.Fonts->AddFontFromMemoryTTF((void *)OPPOSans_H, OPPOSans_H_size, 30.0f, &font_cfg, io.Fonts->GetGlyphRangesChineseFull());
 
-
-
-    ImGui::GetStyle().ScaleAllSizes(3.0f);
+    ImGui::GetStyle().ScaleAllSizes(4.0f);//ImGui控件样式大小样式
     g_Initialized = true;
-    return true;
+    return g_Initialized;
 }
 
 void drawBegin() {

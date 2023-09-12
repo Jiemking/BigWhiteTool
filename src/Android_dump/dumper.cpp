@@ -1,7 +1,6 @@
 #include <sys/stat.h>
 #include "dumper.h"
 #include "generic.h"
-#include "file.h"
 #include "engine.h"
 
 // 初始化Dumper
