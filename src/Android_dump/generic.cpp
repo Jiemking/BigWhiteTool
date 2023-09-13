@@ -7,6 +7,7 @@
 uint64_t GameBase = 0;
 uint64_t AddrGObject = 0;
 uint64_t AddrGNames = 0;
+bool isUE423 = true;
 FNamePool* NamePoolData = NULL;
 TUObjectArray* ObjObjects = NULL;
 
@@ -36,6 +37,20 @@ string FNamePool::GetName(uint32_t index)
     } else {
         return "None";
     }
+}
+string FNamePool::GetName_Old(uint32_t index)
+{
+    uintptr_t G_Names = BigWhite_GetPtr64(AddrGNames);
+    int Id = (int)(index / (int)0x4000);
+    int Idtemp = (int)(index % (int)0x4000);
+    auto NamePtr = BigWhite_GetPtr64((G_Names + Id * 8));
+    auto Name = BigWhite_GetPtr64((NamePtr + 8 * Idtemp));
+    char name[0x100] = { 0 };
+    if (BigWhite_vm_readv((Name + 0xC), name, 0x100)) //0xC需要手动推算，默认是0x10
+    {
+        return name;
+    }
+    return {};
 }
 
 uint32_t TUObjectArray::GetNumChunks()

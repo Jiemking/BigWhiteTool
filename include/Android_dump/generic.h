@@ -32,6 +32,7 @@ class FNamePool
 public:
     // 获取名字的函数
     string GetName(uint32_t NameId);
+    string GetName_Old(uint32_t NameId);
 };
 
 // TUObjectArray 类定义
@@ -55,6 +56,7 @@ public:
 extern uint64_t GameBase;
 extern uint64_t AddrGNames;
 extern uint64_t AddrGObject;
+extern bool isUE423;
 extern FNamePool* NamePoolData;
 extern TUObjectArray* ObjObjects;
 

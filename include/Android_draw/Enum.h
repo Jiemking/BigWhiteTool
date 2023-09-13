@@ -113,7 +113,6 @@ public:
 
     string packagename = "";
 
-    bool isUE423 = true;//true新版本算法，false旧版本算法
     void SetBoneArray(const int* values, int length) {
         for (int i = 0; i < length; i++) {
             BoneArray[i] = values[i];

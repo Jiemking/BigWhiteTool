@@ -63,7 +63,7 @@ void GameInit(){
         offsets.XYZ_X=0x120;
     }else if (ProcessName.find(".tmgp.gnyx") != std::string::npos){//高能英雄
         cout << "GNYX"<< endl;
-        offsets.GNames=0xad495c0;
+        offsets.GNames=0xc407980;
         offsets.Uworld=0xaec7a18;
         offsets.Matrix=0xae97d88;
         offsets.Matrix1=0x20;
@@ -96,7 +96,7 @@ void GameInit(){
         offsets.XYZ_X=0x138;
     }else if (ProcessName=="com.tencent.tmgp.pubgmhd"){//和平
         cout << "HEPING"<< endl;
-        addr.isUE423=false;
+        isUE423=false;
 /*        offsets.GNames=0xB1D5640;
         offsets.Matrix=0xB2FF440;
         offsets.Uworld=0xb3e8a30;*/

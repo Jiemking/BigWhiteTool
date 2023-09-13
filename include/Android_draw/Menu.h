@@ -206,7 +206,7 @@ namespace Menu{
 
 
         if (BigWhite_pid>0){
-            ImGui::Checkbox("是否UE423以上版本（谨慎选择 选择错会导致卡死！卡十几秒左右是正常的！）",&addr.isUE423);
+            ImGui::Checkbox("是否UE423以上版本（谨慎选择 选择错会导致卡死！卡十几秒左右是正常的！）",&isUE423);
             if (ImGui::Button("一键获取",ImVec2(400,75))){
                 AddrOffsets Gname = UEinit::GetGname();
                 AddrOffsets Matrix = UEinit::GetMatrix();

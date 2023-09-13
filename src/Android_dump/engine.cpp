@@ -18,7 +18,12 @@ UE_UObject* UE_UObject::GetOuter()
 string UE_UObject::GetName()
 {
 	uint32_t NameId = XY_TRead<uint32_t>(this + Offsets.UObject.Name);
-	return NamePoolData->GetName(NameId);
+    if (isUE423){
+        return NamePoolData->GetName(NameId);
+    }else{
+        return NamePoolData->GetName_Old(NameId);
+    }
+
 }
 // 获取C++名称
 string UE_UObject::GetCppName()

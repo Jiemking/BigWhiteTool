@@ -7,6 +7,7 @@
 #include <fstream>
 #include<Android_Read/Android_Read.h>
 #include "Android_draw/ItemData.h"
+#include "dumper.h"
 #include "engine.h"
 #include "generic.h"
 int tencent = 0;//这个全局变量过滤进程使用
@@ -30,7 +31,7 @@ std::string GetName_Old(int i) //旧版本算法
 std::string GetName(uint64_t Address) {
     int FnameComparisonIndex = BigWhite_GetDword(Address + Offsets.UObject.Name);
     std::string GetName;
-    if (addr.isUE423){
+    if (isUE423){
         GetName = NamePoolData->GetName(FnameComparisonIndex); //新算法获取Name
     }else{
         GetName = GetName_Old(FnameComparisonIndex); //旧版本算法获取Name
@@ -82,7 +83,7 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
     for (size_t i = 0; i < 0x500; i+=4) {
-        UE_UObject* Tmp = XY_TRead<UE_UObject*>(Address + i);
+        UE_UClass* Tmp = XY_TRead<UE_UClass*>(Address + i);
         string KlassName = Tmp->GetClass()->GetName();
         string outerName = Tmp->GetName();
         string trans = ItemData::UamoGetString(KlassName);
@@ -139,7 +140,7 @@ void ResetOffsets(){
     for (int i = 0; i < 17; i++) {
         offsets.BoneArray[i] = 0;
     }
-    addr.isUE423 = true;
+    isUE423 = true;
 }
 
 namespace UEinit{
@@ -149,7 +150,7 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         for (int i = 20000000;; i++) {
             uint64_t TMP;
-            if (addr.isUE423){
+            if (isUE423){
                 TMP = addr.libbase + (0x8*i) + 0x40;
                 if (TMP != 0){
                     uint64_t TMPGnames = BigWhite_GetPtr64(TMP);
@@ -161,6 +162,7 @@ namespace UEinit{
                         addrOffsets.Offsets=(0x8*i);
                         offsets.GNames=(0x8*i);//设置全局Gname偏移
                         addr.GNames = addr.libbase + offsets.GNames;//设置全局Gname地址
+                        AddrGNames=addr.GNames;
                         break;
                     }
                 }
@@ -184,6 +186,7 @@ namespace UEinit{
                     addrOffsets.Offsets=(0x8*i);
                     offsets.GNames=(0x8*i);//设置全局Gname偏移
                     addr.GNames = addr.libbase + offsets.GNames;//设置全局Gname地址
+                    AddrGNames=addr.GNames;
                     break;
                 }
             }
@@ -285,11 +288,12 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         int i=0;
 
-        //cout << GetClassName(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + 0xDFA6EF8)+0x20)) <<endl;
+        UE_UObject* TMPS= XY_TRead<UE_UObject*>(BigWhite_GetPtr64(addr.libbase + 0xada8ea8)+0x20);
+        cout << TMPS->GetClass()->GetName() <<endl;
         while (true){
             uint64_t TMPMatrix = BigWhite_GetPtr64(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPMatrix != 0){
-                UE_UObject* Tmp = XY_TRead<UE_UObject*>((TMPMatrix+0x20));
+                UE_UObject* Tmp = XY_TRead<UE_UObject*>((TMPMatrix)+0x20);
                 if (Tmp->GetClass()->GetName()== "Canvas"){
                     addrOffsets.Addr=TMPMatrix;
                     addrOffsets.Offsets=offsets.GNames + (0x8*i);
@@ -306,6 +310,18 @@ namespace UEinit{
 
 namespace DumpSDK{
     bool DumpUObject(){
+        Dumper& Dump = Dumper::GetInstance();
+        uint64_t Base = addr.libbase;
+        try
+        {
+            Dump.Init(Base, Base + offsets.GNames, Base + offsets.Gobject + 0x10);
+        }
+        catch (const char* error)
+        {
+            printf("%s\n", error);
+            return -1;
+        }
+        Dump.Dump();
         return true;
     }
 }
