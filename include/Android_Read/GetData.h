@@ -11,6 +11,7 @@ string selectedPID,ProcessName;
 
 void GameInit(){
     addr.libbase = BigWhite_GetModuleBase(std::stoi(selectedPID),"libUE4.so");
+    GameBase=addr.libbase;
     if (ProcessName=="com.tencent.mf.uam"){//暗区
         cout << "AQ"<< endl;
         offsets.GNames=0xB1D5640;

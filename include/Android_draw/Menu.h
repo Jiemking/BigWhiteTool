@@ -21,7 +21,7 @@ static void ShowPlaceholderObject(const StructureList& data, int uid) {
 
     if (data.P<0xffffffffff && data.P>0x1000000000){
 
-        sprintf(formattedData, "(%x)—%lx—P->%lx-Class:%s———Name:%s %s",
+        sprintf(formattedData, "(%x)—%lx—P->%lx-%s———%s %s",
                 data.offset,  data.address, data.P, data.type.c_str(), data.name.c_str(),data.trans.c_str());
 
         bool node_open = ImGui::TreeNode("Tree", "%s",formattedData);
@@ -209,36 +209,61 @@ namespace Menu{
             ImGui::Checkbox("是否UE423以上版本（谨慎选择 选择错会导致卡死！卡十几秒左右是正常的！）",&isUE423);
             if (ImGui::Button("一键获取",ImVec2(400,75))){
                 AddrOffsets Gname = UEinit::GetGname();
+
+                offsets.GNames=Gname.Offsets;//设置全局Gname偏移
+                addr.GNames = addr.libbase + Gname.Offsets;//设置全局Gname地址
+                NamePoolData = (FNamePool*)(addr.libbase+Gname.Offsets);
+                AddrGNames = (addr.libbase+Gname.Offsets);
+
                 AddrOffsets Matrix = UEinit::GetMatrix();
+                offsets.Matrix=Matrix.Offsets;//设置全局Matrix偏移
+
                 AddrOffsets Uworld = UEinit::GetUworld();
+                offsets.Uworld = Uworld.Offsets;//设置全局Uworld偏移
+
                 AddrOffsets Gobject = UEinit::GetGobject();
+                offsets.Gobject = Gobject.Offsets;
+                ObjObjects = (TUObjectArray*)(addr.libbase+Gobject.Offsets+0x10);
+                AddrGObject = (addr.libbase+Gobject.Offsets+0x10);
+
                 sprintf(GnameBuffer,"Gname->%lx   Offset->%x",Gname.Addr,Gname.Offsets);
                 sprintf(MatrixBuffer,"Matrix->%lx  Offset->%x",Matrix.Addr,Matrix.Offsets);
                 sprintf(UWorldBuffer,"Uworld->%lx  Offset->%x",Uworld.Addr,Uworld.Offsets);
                 sprintf(GObjectBuffer,"Gobject->%lx  Offset->%x",Gobject.Addr,Gobject.Offsets);
                 cout << GnameBuffer<<"\n"<<MatrixBuffer<<"\n"<<UWorldBuffer<<"\n"<<GObjectBuffer<< endl;
                 isShow= true;
+
             }
             if (ImGui::Button("获取Gname",ImVec2(400,75))){
                 AddrOffsets Gname = UEinit::GetGname();
+                offsets.GNames=Gname.Offsets;//设置全局Gname偏移
+                addr.GNames = addr.libbase + Gname.Offsets;//设置全局Gname地址
+                NamePoolData = (FNamePool*)(addr.libbase+Gname.Offsets);
+                AddrGNames = (addr.libbase+Gname.Offsets);
                 sprintf(GnameBuffer,"Gname->%lx   Offset->%x",Gname.Addr,Gname.Offsets);
                 cout << GnameBuffer <<"\n" <<endl;
                 isShow= true;
             }
             if (ImGui::Button("获取Gobject",ImVec2(400,75))){
                 AddrOffsets Gobject = UEinit::GetGobject();
+                offsets.Gobject = Gobject.Offsets;
+                ObjObjects = (TUObjectArray*)(addr.libbase+Gobject.Offsets+0x10);
+                AddrGObject = (addr.libbase+Gobject.Offsets+0x10);
+
                 sprintf(GObjectBuffer,"Gobject->%lx   Offset->%x",Gobject.Addr,Gobject.Offsets);
                 cout << GObjectBuffer <<"\n" <<endl;
                 isShow= true;
             }
             if (ImGui::Button("获取Matrix",ImVec2(400,75))){
                 AddrOffsets Matrix = UEinit::GetMatrix();
+                offsets.Matrix=Matrix.Offsets;//设置全局Matrix偏移
                 sprintf(MatrixBuffer,"Matrix->%lx  Offset->%x",Matrix.Addr,Matrix.Offsets);
                 cout << MatrixBuffer <<"\n" <<endl;
                 isShow= true;
             }
             if (ImGui::Button("获取Uworld",ImVec2(400,75))){
-                AddrOffsets Uworld = UEinit::GetGWorld();
+                AddrOffsets Uworld = UEinit::GetUworld();
+                offsets.Uworld = Uworld.Offsets;//设置全局Uworld偏移
                 sprintf(UWorldBuffer,"Uworld->%lx  Offset->%x",Uworld.Addr,Uworld.Offsets);
                 cout << UWorldBuffer <<"\n" <<endl;
                 isShow= true;

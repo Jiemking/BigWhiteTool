@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
         cout << "登录失败"<<endl;
         return 0;
     }
+    //showmenu=0x1000;
     while (true){
         screen_config();
         if (displayInfo.orientation==1||displayInfo.orientation==3){
@@ -102,10 +103,37 @@ int main(int argc, char *argv[]) {
                                 ResetOffsets();//重新选择进程时 重置偏移结构体变量
                                 GameInit();//这里是初始化游戏偏移
                                 addr.GNames = addr.libbase + offsets.GNames;
-                                AddrGNames=addr.GNames;
                                 addr.Gobject = addr.libbase + offsets.Gobject;
+
+                                NamePoolData = (FNamePool*)(addr.libbase+offsets.GNames);
+                                AddrGNames = (addr.libbase+offsets.GNames);
+                                ObjObjects = (TUObjectArray*)(addr.libbase+offsets.Gobject+0x10);
+                                AddrGObject = (addr.libbase+offsets.Gobject+0x10);
                                 printf("Pid：%d\nBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.libbase,addr.GNames,addr.Gobject);
                                 cout << "初始化成功！"<<endl;
+/*
+                                UE_UField* Tmp = XY_TRead<UE_UField*>(addr.libbase+offsets.Uworld);
+                                Tmp->GetClass()->Generate();
+                                // 生成枚举
+                                if (Tmp->GetClass()->IsA<UE_UEnum>())
+                                {
+                                    Tmp->GetClass()->Cast<UE_UEnum*>()->Generate();
+                                }
+                                    // 生成类
+                                else if (Tmp->GetClass()->IsA<UE_UClass>())
+                                {
+                                    Tmp->GetClass()->Cast<UE_UClass*>()->Generate();
+                                }
+                                    // 生成函数
+                                else if (Tmp->GetClass()->IsA<UE_UFunction>())
+                                {
+                                    Tmp->GetClass()->Cast<UE_UFunction*>()->Generate();
+                                }
+                                    // 生成结构
+                                else if (Tmp->GetClass()->IsA<UE_UScriptStruct>())
+                                {
+                                    Tmp->GetClass()->Cast<UE_UScriptStruct*>()->Generate();
+                                }*/
 
                                 cshzt = true;
                             }

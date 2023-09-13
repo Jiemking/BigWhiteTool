@@ -160,9 +160,6 @@ namespace UEinit{
                     if (aa.find("ByteProperty") != std::string::npos){
                         addrOffsets.Addr=addr.libbase+(0x8*i);
                         addrOffsets.Offsets=(0x8*i);
-                        offsets.GNames=(0x8*i);//设置全局Gname偏移
-                        addr.GNames = addr.libbase + offsets.GNames;//设置全局Gname地址
-                        AddrGNames=addr.GNames;
                         break;
                     }
                 }
@@ -184,9 +181,6 @@ namespace UEinit{
                 if (aa.find("ByteProperty") != std::string::npos){
                     addrOffsets.Addr=addr.libbase+(0x8*i);
                     addrOffsets.Offsets=(0x8*i);
-                    offsets.GNames=(0x8*i);//设置全局Gname偏移
-                    addr.GNames = addr.libbase + offsets.GNames;//设置全局Gname地址
-                    AddrGNames=addr.GNames;
                     break;
                 }
             }
@@ -207,33 +201,12 @@ namespace UEinit{
             if (TMP1Class=="World"){
                 addrOffsets.Addr=TMP;
                 addrOffsets.Offsets=offsets.GNames + (0x8*i);
-                offsets.Uworld=offsets.GNames + (0x8*i);
                 break;
             }
         }
         return addrOffsets;
     }
 
-    AddrOffsets GetGWorld(){
-        AddrOffsets addrOffsets;
-        addrOffsets.Addr=0;
-        addrOffsets.Offsets=0;
-        for (int i = 0;; i++) {
-            uint64_t TMP;
-            TMP = addr.libbase + offsets.GNames + (0x8*i);
-            if (TMP < 0x1000000000) continue;
-            UE_UObject* TMP1 = XY_TRead<UE_UObject*>(TMP);
-            string TMP1Class = TMP1->GetClass()->GetName();
-
-            if (TMP1Class=="World"){
-                addrOffsets.Addr=TMP;
-                addrOffsets.Offsets=offsets.GNames + (0x8*i);
-                offsets.Uworld=offsets.GNames + (0x8*i);
-                break;
-            }
-        }
-        return addrOffsets;
-    }
 
     AddrOffsets GetGobject(){
         AddrOffsets addrOffsets;
@@ -297,7 +270,6 @@ namespace UEinit{
                 if (Tmp->GetClass()->GetName()== "Canvas"){
                     addrOffsets.Addr=TMPMatrix;
                     addrOffsets.Offsets=offsets.GNames + (0x8*i);
-                    offsets.Matrix=offsets.GNames + (0x8*i);
                     break;
                 }
             }
