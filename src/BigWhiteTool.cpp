@@ -109,10 +109,9 @@ int main(int argc, char *argv[]) {
                                 AddrGNames = (addr.libbase+offsets.GNames);
                                 ObjObjects = (TUObjectArray*)(addr.libbase+offsets.Gobject+0x10);
                                 AddrGObject = (addr.libbase+offsets.Gobject+0x10);
-                                printf("Pid：%d\nBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.libbase,addr.GNames,addr.Gobject);
+                                //printf("Pid：%d\nBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.libbase,addr.GNames,addr.Gobject);
                                 cout << "初始化成功！"<<endl;
-/*
-                                UE_UField* Tmp = XY_TRead<UE_UField*>(addr.libbase+offsets.Uworld);
+/*                                UE_UField* Tmp = XY_TRead<UE_UEnum*>(addr.libbase+offsets.Uworld);
                                 Tmp->GetClass()->Generate();
                                 // 生成枚举
                                 if (Tmp->GetClass()->IsA<UE_UEnum>())
@@ -142,14 +141,14 @@ int main(int argc, char *argv[]) {
                     }
 
                 if (cshzt){
-                    //DrawPlayer(ImGui::GetForegroundDrawList());
+
                     addr.Uworld = BigWhite_GetPtr64(addr.libbase + offsets.Uworld);
                     addr.Ulevel = BigWhite_GetPtr64(addr.Uworld + offsets.Ulevel);
                     addr.Arrayaddr = BigWhite_GetPtr64(addr.Ulevel + offsets.Arrayaddr);
                     addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
                     addr.PlayerController =  BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController);//高能英雄
                     addr.AcknowledgedPawn = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn);//暗区体验
-
+                    DrawPlayer(ImGui::GetForegroundDrawList());
                     if (ImGui::BeginMenu("窗口"))
                     {
                         ImGui::MenuItem("ImguiDemo", NULL, &ShowDemoWindow);

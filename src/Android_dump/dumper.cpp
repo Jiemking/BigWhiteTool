@@ -7,12 +7,12 @@
 void Dumper::Init(uint64_t Base,uint64_t GName, uint64_t GObject)
 {
     // 设置游戏基地址、名称池和对象数组
-    GameBase = Base;
-    NamePoolData = (FNamePool*)GName;
-    ObjObjects = (TUObjectArray*)GObject;
+    //GameBase = Base;
+    //NamePoolData = (FNamePool*)GName;
+    //ObjObjects = (TUObjectArray*)GObject;
     // 设置全局名称和对象地址
-    AddrGNames = GName;
-    AddrGObject = GObject;
+    //AddrGNames = GName;
+    //AddrGObject = GObject;
 /*
     cout << NamePoolData->GetName(325177) << endl;*/
     // 检查名称池是否正确

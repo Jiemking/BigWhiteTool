@@ -28,8 +28,8 @@ void GameInit(){
     } else if (ProcessName.find("ShuiSha") != std::string::npos){//枪战特训
         cout << "QZTX"<< endl;
         offsets.GNames=0xac1d440;
-        offsets.Gobject=0xac61718;
         offsets.Uworld=0xadd8850;
+        offsets.Gobject=0xac61718;
         offsets.Matrix=0xada8ea8;
         offsets.Matrix1=0x20;
         offsets.Matrix2=0x280;
@@ -45,16 +45,15 @@ void GameInit(){
         offsets.XYZ_X=0x1D0;
     }else if (ProcessName.find(".mf.uamo") != std::string::npos){//暗区国际
         cout << "AQGJ"<< endl;
-         offsets.GNames=0xDDE1980;
-         offsets.Uworld=0xDFF05C8;
-         offsets.Gobject=0xde00a20;
-         offsets.Matrix=0xDFA6EF8;
-         offsets.Matrix1=0x20;
-         offsets.Matrix2=0x280;
-         offsets.Ulevel=0x30;
-         offsets.Arrayaddr=0x98;
-         offsets.ArrayaddrCount=0xa0;
-
+        offsets.GNames=0xDDE1980;
+        offsets.Uworld=0xDFF05C8;
+        offsets.Gobject=0xde00a20;
+        offsets.Matrix=0xDFA6EF8;
+        offsets.Matrix1=0x20;
+        offsets.Matrix2=0x280;
+        offsets.Ulevel=0x30;
+        offsets.Arrayaddr=0x98;
+        offsets.ArrayaddrCount=0xa0;
         offsets.GameInstance=0x180;
         offsets.LocalPlayer=0x38;
         offsets.PlayerController=0x30;
@@ -65,8 +64,9 @@ void GameInit(){
     }else if (ProcessName.find(".tmgp.gnyx") != std::string::npos){//高能英雄
         cout << "GNYX"<< endl;
         offsets.GNames=0xc407980;
-        offsets.Uworld=0xaec7a18;
-        offsets.Matrix=0xae97d88;
+        offsets.Uworld=0xc5802f0;
+        offsets.Gobject=0xc421e38;
+        offsets.Matrix=0xc550de8;
         offsets.Matrix1=0x20;
         offsets.Matrix2=0x270;
         offsets.Ulevel=0x30;

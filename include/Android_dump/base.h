@@ -43,7 +43,7 @@ struct _Offsets {
     struct {
         uint16_t ElementSize = 0x38;
         uint16_t Offset = 0x4C;
-        uint16_t Size = 0x80;
+        uint16_t Size = 0x78;
     } FProperty;
 };
 

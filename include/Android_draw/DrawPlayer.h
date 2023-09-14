@@ -14,23 +14,6 @@
 
 
 void DrawPlayer(ImDrawList *Draw) {
-    addr.Uworld = BigWhite_GetPtr64(addr.libbase + offsets.Uworld);
-    addr.Ulevel = BigWhite_GetPtr64(addr.Uworld + offsets.Ulevel);
-    addr.Arrayaddr = BigWhite_GetPtr64(addr.Ulevel + offsets.Arrayaddr);
-/*    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区还需要跳进去一层
-    uint64_t oneself = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + 0x180)+0x38))+0x30)+320;//暗区国际*/
-/*    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//枪战特训
-    uint64_t oneself = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + 0x180)+0x38))+0x30)+250;*/
-/*    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2);//暗区体验
-    uint64_t oneself = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + 0x180)+0x38))+0x30)+330;//暗区体验  */
-    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
-    addr.AcknowledgedPawn = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn;//暗区体验
-
-    //7c0e74ff38
-/*    printf("矩阵：%lx",addr.libbase + offsets.Matrix);
-    cout << "" <<endl;*/
-
-    float top, right, left, bottom, x1, top1;
     int py = displayInfo.height / 2;
     int px = displayInfo.width / 2;
 
@@ -39,24 +22,17 @@ void DrawPlayer(ImDrawList *Draw) {
     memset(matrix, 0, 16);
     BigWhite_vm_readv(addr.Matrix, matrix, 16 * 4);
 
-    //cout <<ArrayaddrCount<<endl;
     for (int i = 0; i < ArrayaddrCount; i++) {
 
         uint64_t Objaddr = BigWhite_GetPtr64(addr.Arrayaddr + 8 * i);  // 遍历数量次数
-        if (Objaddr == 0x0000000000 || Objaddr == 0 || Objaddr == 0x000 )   continue;
+        if (Objaddr == 0)   continue;
         // 自身坐标
         Vector3A Z;
         BigWhite_vm_readv(BigWhite_GetPtr64(addr.AcknowledgedPawn + offsets.RootComponent) + offsets.XYZ_X, &Z, sizeof(Z)); // 自己坐标
 
-
         // 敌人和物资坐标
         Vector3A D;
         BigWhite_vm_readv(BigWhite_GetPtr64(Objaddr + offsets.RootComponent) + offsets.XYZ_X, &D, sizeof(D)); // 对象坐标
-
-        //吸人
-/*        BigWhite_WriteFloat(BigWhite_GetPtr64(Objaddr + offsets.RootComponent) + offsets.XYZ_X,Z.X);
-        BigWhite_WriteFloat(BigWhite_GetPtr64(Objaddr + offsets.RootComponent) + offsets.XYZ_X+0x4,Z.Y);
-        BigWhite_WriteFloat(BigWhite_GetPtr64(Objaddr + offsets.RootComponent) + offsets.XYZ_X+0x8,Z.Z+3000.0f);*/
         if (D.X == 0 || D.Y == 0 || D.Z == 0)   continue;
 
         float camera,r_x,r_y,r_w;
@@ -75,17 +51,21 @@ void DrawPlayer(ImDrawList *Draw) {
         float top = y - w;
         float ah =r_y - r_w;
         if (ah<=0)  continue;//过滤背部敌人
-        left = (x + w / 2) - w / 2.6f;
-        right = x + w / 1.12f;
-
-
         std::string ClassName = GetName(Objaddr);//类名
-/*        if (ClassName.find("BP_DeathBox")!= std::string::npos){
-            Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());
-        }*/
+        Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());//类名绘制
 
-       //类名绘制
-        Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());/*
+        Draw->AddText(NULL, 24, {r_x , r_y+60}, ImColor(255,255,255,255) , to_string(BigWhite_GetDword(BigWhite_GetPtr64(Objaddr+0x2C0)+0x2a4)).c_str());
+
+        char PlayerNameTmp[100] = "";
+        BigWhite_GetUTF8(PlayerNameTmp,BigWhite_GetPtr64(BigWhite_GetPtr64(Objaddr + 0x2C0) + 0x320));//获取该数组人物名称
+        Draw->AddText(NULL, 24, {r_x , r_y+0}, ImColor(255,255,255,255) , PlayerNameTmp);
+
+
+        //类名绘制
+
+
+
+        /*
         //类名翻译
         Draw->AddText(NULL, 24, {r_x , r_y}, ImColor(255,255,255,255) , ItemData::UamoGetString(ClassName).c_str());
         //类名地址
@@ -102,11 +82,6 @@ void DrawPlayer(ImDrawList *Draw) {
 /*        std::stringstream oneselfstr;
         oneselfstr << std::hex << oneself;  // 将长整型以十六进制格式写入 stringstream
         std::string oneselfString = oneselfstr.str();  // 获取十六进制字符串*/
-
-
-        //Draw->AddText(NULL,20 , {middle-100, top}, ImColor(255,255,255,255) , hexString.c_str());
-        //Draw->AddText(NULL,20 , {(x + w / 2) - w / 2.0f, y + w}, ImColor(255,255,255,255) , ObjaddString.c_str());
-        //Draw->AddText(NULL,40 , {100, 100}, ImColor(255,255,255,255) , oneselfString.c_str());
     }
 
 }
