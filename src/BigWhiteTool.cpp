@@ -29,6 +29,15 @@ int main(int argc, char *argv[]) {
         }
         cout<<"等待横屏!"<<endl;
     }
+
+    bool ret=checkDriver();
+    puts(ret?"biu驱动已经安装":"biu驱动未安装自动使用普通版！");
+    if (ret){
+        readmode=2;
+    } else{
+        readmode=1;
+    }
+
     if (!initDraw()) {
         return -1;
     }
@@ -99,17 +108,20 @@ int main(int argc, char *argv[]) {
                             if (ImGui::MenuItem(jc.c_str())) {
                                 selectedPID = process.pid;
                                 BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值 是为了BigWhiteRead里面需要用
+                                setpid(BigWhite_pid);//设置BiuPid
                                 ProcessName=process.name;//将进程名保存为全局变量
                                 ResetOffsets();//重新选择进程时 重置偏移结构体变量
                                 GameInit();//这里是初始化游戏偏移
+                                addr.libbase = GetLibBase(BigWhite_pid);
+                                addr.base = 0x1000000000;
+                                GameBase=addr.libbase;
                                 addr.GNames = addr.libbase + offsets.GNames;
                                 addr.Gobject = addr.libbase + offsets.Gobject;
-
                                 NamePoolData = (FNamePool*)(addr.libbase+offsets.GNames);
                                 AddrGNames = (addr.libbase+offsets.GNames);
                                 ObjObjects = (TUObjectArray*)(addr.libbase+offsets.Gobject+0x10);
                                 AddrGObject = (addr.libbase+offsets.Gobject+0x10);
-                                //printf("Pid：%d\nBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.libbase,addr.GNames,addr.Gobject);
+                                printf("Pid：%d\nBase：%lx\nlibBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.base,addr.libbase,addr.GNames,addr.Gobject);
                                 cout << "初始化成功！"<<endl;
 /*                                UE_UField* Tmp = XY_TRead<UE_UEnum*>(addr.libbase+offsets.Uworld);
                                 Tmp->GetClass()->Generate();
@@ -141,14 +153,13 @@ int main(int argc, char *argv[]) {
                     }
 
                 if (cshzt){
-
-                    addr.Uworld = BigWhite_GetPtr64(addr.libbase + offsets.Uworld);
-                    addr.Ulevel = BigWhite_GetPtr64(addr.Uworld + offsets.Ulevel);
-                    addr.Arrayaddr = BigWhite_GetPtr64(addr.Ulevel + offsets.Arrayaddr);
-                    addr.Matrix =  BigWhite_GetPtr64(BigWhite_GetPtr64(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
-                    addr.PlayerController =  BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController);//高能英雄
-                    addr.AcknowledgedPawn = BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(BigWhite_GetPtr64(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn);//暗区体验
-                    DrawPlayer(ImGui::GetForegroundDrawList());
+                    addr.Uworld = GetAddr(addr.libbase + offsets.Uworld);
+                    addr.Ulevel = GetAddr(addr.Uworld + offsets.Ulevel);
+                    addr.Arrayaddr = GetAddr(addr.Ulevel + offsets.Arrayaddr);
+                    addr.Matrix =  GetAddr(GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
+                    addr.PlayerController =  GetAddr(GetAddr(GetAddr(GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController);//高能英雄
+                    addr.AcknowledgedPawn = GetAddr(GetAddr(GetAddr(GetAddr(GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn);//暗区体验
+                    //DrawPlayer(ImGui::GetForegroundDrawList());
                     if (ImGui::BeginMenu("窗口"))
                     {
                         ImGui::MenuItem("ImguiDemo", NULL, &ShowDemoWindow);
@@ -164,6 +175,9 @@ int main(int argc, char *argv[]) {
 
                     if (ImGui::BeginMenu("DumpSDK"))
                     {
+                        if (ImGui::MenuItem("结构分析修复")) {
+                            DumpSDK::Structure();
+                        }
                         if (ImGui::MenuItem("DumpSDK")) {
                             DumpSDK::DumpUObject();
                         }

@@ -8,10 +8,11 @@ using namespace std;
 
 struct _Offsets {
     struct {
-        uint16_t Objects = 0;
-        uint16_t NumChunks = 0x1C;
-        uint16_t NumElements = 0x14;
-    }TUObjectArray;
+        uint16_t Objects = 0;//objects位置，如果gobiect地址没+10的话就是0x10
+        uint16_t NumElements = 0x14;//当前元素数量
+        uint16_t NumChunks = 0x1C;//块数
+    }
+    TUObjectArray;
     struct {
         uint16_t Size = 0x18;
         uint16_t Object = 0x0;

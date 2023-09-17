@@ -14,13 +14,13 @@ int tencent = 0;//这个全局变量过滤进程使用
 
 std::string GetName_Old(int i) //旧版本算法
 {
-    uintptr_t G_Names = BigWhite_GetPtr64(addr.GNames);
+    uintptr_t G_Names = GetAddr(addr.GNames);
     int Id = (int)(i / (int)0x4000);
     int Idtemp = (int)(i % (int)0x4000);
-    auto NamePtr = BigWhite_GetPtr64((G_Names + Id * 8));
-    auto Name = BigWhite_GetPtr64((NamePtr + 8 * Idtemp));
+    auto NamePtr = GetAddr((G_Names + Id * 8));
+    auto Name = GetAddr((NamePtr + 8 * Idtemp));
     char name[0x100] = { 0 };
-    if (BigWhite_vm_readv((Name + 0xC), name, 0x100)) //0xC需要手动推算，默认是0x10
+    if (ReadAddr((Name + 0xC), name, 0x100)) //0xC需要手动推算，默认是0x10
     {
         return name;
     }
@@ -29,7 +29,7 @@ std::string GetName_Old(int i) //旧版本算法
 
 
 std::string GetName(uint64_t Address) {
-    int FnameComparisonIndex = BigWhite_GetDword(Address + Offsets.UObject.Name);
+    int FnameComparisonIndex = GetDowrd(Address + Offsets.UObject.Name);
     std::string GetName;
     if (isUE423){
         GetName = NamePoolData->GetName(FnameComparisonIndex); //新算法获取Name
@@ -82,10 +82,10 @@ std::vector<ProcessInfo> GetTencentProcesses() {
 }
 static vector<StructureList> foreachAddress(uint64_t Address) {
     std::vector<StructureList> structureList; // 使用std::vector存储输出内容
-    for (size_t i = 0; i < 0x500; i+=4) {
+    for (size_t i = 0; i < 0x1500; i+=4) {
         UE_UClass* Tmp = XY_TRead<UE_UClass*>(Address + i);
-        string KlassName = Tmp->GetClass()->GetName();
-        string outerName = Tmp->GetName();
+        string KlassName = "Class:"+Tmp->GetClass()->GetName();
+        string outerName = "Name:"+Tmp->GetName();
         string trans = ItemData::UamoGetString(KlassName);
 
         StructureList data;
@@ -95,9 +95,9 @@ static vector<StructureList> foreachAddress(uint64_t Address) {
         data.trans = trans;
         data.offset=i;
 
-        data.P = BigWhite_GetPtr64(data.address);
-        data.F= BigWhite_GetFloat(data.address);
-        data.D= BigWhite_GetDword(data.address);
+        data.P = GetAddr(data.address);
+        data.F= GetFloat(data.address);
+        data.D= GetDowrd(data.address);
 //        if (outerName.find("None") && KlassName.find("null") && getPtr64(data.address)==0)
 
         structureList.push_back(data);
@@ -120,18 +120,18 @@ void ResetOffsets(){
     offsets.GNames = 0;
     offsets.Uworld = 0;
     offsets.Matrix = 0;
-    offsets.Ulevel = 0x0;
-    offsets.Arrayaddr = 0x0;
-    offsets.ArrayaddrCount = 0x0;
+    offsets.Ulevel = 0x30;
+    offsets.Arrayaddr = 0x98;
+    offsets.ArrayaddrCount = 0xa0;
 
     offsets.RootComponent = 0x0;
     offsets.XYZ_X = 0x0;
 
     offsets.isBot = 0;
 
-    offsets.GameInstance = 0x0;
-    offsets.LocalPlayer = 0x0;
-    offsets.PlayerController = 0x0;
+    offsets.GameInstance = 0x180;
+    offsets.LocalPlayer = 0x38;
+    offsets.PlayerController = 0x30;
     offsets.AcknowledgedPawn = 0x0;
 
     offsets.Mesh = 0x0;
@@ -153,9 +153,9 @@ namespace UEinit{
             if (isUE423){
                 TMP = addr.libbase + (0x8*i) + 0x40;
                 if (TMP != 0){
-                    uint64_t TMPGnames = BigWhite_GetPtr64(TMP);
+                    uint64_t TMPGnames = GetAddr(TMP);
                     char name[0x100];
-                    BigWhite_vm_readv(TMPGnames+0x8, name, 0xc);
+                    ReadAddr(TMPGnames+0x8, name, 0xc);
                     std::string aa = name;
                     if (aa.find("ByteProperty") != std::string::npos){
                         addrOffsets.Addr=addr.libbase+(0x8*i);
@@ -168,15 +168,15 @@ namespace UEinit{
 /*                printf("%lx",(0x8*i));
                 cout << "\n"<<endl;*/
                 if (TMP < 0x1000000000) continue;
-                uint64_t TMP1 = BigWhite_GetPtr64(TMP);
+                uint64_t TMP1 = GetAddr(TMP);
                 if (TMP1 < 0x1000000000) continue;
-                uint64_t TMP2 = BigWhite_GetPtr64(TMP1);
+                uint64_t TMP2 = GetAddr(TMP1);
                 if (TMP2 < 0x1000000000) continue;
-                uint64_t TMP3 = BigWhite_GetPtr64(TMP2);
+                uint64_t TMP3 = GetAddr(TMP2);
                 if (TMP3 < 0x1000000000) continue;
                 uint64_t TMPGnames = TMP3;
                 char name[0x100];
-                BigWhite_vm_readv(TMPGnames+0x24, name, 0xc);
+                ReadAddr(TMPGnames+0x24, name, 0xc);
                 std::string aa = name;
                 if (aa.find("ByteProperty") != std::string::npos){
                     addrOffsets.Addr=addr.libbase+(0x8*i);
@@ -194,19 +194,17 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         for (int i = 0;; i++) {
             uint64_t TMP;
-            TMP = addr.libbase + offsets.GNames + (0x8*i);
-            if (TMP < 0x1000000000) continue;
+            TMP = addr.libbase + offsets.GNames + (i*0x8);
             UE_UObject* TMP1 = XY_TRead<UE_UObject*>(TMP);
             string TMP1Class = TMP1->GetClass()->GetName();
             if (TMP1Class=="World"){
                 addrOffsets.Addr=TMP;
-                addrOffsets.Offsets=offsets.GNames + (0x8*i);
+                addrOffsets.Offsets=offsets.GNames + (i*0x8);
                 break;
             }
         }
         return addrOffsets;
     }
-
 
     AddrOffsets GetGobject(){
         AddrOffsets addrOffsets;
@@ -216,9 +214,9 @@ namespace UEinit{
             uint64_t TMP;
             TMP = addr.libbase + offsets.GNames + (0x8*i) +0x10;
             if (TMP < 0x1000000000) continue;
-            uint64_t TMP1 = BigWhite_GetPtr64(TMP);
+            uint64_t TMP1 = GetAddr(TMP);
             if (TMP1 < 0x1000000000) continue;
-            uint64_t TMP2 = BigWhite_GetPtr64(TMP1);
+            uint64_t TMP2 = GetAddr(TMP1);
             if (TMP2 < 0x1000000000) continue;
             UE_UObject* TMP3 = XY_TRead<UE_UObject*>(TMP2);
             UE_UObject* TMP4 = XY_TRead<UE_UObject*>(TMP2+0x18);
@@ -261,10 +259,10 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         int i=0;
 
-        UE_UObject* TMPS= XY_TRead<UE_UObject*>(BigWhite_GetPtr64(addr.libbase + 0xada8ea8)+0x20);
+        UE_UObject* TMPS= XY_TRead<UE_UObject*>(GetAddr(addr.libbase + 0xada8ea8)+0x20);
         cout << TMPS->GetClass()->GetName() <<endl;
         while (true){
-            uint64_t TMPMatrix = BigWhite_GetPtr64(addr.libbase + offsets.GNames + (0x8*i));
+            uint64_t TMPMatrix = GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPMatrix != 0){
                 UE_UObject* Tmp = XY_TRead<UE_UObject*>((TMPMatrix)+0x20);
                 if (Tmp->GetClass()->GetName()== "Canvas"){
@@ -294,6 +292,62 @@ namespace DumpSDK{
             return -1;
         }
         Dump.Dump();
+        return true;
+    }
+    bool Structure(){
+        if (offsets.Gobject==0){
+            cout << "请先获取Gobject数据"<<endl;
+            return false;
+        }
+        uint64_t Object = addr.libbase+offsets.Gobject+0x10;
+
+
+        //TUObjectArray
+        for (int i = 0;; i+=0x4) {
+            if (GetDowrd(Object+i)==1){
+                printf("TUObjectArray.NumChunks:%p\n",i);
+                Offsets.TUObjectArray.NumChunks=i;
+                if (GetDowrd(Object+i-0x4) > 0 && GetDowrd(Object+i-0x8) > 10000){
+                    printf("TUObjectArray.NumElements:%p\n",i-0x8);
+                    Offsets.TUObjectArray.NumElements=i-0x8;
+                }
+                cout << ""<<endl;
+                break;
+            }
+        }
+
+        //FUObjectItem
+        uint64_t FUObjectItem = GetAddr(GetAddr(Object));
+        for (int i = 0;; i+=4) {
+            if (GetAddr(FUObjectItem+i)>addr.base){
+                printf("FUObjectItem.Object:%p\n",i);
+                Offsets.FUObjectItem.Object=i;
+                break;
+            }
+        }
+        for (int i = 0x4;; i+=0x4) {
+            uint64_t address = GetAddr(FUObjectItem+Offsets.FUObjectItem.Object+i);
+            if (address >addr.base && address<0xffffffffff){
+                printf("FUObjectItem.Size:%p\n",i);
+                Offsets.FUObjectItem.Size=i;
+                break;
+            }
+        }
+
+        //UObject
+        //这个应该不用修 就这样
+
+
+        //UEnum
+        UE_UObject* UEnum = ObjObjects->FindObject("Enum  /Script/CoreUObject.EInterpCurveMode");
+
+        //UFunction
+        UE_UObject* UFunction = ObjObjects->FindObject("Function  /Script/Engine.KismetSystemLibrary.LineTraceSingle");
+
+
+
+        cout << ""<<endl;
+
         return true;
     }
 }

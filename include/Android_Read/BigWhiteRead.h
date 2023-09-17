@@ -78,8 +78,11 @@ void BigWhite_WriteFloat(unsigned long addr, float data);
 // 获取进程
 int BigWhite_GetPID(const char *packageName);
 
-// 获取基址
+// 获取模块基址
 unsigned long BigWhite_GetModuleBase(int pid, const char *module_name);
+
+//获取基址
+unsigned long BigWhite_GetProcessBaseAddress(int pid);
 
 
 // 读取字符信息

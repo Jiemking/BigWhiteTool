@@ -141,7 +141,7 @@ namespace Menu{
                     if (i==0){
                         Address += inputValue;
                     }else{
-                        Address=BigWhite_GetPtr64(Address+inputValue);
+                        Address=GetAddr(Address+inputValue);
                     }
                 }
                 //cout << i << endl;
@@ -164,7 +164,7 @@ namespace Menu{
         }
         ImGui::SameLine();
         if (ImGui::Button("矩阵")){
-            addr.Address= BigWhite_GetPtr64(addr.libbase+offsets.Matrix);
+            addr.Address= GetAddr(addr.libbase+offsets.Matrix);
         }
 
 
@@ -355,7 +355,7 @@ namespace Menu{
         {
             float matrix[16];
             memset(matrix, 0, 16);
-            BigWhite_vm_readv(addr.Matrix, matrix, 16 * 4);
+            ReadAddr(addr.Matrix, matrix, 16 * 4);
             string result;
             for (float i : matrix) {
                 //std::cout << matrix[i] << " ";
@@ -412,7 +412,7 @@ namespace Menu{
                     if (i == 0) {
                         Address += inputValue;
                     } else {
-                        Address = BigWhite_GetPtr64(Address + inputValue);
+                        Address = GetAddr(Address + inputValue);
                     }
                 }
             }
@@ -421,7 +421,7 @@ namespace Menu{
                 UE_UObject* Tmp = XY_TRead<UE_UObject*>(Address + i);
                 string KlassName = Tmp->GetClass()->GetName();
                 string outerName = Tmp->GetName();
-                printf("[%lx](%lx) %s  %s\n",i,BigWhite_GetPtr64((Address + i)),KlassName.c_str(),outerName.c_str());
+                printf("[%lx](%lx) %s  %s\n",i,GetAddr((Address + i)),KlassName.c_str(),outerName.c_str());
             }
         }
         // 渲染虚拟键盘

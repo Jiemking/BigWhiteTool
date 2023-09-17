@@ -1,3 +1,4 @@
+#include <sstream>
 #include "Android_Read/BigWhiteRead.h"
 
 int BigWhite_pid=0;
@@ -237,6 +238,32 @@ unsigned long BigWhite_GetModuleBase(int pid, const char *module_name)
         fclose(fp);
     }
     return addr;
+}
+
+
+unsigned long BigWhite_GetProcessBaseAddress(int pid) {
+    FILE *fp;
+    char filename[64];
+    char line[1024];
+    char *pch;
+    unsigned long processBase = 0;
+
+    // 构建maps文件的路径
+    snprintf(filename, sizeof(filename), "/proc/%d/maps", pid);
+    fp = fopen(filename, "r");
+
+    if (fp != nullptr) {
+        if (fgets(line, sizeof(line), fp)) {
+            pch = strtok(line, "-");
+            processBase = strtoul(pch, nullptr, 16);
+        }
+
+        fclose(fp);
+    } else {
+        std::cerr << "Failed to open /proc/" << pid << "/maps" << std::endl;
+    }
+
+    return processBase;
 }
 
 // 读取字符信息

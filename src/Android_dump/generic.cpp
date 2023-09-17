@@ -31,7 +31,7 @@ string FNamePool::GetName(uint32_t index)
     int StrLength = FNameEntryHeader >> 6;
     if (StrLength > 0 && StrLength < 250) {
         string name(StrLength, '\0');
-        BigWhite_vm_readv(StrPtr, name.data(), StrLength * sizeof(char));
+        ReadAddr(StrPtr, name.data(), StrLength * sizeof(char));
         name.shrink_to_fit();
         return name;
     } else {
@@ -40,13 +40,13 @@ string FNamePool::GetName(uint32_t index)
 }
 string FNamePool::GetName_Old(uint32_t index)
 {
-    uintptr_t G_Names = BigWhite_GetPtr64(AddrGNames);
+    uintptr_t G_Names = GetAddr(AddrGNames);
     int Id = (int)(index / (int)0x4000);
     int Idtemp = (int)(index % (int)0x4000);
-    auto NamePtr = BigWhite_GetPtr64((G_Names + Id * 8));
-    auto Name = BigWhite_GetPtr64((NamePtr + 8 * Idtemp));
+    auto NamePtr = GetAddr((G_Names + Id * 8));
+    auto Name = GetAddr((NamePtr + 8 * Idtemp));
     char name[0x100] = { 0 };
-    if (BigWhite_vm_readv((Name + 0xC), name, 0x100)) //0xC需要手动推算，默认是0x10
+    if (ReadAddr((Name + 0xC), name, 0x100)) //0xC需要手动推算，默认是0x10
     {
         return name;
     }

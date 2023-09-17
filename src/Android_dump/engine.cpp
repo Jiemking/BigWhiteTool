@@ -35,8 +35,9 @@ string UE_UObject::GetCppName()
 
 	for (UE_UStruct* c = this->Cast<UE_UStruct*>(); c; c = c->GetSuper())
 	{
-		if (c > (void*)GameBase)
-			break;
+        /*这个地方容易出问题*/
+        if (c > (void*)GameBase)
+            break;
 
 		if (c == UE_AActor::StaticClass())
 			return "A" + Name;
@@ -148,7 +149,7 @@ string UE_FField::GetName()
 // 获取字段类型
 string UE_FField::GetType()
 {
-	uint32_t NameId = XY_TRead<uint32_t>(XY_TRead<uintptr_t>(this + Offsets.FField.Class));
+	uint32_t NameId = XY_TRead<uint32_t>(XY_TRead<uint32_t*>(this + Offsets.FField.Class));
 	string Name = NamePoolData->GetName(NameId);
 
 	if (Name == "NameProperty")			{ return "FName"; }

@@ -83,6 +83,7 @@ Offsets offsets;
 struct Addr
 {
 public:
+    uint64_t base;
     uint64_t libbase;
     uint64_t Address = 0;
     uint64_t GNames = 0;

@@ -17,22 +17,22 @@ void DrawPlayer(ImDrawList *Draw) {
     int py = displayInfo.height / 2;
     int px = displayInfo.width / 2;
 
-    int ArrayaddrCount = BigWhite_GetDword( addr.Ulevel+ offsets.ArrayaddrCount);//数量
+    int ArrayaddrCount = GetDowrd( addr.Ulevel+ offsets.ArrayaddrCount);//数量
     float matrix[16];
     memset(matrix, 0, 16);
-    BigWhite_vm_readv(addr.Matrix, matrix, 16 * 4);
+    ReadAddr(addr.Matrix, matrix, 16 * 4);
 
     for (int i = 0; i < ArrayaddrCount; i++) {
 
-        uint64_t Objaddr = BigWhite_GetPtr64(addr.Arrayaddr + 8 * i);  // 遍历数量次数
+        uint64_t Objaddr = GetAddr(addr.Arrayaddr + 8 * i);  // 遍历数量次数
         if (Objaddr == 0)   continue;
         // 自身坐标
         Vector3A Z;
-        BigWhite_vm_readv(BigWhite_GetPtr64(addr.AcknowledgedPawn + offsets.RootComponent) + offsets.XYZ_X, &Z, sizeof(Z)); // 自己坐标
+        ReadAddr(GetAddr(addr.AcknowledgedPawn + offsets.RootComponent) + offsets.XYZ_X, &Z, sizeof(Z)); // 自己坐标
 
         // 敌人和物资坐标
         Vector3A D;
-        BigWhite_vm_readv(BigWhite_GetPtr64(Objaddr + offsets.RootComponent) + offsets.XYZ_X, &D, sizeof(D)); // 对象坐标
+        ReadAddr(GetAddr(Objaddr + offsets.RootComponent) + offsets.XYZ_X, &D, sizeof(D)); // 对象坐标
         if (D.X == 0 || D.Y == 0 || D.Z == 0)   continue;
 
         float camera,r_x,r_y,r_w;
@@ -52,16 +52,15 @@ void DrawPlayer(ImDrawList *Draw) {
         float ah =r_y - r_w;
         if (ah<=0)  continue;//过滤背部敌人
         std::string ClassName = GetName(Objaddr);//类名
-        Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());//类名绘制
-
-        Draw->AddText(NULL, 24, {r_x , r_y+60}, ImColor(255,255,255,255) , to_string(BigWhite_GetDword(BigWhite_GetPtr64(Objaddr+0x2C0)+0x2a4)).c_str());
-
-        char PlayerNameTmp[100] = "";
-        BigWhite_GetUTF8(PlayerNameTmp,BigWhite_GetPtr64(BigWhite_GetPtr64(Objaddr + 0x2C0) + 0x320));//获取该数组人物名称
-        Draw->AddText(NULL, 24, {r_x , r_y+0}, ImColor(255,255,255,255) , PlayerNameTmp);
 
 
         //类名绘制
+        Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());//类名绘制
+
+        //名称绘制
+/*        char PlayerNameTmp[100] = "";
+        BigWhite_GetUTF8(PlayerNameTmp,GetAddr(GetAddr(Objaddr + 0x2C0) + 0x320));
+        Draw->AddText(NULL, 24, {r_x , r_y+0}, ImColor(255,255,255,255) , PlayerNameTmp);*/
 
 
 
