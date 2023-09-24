@@ -49,3 +49,9 @@ float GetFloat(uintptr_t addr){
     }
     return 0;
 }
+
+float intToFloat(int intValue) {
+    FloatInt fi;
+    fi.i = intValue;
+    return fi.f;
+}

@@ -76,5 +76,5 @@ void Dumper::Dump()
         fprintf(ObjectsName, "{%.6p}\t[%p]\t%s\n",i, Object, Object->GetFullName().c_str());
     }
     // 输出完成信息
-    cout<< "OK!\n" <<endl;
+    cout<<"保存成功路径：/storage/emulated/0/A_BigWhiteTool/SDK\n"<<endl;
 }

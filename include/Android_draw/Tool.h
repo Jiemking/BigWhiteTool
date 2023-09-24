@@ -10,7 +10,6 @@
 #include "dumper.h"
 #include "engine.h"
 #include "generic.h"
-int tencent = 0;//这个全局变量过滤进程使用
 
 std::string GetName_Old(int i) //旧版本算法
 {
@@ -51,29 +50,30 @@ std::vector<ProcessInfo> GetTencentProcesses() {
             std::ifstream cmdlineFile(cmdlineFilePath, std::ios::binary);
             if (cmdlineFile.is_open()) {
                 std::string processName;
-                char ch;
-                while (cmdlineFile.get(ch) && ch != '\0') {
-                    processName += ch;
-                }
-
-                if (!processName.empty()) {
-                    if ((tencent==0 && processName.find("com.") != std::string::npos)) {
-                        ProcessInfo processInfo;
-                        processInfo.pid = pid;
-                        processInfo.name = processName;
-                        processInfo.isSelected = false;
-                        processes.push_back(processInfo);
-                    }
-                    else if ((tencent==1 && (processName.find("tencent.") != std::string::npos || processName.find("uamo") != std::string::npos))) {
-                        ProcessInfo processInfo;
-                        processInfo.pid = pid;
-                        processInfo.name = processName;
-                        processInfo.isSelected = false;
-                        processes.push_back(processInfo);
-                    }
-                }
-
+                std::getline(cmdlineFile, processName, '\0');
                 cmdlineFile.close();
+
+                // 先进行初步过滤，检查processName是否包含com.
+                    std::string mapsFilePath = entry.path() / "maps";
+                    std::ifstream mapsFile(mapsFilePath);
+                    std::string line;
+                    bool hasLibUE4 = false;
+                    while (std::getline(mapsFile, line)) {
+                        if (line.find("libUE4.so") != std::string::npos) {
+                            hasLibUE4 = true;
+                            break;
+                        }
+                    }
+                    mapsFile.close();
+
+                    if (hasLibUE4) {
+                        ProcessInfo processInfo;
+                        processInfo.pid = pid;
+                        processInfo.name = processName;
+                        processInfo.isSelected = false;
+                        processes.push_back(processInfo);
+                    }
+
             }
         }
     }
@@ -294,7 +294,7 @@ namespace DumpSDK{
         Dump.Dump();
         return true;
     }
-    bool Structure(){
+    bool Structure(){/*
         if (offsets.Gobject==0){
             cout << "请先获取Gobject数据"<<endl;
             return false;
@@ -348,7 +348,7 @@ namespace DumpSDK{
 
         cout << ""<<endl;
 
-        return true;
+        return true;*/
     }
 }
 #endif //BIGWHITETOOL_TOOL_H

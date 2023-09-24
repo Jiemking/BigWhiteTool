@@ -317,7 +317,7 @@ namespace Menu{
                     fprintf(outFile, "%s\n", MatrixBuffer);
                     fprintf(outFile, "%s\n", GObjectBuffer);
                     fclose(outFile);
-                    printf("Output written to output.txt\n");
+                    cout<<"保存成功路径：/storage/emulated/0/A_BigWhiteTool\n"<<endl;
                 } else {
                     printf("Error opening output file\n");
                 }

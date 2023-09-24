@@ -7,6 +7,11 @@
 #include "BigWhiteRead.h"
 #include "biu.h"
 
+union FloatInt {
+    int i;
+    float f;
+};
+
 extern int readmode;
 //获取模块地址
 uint64_t GetLibBase(int pid);
@@ -18,6 +23,8 @@ bool ReadAddr(uintptr_t address, void *buffer, size_t size);
 int GetDowrd(uintptr_t addr);
 //读浮点型
 float GetFloat(uintptr_t addr);
+//整形转浮点
+float intToFloat(int intValue);
 
 // 模板函数用于读取内存（重载）
 template<typename T>

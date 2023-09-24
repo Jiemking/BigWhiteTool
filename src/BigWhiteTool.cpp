@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
     if (showmenu!=0x1000){
         exit(0);
     }
-
+    std::vector<ProcessInfo> processes = GetTencentProcesses();
     while (flag) {
         // imgui画图开始前调用
         drawBegin();
@@ -95,62 +95,32 @@ int main(int argc, char *argv[]) {
                 float menuX = (menuBarWidth - menuSize.x) * 0.5f; // 计算居中位置
                 ImGui::SetCursorPosX(menuX);
 
-                    if (ImGui::BeginMenu("进程")) {
-                        if (ImGui::MenuItem("ALL")){
-                            tencent=0;
+                if (ImGui::BeginMenu("进程")) {
+                    for (const ProcessInfo& process : processes) {
+                        std::string jc = "PID: " + process.pid + " | Name: " + process.name;
+                        if (ImGui::MenuItem(jc.c_str())) {
+                            selectedPID = process.pid;
+                            BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值 是为了BigWhiteRead里面需要用
+                            setpid(BigWhite_pid);//设置BiuPid
+                            ProcessName=process.name;//将进程名保存为全局变量
+                            ResetOffsets();//重新选择进程时 重置偏移结构体变量
+                            //GameInit();//这里是初始化部分游戏偏移
+                            addr.libbase = GetLibBase(BigWhite_pid);
+                            addr.base = 0x1000000000;
+                            GameBase=addr.libbase;
+                            addr.GNames = addr.libbase + offsets.GNames;
+                            addr.Gobject = addr.libbase + offsets.Gobject;
+                            NamePoolData = (FNamePool*)(addr.libbase+offsets.GNames);
+                            AddrGNames = (addr.libbase+offsets.GNames);
+                            ObjObjects = (TUObjectArray*)(addr.libbase+offsets.Gobject+0x10);
+                            AddrGObject = (addr.libbase+offsets.Gobject+0x10);
+                            printf("Pid：%d\nBase：%lx\nlibBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.base,addr.libbase,addr.GNames,addr.Gobject);
+                            cout << "初始化成功！"<<endl;
+                            cshzt = true;
                         }
-                        if (ImGui::MenuItem("过滤tencent")){
-                            tencent=1;
-                        }
-                        std::vector<ProcessInfo> processes = GetTencentProcesses();
-                        for (const ProcessInfo& process : processes) {
-                            std::string jc = "PID: " + process.pid + " | Name: " + process.name;
-                            if (ImGui::MenuItem(jc.c_str())) {
-                                selectedPID = process.pid;
-                                BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值 是为了BigWhiteRead里面需要用
-                                setpid(BigWhite_pid);//设置BiuPid
-                                ProcessName=process.name;//将进程名保存为全局变量
-                                ResetOffsets();//重新选择进程时 重置偏移结构体变量
-                                GameInit();//这里是初始化游戏偏移
-                                addr.libbase = GetLibBase(BigWhite_pid);
-                                addr.base = 0x1000000000;
-                                GameBase=addr.libbase;
-                                addr.GNames = addr.libbase + offsets.GNames;
-                                addr.Gobject = addr.libbase + offsets.Gobject;
-                                NamePoolData = (FNamePool*)(addr.libbase+offsets.GNames);
-                                AddrGNames = (addr.libbase+offsets.GNames);
-                                ObjObjects = (TUObjectArray*)(addr.libbase+offsets.Gobject+0x10);
-                                AddrGObject = (addr.libbase+offsets.Gobject+0x10);
-                                printf("Pid：%d\nBase：%lx\nlibBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.base,addr.libbase,addr.GNames,addr.Gobject);
-                                cout << "初始化成功！"<<endl;
-/*                                UE_UField* Tmp = XY_TRead<UE_UEnum*>(addr.libbase+offsets.Uworld);
-                                Tmp->GetClass()->Generate();
-                                // 生成枚举
-                                if (Tmp->GetClass()->IsA<UE_UEnum>())
-                                {
-                                    Tmp->GetClass()->Cast<UE_UEnum*>()->Generate();
-                                }
-                                    // 生成类
-                                else if (Tmp->GetClass()->IsA<UE_UClass>())
-                                {
-                                    Tmp->GetClass()->Cast<UE_UClass*>()->Generate();
-                                }
-                                    // 生成函数
-                                else if (Tmp->GetClass()->IsA<UE_UFunction>())
-                                {
-                                    Tmp->GetClass()->Cast<UE_UFunction*>()->Generate();
-                                }
-                                    // 生成结构
-                                else if (Tmp->GetClass()->IsA<UE_UScriptStruct>())
-                                {
-                                    Tmp->GetClass()->Cast<UE_UScriptStruct*>()->Generate();
-                                }*/
-
-                                cshzt = true;
-                            }
-                        }
-                        ImGui::EndMenu();
                     }
+                    ImGui::EndMenu();
+                }
 
                 if (cshzt){
                     addr.Uworld = GetAddr(addr.libbase + offsets.Uworld);
@@ -172,13 +142,16 @@ int main(int argc, char *argv[]) {
                         ImGui::EndMenu();
                     }
 
-
                     if (ImGui::BeginMenu("DumpSDK"))
                     {
                         if (ImGui::MenuItem("结构分析修复")) {
                             DumpSDK::Structure();
                         }
                         if (ImGui::MenuItem("DumpSDK")) {
+                            if (offsets.Gobject==0 || offsets.GNames==0 ){
+                                cout << "请先获取Gobject Gname偏移"<<endl;
+                                return false;
+                            }
                             DumpSDK::DumpUObject();
                         }
                         ImGui::EndMenu();
