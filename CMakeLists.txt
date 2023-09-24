@@ -38,24 +38,6 @@ include_directories( # 设置全局头文件目录 使其他源码文件可在�
         include/Android_dump
         include/request
         include/tools
-        ffmpeg/include
-        my_android_opencv/include
-        my_android_opencv/modules/highgui/include
-        my_android_opencv/modules/imgcodecs/include
-        my_android_opencv/modules/imgproc/include
-        my_android_opencv/modules/core/include
-        my_android_opencv/modules/video/include
-        my_android_opencv/modules/videoio/include
-        my_android_opencv/modules/world/include
-        my_android_opencv/modules/dnn/include
-        my_android_opencv/modules/ml/include
-        my_android_opencv/modules/features2d/include
-        my_android_opencv/modules/calib3d/include
-        my_android_opencv/modules/flann/include
-        my_android_opencv/modules/objdetect/include
-        my_android_opencv/modules/photo/include
-        my_android_opencv/modules/stitching/include
-        my_libhv/include/hv
         )
 ##################### CMake头文件设置 #####################
 
