@@ -53,34 +53,9 @@ void DrawPlayer(ImDrawList *Draw) {
         if (ah<=0)  continue;//过滤背部敌人
         std::string ClassName = GetName(Objaddr);//类名
 
-
         //类名绘制
         Draw->AddText(NULL, 24, {r_x , r_y-60}, ImColor(255,255,255,255) , ClassName.c_str());//类名绘制
 
-        //名称绘制
-/*        char PlayerNameTmp[100] = "";
-        BigWhite_GetUTF8(PlayerNameTmp,GetAddr(GetAddr(Objaddr + 0x2C0) + 0x320));
-        Draw->AddText(NULL, 24, {r_x , r_y+0}, ImColor(255,255,255,255) , PlayerNameTmp);*/
-
-
-
-        /*
-        //类名翻译
-        Draw->AddText(NULL, 24, {r_x , r_y}, ImColor(255,255,255,255) , ItemData::UamoGetString(ClassName).c_str());
-        //类名地址
-        std::stringstream Objaddrstr;
-        Objaddrstr << std::hex << Objaddr;  // 将长整型以十六进制格式写入 stringstream
-        std::string ObjaddString = Objaddrstr.str();  // 获取十六进制字符串
-        Draw->AddText(NULL,20 , {r_x , r_y-20}, ImColor(255,255,255,255) , ObjaddString.c_str());*/
-
-/*        if (XY_GetFloat(Objaddr + 0x42C) !=40.0f)
-        {
-            continue;
-        }*/
-        //Draw->AddRect({(x + w / 2) - w / 2.0f, y-w},{x+w/1.12f, y + w},ImColor(255,0,0,255),{0.0},0,{1});
-/*        std::stringstream oneselfstr;
-        oneselfstr << std::hex << oneself;  // 将长整型以十六进制格式写入 stringstream
-        std::string oneselfString = oneselfstr.str();  // 获取十六进制字符串*/
     }
 
 }

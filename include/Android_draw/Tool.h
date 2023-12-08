@@ -11,6 +11,10 @@
 #include "engine.h"
 #include "generic.h"
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 std::string GetName_Old(int i) //旧版本算法
 {
     uintptr_t G_Names = GetAddr(addr.GNames);
@@ -259,8 +263,6 @@ namespace UEinit{
         addrOffsets.Offsets=0;
         int i=0;
 
-        UE_UObject* TMPS= XY_TRead<UE_UObject*>(GetAddr(addr.libbase + 0xada8ea8)+0x20);
-        cout << TMPS->GetClass()->GetName() <<endl;
         while (true){
             uint64_t TMPMatrix = GetAddr(addr.libbase + offsets.GNames + (0x8*i));
             if (TMPMatrix != 0){
@@ -279,6 +281,53 @@ namespace UEinit{
 
 
 namespace DumpSDK{
+
+// 函数用于查找并输出特定变量后的注释信息
+    void findClass(const std::string& filePath, const std::string& className, const std::string& variableName) {
+        std::ifstream file(filePath); // 打开文件
+
+        if (file.is_open()) {
+            std::string line;
+            bool classFound = false;
+            bool insideClass = false;
+
+            while (std::getline(file, line)) {
+                if (!insideClass && line.find("class " + className) != std::string::npos) {
+                    classFound = true;
+                    insideClass = true;
+                    continue;
+                }
+
+                if (insideClass) {
+                    std::string variableDeclaration = variableName + ";"; // 构建变量名+分号，以判断是否为变量声明行
+                    size_t found = line.find(variableDeclaration);
+                    if (found != std::string::npos) {
+                        size_t commentStart = line.find("//", found); // 找到变量声明后的注释
+                        if (commentStart != std::string::npos) {
+                            std::string comment = line.substr(commentStart); // 提取注释信息
+                            std::cout << comment <<"Name"<<variableName<< std::endl; // 输出注释信息
+                            break; // 找到注释后结束循环
+                        }
+                    }
+                }
+
+                if (insideClass && line.find("};") != std::string::npos) {
+                    break; // 类定义结束
+                }
+            }
+
+            file.close();
+
+            if (!classFound) {
+                std::cout << "未找到指定类名" << std::endl;
+            }
+        } else {
+            std::cout << "无法打开文件" << std::endl;
+        }
+    }
+
+
+
     bool DumpUObject(){
         Dumper& Dump = Dumper::GetInstance();
         uint64_t Base = addr.libbase;

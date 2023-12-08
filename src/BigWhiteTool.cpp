@@ -17,11 +17,11 @@ int main(int argc, char *argv[]) {
     std::cout << "对于任何因使用本软件所引起的问题，我们将不负有任何法律或经济责任。" << std::endl << std::endl;
 
     std::cout << "（https://t.me/BigWhiteChat）" << std::endl;
-    if (!Login()){
+/*    if (!Login()){
         cout << "登录失败"<<endl;
         return 0;
-    }
-    //showmenu=0x1000;
+    }*/
+    showmenu=0x1000;
     while (true){
         screen_config();
         if (displayInfo.orientation==1||displayInfo.orientation==3){
@@ -104,17 +104,9 @@ int main(int argc, char *argv[]) {
                             setpid(BigWhite_pid);//设置BiuPid
                             ProcessName=process.name;//将进程名保存为全局变量
                             ResetOffsets();//重新选择进程时 重置偏移结构体变量
-                            //GameInit();//这里是初始化部分游戏偏移
                             addr.libbase = GetLibBase(BigWhite_pid);
-                            addr.base = 0x1000000000;
                             GameBase=addr.libbase;
-                            addr.GNames = addr.libbase + offsets.GNames;
-                            addr.Gobject = addr.libbase + offsets.Gobject;
-                            NamePoolData = (FNamePool*)(addr.libbase+offsets.GNames);
-                            AddrGNames = (addr.libbase+offsets.GNames);
-                            ObjObjects = (TUObjectArray*)(addr.libbase+offsets.Gobject+0x10);
-                            AddrGObject = (addr.libbase+offsets.Gobject+0x10);
-                            printf("Pid：%d\nBase：%lx\nlibBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.base,addr.libbase,addr.GNames,addr.Gobject);
+                            printf("Pid：%d\nlibBase：%lx\nGname：%lx\nGobject：%lx\n",BigWhite_pid,addr.libbase,addr.GNames,addr.Gobject);
                             cout << "初始化成功！"<<endl;
                             cshzt = true;
                         }
@@ -126,10 +118,10 @@ int main(int argc, char *argv[]) {
                     addr.Uworld = GetAddr(addr.libbase + offsets.Uworld);
                     addr.Ulevel = GetAddr(addr.Uworld + offsets.Ulevel);
                     addr.Arrayaddr = GetAddr(addr.Ulevel + offsets.Arrayaddr);
-                    addr.Matrix =  GetAddr(GetAddr(addr.libbase + offsets.Matrix) + offsets.Matrix1) + offsets.Matrix2;//高能英雄
+                    addr.Matrix =  GetAddr(GetAddr(addr.libbase + offsets.Matrix) + 0x20) + offsets.Matrix2;
                     addr.PlayerController =  GetAddr(GetAddr(GetAddr(GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController);//高能英雄
                     addr.AcknowledgedPawn = GetAddr(GetAddr(GetAddr(GetAddr(GetAddr(addr.Uworld + offsets.GameInstance)+offsets.LocalPlayer))+offsets.PlayerController)+offsets.AcknowledgedPawn);//暗区体验
-                    //DrawPlayer(ImGui::GetForegroundDrawList());
+
                     if (ImGui::BeginMenu("窗口"))
                     {
                         ImGui::MenuItem("ImguiDemo", NULL, &ShowDemoWindow);
@@ -137,22 +129,67 @@ int main(int argc, char *argv[]) {
                         ImGui::MenuItem("初始化数据", NULL, &ShowFindData);
                         ImGui::MenuItem("UE4Dumper", NULL, &ShowUE4Dumper);
                         ImGui::MenuItem("DebugDumper", NULL, &ShowDebugDumper);
-                        ImGui::MenuItem("DeBUGGG", NULL, &ShowDebugMatrix);
+                        ImGui::MenuItem("矩阵数据", NULL, &ShowDebugMatrix);
                         if (ImGui::MenuItem("Debug", "CTRL+X")) {}
                         ImGui::EndMenu();
                     }
 
                     if (ImGui::BeginMenu("DumpSDK"))
                     {
-                        if (ImGui::MenuItem("结构分析修复")) {
+/*                        if (ImGui::MenuItem("结构分析修复")) {
                             DumpSDK::Structure();
-                        }
+                        }*/
                         if (ImGui::MenuItem("DumpSDK")) {
                             if (offsets.Gobject==0 || offsets.GNames==0 ){
                                 cout << "请先获取Gobject Gname偏移"<<endl;
                                 return false;
                             }
                             DumpSDK::DumpUObject();
+                        }
+                        if (ImGui::MenuItem("输出暗区偏移")) {
+                            std::string filePath = "/storage/emulated/0/A_BigWhiteTool/SDK/Class.cpp";
+
+                            //手持
+                            cout << "手持武器数据" <<endl;
+                            DumpSDK::findClass(filePath, "ASGCharacter", "CharacterWeaponManagerComponent");
+                            DumpSDK::findClass(filePath, "USGCharacterWeaponManagerComponent", "CurrentWeapon");
+                            DumpSDK::findClass(filePath, "ASGInventory", "CurrentWeapon");
+                            DumpSDK::findClass(filePath, "ABPC_Weapon_UamEmptyHand_C", "SGWeaponImpact");
+                            DumpSDK::findClass(filePath, "USGWeaponImpactComponent", "OwnerWeapon");
+
+                            //负重和价值
+                            cout << "负重价值数据" <<endl;
+                            DumpSDK::findClass(filePath, "ASGCharacter", "CharacterInventoryManagerComponent");
+                            DumpSDK::findClass(filePath, "USGCharacterInventoryManagerComponent", "TotalWeight");
+                            DumpSDK::findClass(filePath, "USGCharacterInventoryManagerComponent", "TotalInventoryValue");
+
+                            //护甲等级
+                            cout << "护甲等级数据" <<endl;
+                            DumpSDK::findClass(filePath, "ASGCharacter", "CharacterArmorManagerComponent");
+                            DumpSDK::findClass(filePath, "USGCharacterArmorManagerComponent", "ArmorList");
+                            DumpSDK::findClass(filePath, "ASGInventory", "ArmorLevel");
+
+                            //骨骼数据
+                            cout << "护甲等级数据" <<endl;
+                            DumpSDK::findClass(filePath, "ACharacter", "Mesh");
+                            cout << "过滤" <<endl;
+                            DumpSDK::findClass(filePath, "ACharacter", "CrouchedEyeHeight");
+
+                            cout << "PlayerState" <<endl;
+                            DumpSDK::findClass(filePath, "APawn", "PlayerState");
+
+                            cout << "TeamIndex" <<endl;
+                            DumpSDK::findClass(filePath, "ASGPlayerState", "TeamIndex");
+
+                            cout << "RootComponent" <<endl;
+                            DumpSDK::findClass(filePath, "AActor", "RootComponent");
+
+                            cout << "坐标偏移" <<endl;//
+                            DumpSDK::findClass(filePath, "USceneComponent", "RelativeLocation");
+                            cout << "自身" <<endl;//
+                            DumpSDK::findClass(filePath, "APlayerController", "AcknowledgedPawn");
+
+
                         }
                         ImGui::EndMenu();
                     }

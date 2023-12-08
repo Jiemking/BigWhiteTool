@@ -209,11 +209,11 @@ namespace Menu{
             ImGui::Checkbox("是否UE423以上版本（谨慎选择 选择错会导致卡死！卡十几秒左右是正常的！）",&isUE423);
             if (ImGui::Button("一键获取",ImVec2(400,75))){
                 AddrOffsets Gname = UEinit::GetGname();
-
                 offsets.GNames=Gname.Offsets;//设置全局Gname偏移
                 addr.GNames = addr.libbase + Gname.Offsets;//设置全局Gname地址
                 NamePoolData = (FNamePool*)(addr.libbase+Gname.Offsets);
                 AddrGNames = (addr.libbase+Gname.Offsets);
+
 
                 AddrOffsets Matrix = UEinit::GetMatrix();
                 offsets.Matrix=Matrix.Offsets;//设置全局Matrix偏移
