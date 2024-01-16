@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "请在使用本软件前详细阅读并理解上述免责声明。一旦您开始使用本软件，即代表您同意遵守上述声明，并愿意承担因此产生的一切风险和责任。" << std::endl;
     std::cout << "对于任何因使用本软件所引起的问题，我们将不负有任何法律或经济责任。" << std::endl << std::endl;
+    exec_native_surface("mkdir -p /storage/emulated/0/A_BigWhiteTool/SDK");
 
     std::cout << "（https://t.me/BigWhiteChat）" << std::endl;
 /*    if (!Login()){
@@ -30,13 +31,7 @@ int main(int argc, char *argv[]) {
         cout<<"等待横屏!"<<endl;
     }
 
-    bool ret=checkDriver();
-    puts(ret?"biu驱动已经安装":"biu驱动未安装自动使用普通版！");
-    if (ret){
-        readmode=2;
-    } else{
-        readmode=1;
-    }
+    readmode=1;
 
     if (!initDraw()) {
         return -1;
@@ -70,7 +65,6 @@ int main(int argc, char *argv[]) {
     while (flag) {
         // imgui画图开始前调用
         drawBegin();
-
         //根据输入信息判断菜单的显示
         for (int i = 0; i < EventCount; i++) {
             memset(&ev, 0, sizeof(ev));
@@ -84,7 +78,6 @@ int main(int argc, char *argv[]) {
             }
         }
         // 通过设置窗口大小和位置来影响主菜单栏的大小和位置
-
         if (ShowMenuWindows){
 
             if (ImGui::BeginMainMenuBar())
@@ -101,7 +94,6 @@ int main(int argc, char *argv[]) {
                         if (ImGui::MenuItem(jc.c_str())) {
                             selectedPID = process.pid;
                             BigWhite_pid = std::stoi(selectedPID);//这里给BigWhite_pid赋值 是为了BigWhiteRead里面需要用
-                            setpid(BigWhite_pid);//设置BiuPid
                             ProcessName=process.name;//将进程名保存为全局变量
                             ResetOffsets();//重新选择进程时 重置偏移结构体变量
                             addr.libbase = GetLibBase(BigWhite_pid);

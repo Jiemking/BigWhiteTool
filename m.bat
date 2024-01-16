@@ -1,4 +1,4 @@
-adb shell su -c killall BigWhiteTool
+adb shell /data/local/tmp/su_bc2240a6d80a0c0c6083de71f77ce70665f0056287ed2ea4c12949a3e505054087ea72fa1b40be296efe75ec007ff77086d11172d0296aeb6b8de00179ed17b333b6d779d11677f75a8ed5090c54a5d327//su -c killall BigWhiteTool
 adb push outputs\arm64-v8a\BigWhiteTool /data/local/tmp
-adb shell su -c chmod 777 /data/local/tmp/BigWhiteTool
-adb shell su -c /data/local/tmp/BigWhiteTool
+adb shell /data/local/tmp/su_bc2240a6d80a0c0c6083de71f77ce70665f0056287ed2ea4c12949a3e505054087ea72fa1b40be296efe75ec007ff77086d11172d0296aeb6b8de00179ed17b333b6d779d11677f75a8ed5090c54a5d327//su -c chmod 777 /data/local/tmp/BigWhiteTool
+adb shell /data/local/tmp/su_bc2240a6d80a0c0c6083de71f77ce70665f0056287ed2ea4c12949a3e505054087ea72fa1b40be296efe75ec007ff77086d11172d0296aeb6b8de00179ed17b333b6d779d11677f75a8ed5090c54a5d327//su -c /data/local/tmp/BigWhiteTool

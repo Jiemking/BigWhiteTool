@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 # 设置NDK路径
-set(NDK_PATH C:/Users/Administrator/AppData/Local/Android/Sdk/ndk/25.1.8937393)
+set(NDK_PATH D:/Path/android-ndk-r26b)
 
 ##################### Android设置 #####################
 set(CMAKE_SYSTEM_NAME ANDROID) # 设置目标编译平台参数 Android
@@ -51,8 +51,10 @@ FILE(GLOB_RECURSE FILE_SOURCES # 遍历子目录下所有符合情况的源文�
 link_directories(
         ffmpeg/lib/${ANDROID_ABI}
 )
+#[[
 add_library(biu STATIC IMPORTED)
 set_target_properties(biu PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/libbiu.a)
+]]
 
 
 ##################### 设置三方库文件目录 #####################
@@ -70,6 +72,6 @@ add_executable(BigWhiteTool # 生成可执行文件
 # 可以整合第三方库 需要打开注释即可
 target_link_libraries(BigWhiteTool PRIVATE EGL GLESv3 log
         android
-        biu
+        #biu
 #        UE5Dumper
         )

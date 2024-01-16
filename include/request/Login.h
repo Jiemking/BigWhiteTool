@@ -3,7 +3,7 @@
 #include "http.h"
 #include <iostream>
 using namespace std;
-char *host = "49.234.45.244";//官网
+char *host = "123";//官网
 char *regaddr = "api/1000/bigwhite/reg";
 char *logaddr = "api/1000/bigwhite/logon";
 char *APPKey = "a277c9e28840d6f444df6ec6517634b4";

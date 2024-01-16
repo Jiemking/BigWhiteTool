@@ -273,54 +273,70 @@ namespace Menu{
                 std::string suffix = "_C";
                 mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
                 FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/String.txt", "w+");
-                //已翻译
-                for (int i = 0; i < 10000000; ++i) {
-                    string Name = NamePoolData->GetName(i);
-                    if (Name.find("None") != std::string::npos){
-                        continue;
-                    }
-                    if (Name.length() >= prefix.length() + suffix.length() &&
+                if (outFile != NULL) {
+                    for (int i = 0; i < 10000000; ++i) {
+                        string Name = NamePoolData->GetName(i);
+                        if (Name.find("None") != std::string::npos){
+                            continue;
+                        }
+                        if (Name.length() >= prefix.length() + suffix.length() &&
                             Name.compare(0, prefix.length(), prefix) == 0 &&
                             Name.compare(Name.length() - suffix.length(), suffix.length(), suffix) == 0)  {
-                        //cout << i << "      " << Name << endl;
-                        fprintf(outFile, "{%d,\"%s\"}\n", i,Name.c_str());
+                            //cout << i << "      " << Name << endl;
+                            fprintf(outFile, "{%d,\"%s\"}\n", i,Name.c_str());
+                        }
                     }
+                    fclose(outFile);
+                } else {
+                    // 处理文件打开失败的情况
+                    perror("Error opening file");
                 }
-                fclose(outFile);
+
             }
             if (ImGui::Button("DumperString2",ImVec2(400,75))){
                 std::string prefix = "Inventory_";
                 std::string suffix = "_C";
                 mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
                 FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/String2.txt", "w+");
-                //已翻译
-                for (int i = 0; i < 10000000; ++i) {
-                    string Name = NamePoolData->GetName(i);
-                    if (Name.find("None") != std::string::npos){
-                        continue;
-                    }
-                    if (Name.length() >= prefix.length() + suffix.length() &&
+                if (outFile != NULL) {
+                    for (int i = 0; i < 10000000; ++i) {
+                        string Name = NamePoolData->GetName(i);
+                        if (Name.find("None") != std::string::npos){
+                            continue;
+                        }
+                        if (Name.length() >= prefix.length() + suffix.length() &&
                             Name.compare(0, prefix.length(), prefix) == 0 &&
                             Name.compare(Name.length() - suffix.length(), suffix.length(), suffix) == 0)  {
-                        //cout << i << "      " << Name << endl;
-                        fprintf(outFile, "{%d,\"%s\"}\n", i,Name.c_str());
+                            //cout << i << "      " << Name << endl;
+                            fprintf(outFile, "{%d,\"%s\"}\n", i,Name.c_str());
+                        }
                     }
+                    fclose(outFile);
+                }else {
+                    // 处理文件打开失败的情况
+                    perror("Error opening file");
                 }
-                fclose(outFile);
+
             }
             if (isShow && ImGui::Button("保存",ImVec2(400,75))){
                 mkdir("/storage/emulated/0/A_BigWhiteTool",2770);
                 FILE* outFile = fopen("/storage/emulated/0/A_BigWhiteTool/Data.txt", "w+");
-                if (outFile) {
-                    fprintf(outFile, "%s\n", GnameBuffer);
-                    fprintf(outFile, "%s\n", UWorldBuffer);
-                    fprintf(outFile, "%s\n", MatrixBuffer);
-                    fprintf(outFile, "%s\n", GObjectBuffer);
-                    fclose(outFile);
-                    cout<<"保存成功路径：/storage/emulated/0/A_BigWhiteTool\n"<<endl;
-                } else {
-                    printf("Error opening output file\n");
+                if (outFile != NULL) {
+                    if (outFile) {
+                        fprintf(outFile, "%s\n", GnameBuffer);
+                        fprintf(outFile, "%s\n", UWorldBuffer);
+                        fprintf(outFile, "%s\n", MatrixBuffer);
+                        fprintf(outFile, "%s\n", GObjectBuffer);
+                        fclose(outFile);
+                        cout<<"保存成功路径：/storage/emulated/0/A_BigWhiteTool\n"<<endl;
+                    } else {
+                        printf("Error opening output file\n");
+                    }
+                }else {
+                    // 处理文件打开失败的情况
+                    perror("Error opening file");
                 }
+
             }
             if (isShow){
                 ImGui::Text("%s",GnameBuffer,ImVec2(400,75));
